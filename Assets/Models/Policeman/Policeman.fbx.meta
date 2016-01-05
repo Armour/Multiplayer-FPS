@@ -1,6 +1,6 @@
 fileFormatVersion: 2
 guid: c521a006fc9e048f8afb59ccc9110c5e
-timeCreated: 1451856498
+timeCreated: 1451867610
 licenseType: Free
 ModelImporter:
   serializedVersion: 19
@@ -863,7 +863,7 @@ ModelImporter:
       transformModified: 1
     - name: mixamorig:LeftHandThumb1
       position: {x: 0.033079706, y: 0.03521171, z: 0.021237599}
-      rotation: {x: 0.07133661, y: 0.0047924807, z: -0.3518133, w: 0.93333566}
+      rotation: {x: 0.07133662, y: 0.004792481, z: -0.35181332, w: 0.9333357}
       scale: {x: 1, y: 1, z: 1}
       transformModified: 1
     - name: mixamorig:LeftHandThumb2

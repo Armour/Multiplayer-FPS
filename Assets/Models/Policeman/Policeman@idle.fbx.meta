@@ -157,7 +157,8 @@ ModelImporter:
     animationImportWarnings: "\nClip 'mixamo.com' has import animation warnings that
       might lower retargeting quality:\n\t'mixamorig:Spine2' is inbetween humanoid
       transforms and has rotation animation that will be discarded.\n"
-    animationRetargetingWarnings: 
+    animationRetargetingWarnings: "\nRetargeting quality report for clip 'mixamo.com':\n\tRetargeting
+      quality is good. No significant differences with original animation were found.\n"
     animationDoRetargetingWarnings: 1
     animationCompression: 3
     animationRotationError: 0.5
@@ -172,7 +173,7 @@ ModelImporter:
       firstFrame: 0
       lastFrame: 126
       wrapMode: 0
-      orientationOffsetY: 0
+      orientationOffsetY: -48
       level: 0
       cycleOffset: 0
       loop: 0

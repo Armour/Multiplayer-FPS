@@ -28,6 +28,8 @@ namespace UnityStandardAssets.Characters.FirstPerson
         [SerializeField] private AudioClip m_JumpSound;           // the sound played when character leaves the ground.
         [SerializeField] private AudioClip m_LandSound;           // the sound played when character touches back on ground.
 
+		public float m_DampTime = 0.1f;
+
         private Camera m_Camera;
         private bool m_Jump;
         private float m_YRotation;
@@ -41,6 +43,7 @@ namespace UnityStandardAssets.Characters.FirstPerson
         private float m_NextStep;
         private bool m_Jumping;
         private AudioSource m_AudioSource;
+		private Animator m_Anim;
 
         // Use this for initialization
         private void Start()
@@ -55,6 +58,7 @@ namespace UnityStandardAssets.Characters.FirstPerson
             m_Jumping = false;
             m_AudioSource = GetComponent<AudioSource>();
 			m_MouseLook.Init(transform , m_Camera.transform);
+			m_Anim = GetComponentInChildren<Animator>();
         }
 
 
@@ -66,6 +70,8 @@ namespace UnityStandardAssets.Characters.FirstPerson
             if (!m_Jump)
             {
                 m_Jump = CrossPlatformInputManager.GetButtonDown("Jump");
+				if (m_Jump) 
+					m_Anim.SetTrigger("IsJumping");
             }
 
             if (!m_PreviouslyGrounded && m_CharacterController.isGrounded)
@@ -207,7 +213,11 @@ namespace UnityStandardAssets.Characters.FirstPerson
             float horizontal = CrossPlatformInputManager.GetAxis("Horizontal");
             float vertical = CrossPlatformInputManager.GetAxis("Vertical");
 
+			m_Anim.SetFloat("Horizontal", horizontal, m_DampTime, Time.deltaTime);
+			m_Anim.SetFloat("Vertical", vertical, m_DampTime, Time.deltaTime);
+
             bool waswalking = m_IsWalking;
+
 
 #if !MOBILE_INPUT
             // On standalone builds, walk/run speed is modified by a key press.
@@ -217,6 +227,8 @@ namespace UnityStandardAssets.Characters.FirstPerson
             // set the desired speed to be walking or running
             speed = m_IsWalking ? m_WalkSpeed : m_RunSpeed;
             m_Input = new Vector2(horizontal, vertical);
+
+			m_Anim.SetBool("Running", Input.GetKey(KeyCode.LeftShift));
 
             // normalize input if it exceeds 1 in combined length:
             if (m_Input.sqrMagnitude > 1)
@@ -253,7 +265,7 @@ namespace UnityStandardAssets.Characters.FirstPerson
             {
                 return;
             }
-            body.AddForceAtPosition(m_CharacterController.velocity*0.1f, hit.point, ForceMode.Impulse);
+            body.AddForceAtPosition(m_CharacterController.velocity * 0.1f, hit.point, ForceMode.Impulse);
         }
     }
 }
