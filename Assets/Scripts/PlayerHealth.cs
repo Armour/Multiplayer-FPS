@@ -22,6 +22,7 @@ public class PlayerHealth : MonoBehaviour {
 	GunShooting playerShooting;
 	ParticleSystem hitParticles;
 	CapsuleCollider capsuleCollider;
+	IKControl ikControl;
 	bool isDead;
 	bool isSinking;
 	bool damaged;
@@ -33,6 +34,7 @@ public class PlayerHealth : MonoBehaviour {
 		playerShooting = GetComponentInChildren<GunShooting>();
 		capsuleCollider = GetComponent<CapsuleCollider>();
 		fps = GetComponent<FirstPersonController>();
+		ikControl = GetComponentInChildren<IKControl>();
 		currentHealth = startingHealth;
 	}
 
@@ -81,6 +83,7 @@ public class PlayerHealth : MonoBehaviour {
 
 		fps.enabled = false;
 		playerShooting.enabled = false;
+		ikControl.enabled = false;
 
 		StartCoroutine("StartSinking");
 	}
