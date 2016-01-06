@@ -2,7 +2,7 @@
 using System.Collections;
 using UnityStandardAssets.CrossPlatformInput;
 
-public class GunShooting : MonoBehaviour {
+public class GunFirstPersonView : MonoBehaviour {
 
 	public int damagePerShot = 20;
 	public float timeBetweenBullets = 0.2f;
@@ -15,16 +15,12 @@ public class GunShooting : MonoBehaviour {
 	int shootableMask;
 	ParticleSystem gunParticles;
 	LineRenderer gunLine;
-	AudioSource gunAudio;
-	//Light gunLight;
 	float effectsDisplayTime = 0.2f;
 
 	void Awake() {
 		shootableMask = LayerMask.GetMask("Shootable");
 		gunParticles = GetComponent<ParticleSystem>();
 		gunLine = GetComponent<LineRenderer>();
-		gunAudio = GetComponent<AudioSource>();
-		//gunLight = GetComponent<Light>();
 	}
 
 	void Update() {
@@ -45,15 +41,11 @@ public class GunShooting : MonoBehaviour {
 
 	public void DisableEffects() {
 		gunLine.enabled = false;
-		//gunLight.enabled = false;
 	}
 
 	void Shoot() {
 		timer = 0.0f;
 
-		gunAudio.Play();
-
-		//gunLight.enabled = true;
 		gunParticles.Stop();
 		gunParticles.Play();
 
@@ -63,10 +55,6 @@ public class GunShooting : MonoBehaviour {
 		shootRay = Camera.main.ScreenPointToRay(new Vector3((Screen.width * 0.5f), (Screen.height * 0.5f), 0f));
 
 		if (Physics.Raycast(shootRay, out shootHit, range, shootableMask)) {
-			PlayerHealth playerHealth = shootHit.collider.GetComponent<PlayerHealth>();
-			if (playerHealth != null) {
-				playerHealth.TakeDamage(damagePerShot, shootHit.point);
-			}
 			gunLine.SetPosition(1, shootHit.point);
 		} else {
 			gunLine.SetPosition(1, shootRay.origin + shootRay.direction * range);
