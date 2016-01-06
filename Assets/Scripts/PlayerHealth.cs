@@ -15,8 +15,8 @@ public class PlayerHealth : MonoBehaviour {
 	public AudioClip hurtClip;
 	public float flashSpeed = 5f;
 	public Color flashColour = new Color(1f, 0f, 0f, 0.1f);
+	public Animator anim;
 
-	Animator anim;
 	AudioSource playerAudio;
 	FirstPersonController fps;
 	GunShooting playerShooting;
@@ -28,7 +28,6 @@ public class PlayerHealth : MonoBehaviour {
 	bool damaged;
 
 	void Awake() {
-		anim = GetComponentInChildren<Animator>();
 		playerAudio = GetComponent<AudioSource>();
 		hitParticles = GetComponentInChildren<ParticleSystem>();
 		playerShooting = GetComponentInChildren<GunShooting>();

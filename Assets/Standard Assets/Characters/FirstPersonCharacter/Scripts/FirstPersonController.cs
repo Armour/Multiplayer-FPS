@@ -29,6 +29,7 @@ namespace UnityStandardAssets.Characters.FirstPerson
         [SerializeField] private AudioClip m_LandSound;           // the sound played when character touches back on ground.
 
 		public float m_DampTime = 0.1f;
+		public Animator m_Anim;
 
         private Camera m_Camera;
         private bool m_Jump;
@@ -43,7 +44,6 @@ namespace UnityStandardAssets.Characters.FirstPerson
         private float m_NextStep;
         private bool m_Jumping;
         private AudioSource m_AudioSource;
-		private Animator m_Anim;
 
         // Use this for initialization
         private void Start()
@@ -58,7 +58,6 @@ namespace UnityStandardAssets.Characters.FirstPerson
             m_Jumping = false;
             m_AudioSource = GetComponent<AudioSource>();
 			m_MouseLook.Init(transform , m_Camera.transform);
-			m_Anim = GetComponentInChildren<Animator>();
         }
 
 

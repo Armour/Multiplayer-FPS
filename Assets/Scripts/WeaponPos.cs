@@ -4,16 +4,11 @@ using System.Collections;
 public class WeaponPos : MonoBehaviour {
 
 	public float mouseSensitivity = 0.5f;
+	public Animator anim;
 
-	private Animator anim;
 	private float maxRotation = 293f;
 	private float minRotation = 272f;
 	private float rotationY = 0;
-
-	void Awake() {
-		anim = transform.parent.GetComponentInChildren<Animator>();
-		//rotationY = (maxRotation + minRotation) / 2;
-	}
 
 	void Start() {
 		transform.parent = anim.GetBoneTransform(HumanBodyBones.RightHand).transform; 
