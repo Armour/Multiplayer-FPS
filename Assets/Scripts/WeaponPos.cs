@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class WeaponPos : MonoBehaviour {
+public class WeaponPos : Photon.MonoBehaviour {
 
 	public float mouseSensitivity = 0.5f;
 	public Animator anim;
@@ -15,10 +15,20 @@ public class WeaponPos : MonoBehaviour {
 		transform.localPosition = new Vector3(0.016f, 0.34f, 0.006f);
 		transform.localEulerAngles = new Vector3(287f, 110f, 348f);
 	}
-
+		
 	void FixedUpdate() {
-		rotationY -= Input.GetAxis("Mouse Y") * mouseSensitivity;
-		rotationY = Mathf.Clamp(rotationY, minRotation - 287f, maxRotation - 287f);
+		if (photonView.isMine) {
+			rotationY -= Input.GetAxis("Mouse Y") * mouseSensitivity;
+			rotationY = Mathf.Clamp(rotationY, minRotation - 287f, maxRotation - 287f);
+		}
 		transform.localEulerAngles = new Vector3(rotationY + 287f, 110f, 348f);
+	}
+
+	void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info) {
+		if (stream.isWriting) {
+			stream.SendNext(rotationY);
+		} else {
+			rotationY = (float)stream.ReceiveNext();
+		}
 	}
 }

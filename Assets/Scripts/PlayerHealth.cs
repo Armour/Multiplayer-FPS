@@ -1,14 +1,17 @@
-﻿using UnityEngine;
+using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using System.Collections;
 using UnityStandardAssets.Characters.FirstPerson;
 
-public class PlayerHealth : MonoBehaviour {
+public class PlayerHealth : Photon.MonoBehaviour {
+
+	public delegate void Respawn(float time);
+	public event Respawn RespawnMe;
 
 	public int startingHealth = 100;
 	public int currentHealth;
-	public float sinkSpeed = 0.08f;
+	public float sinkSpeed = 0.12f;
 	public Slider healthSlider;
 	public Image damageImage;
 	public AudioClip deathClip;
@@ -34,7 +37,10 @@ public class PlayerHealth : MonoBehaviour {
 		capsuleCollider = GetComponent<CapsuleCollider>();
 		fps = GetComponent<FirstPersonController>();
 		ikControl = GetComponentInChildren<IKControl>();
+		healthSlider = GameObject.FindGameObjectWithTag("Screen").GetComponentInChildren<Slider>();
+		damageImage = GameObject.FindGameObjectWithTag("Screen").transform.FindChild("DamageImage").GetComponent<Image>();
 		currentHealth = startingHealth;
+		healthSlider.value = currentHealth;
 	}
 
 	void Update() {
@@ -45,17 +51,22 @@ public class PlayerHealth : MonoBehaviour {
 		}
 		damaged = false;
 
-		if(isSinking) {
+		if (isSinking) {
 			transform.Translate(Vector3.down * sinkSpeed * Time.deltaTime);
 		}
 	}
 
+	[PunRPC]
 	public void TakeDamage(int amount, Vector3 hitPoint) {
 		if (isDead) return;
 
-		damaged = true;
 		currentHealth -= amount;
-		healthSlider.value = currentHealth;
+
+		if (photonView.isMine) {
+			damaged = true;
+			healthSlider.value = currentHealth;
+		}
+
 		anim.SetTrigger("IsHurt");
 
 		playerAudio.clip = hurtClip;
@@ -69,6 +80,7 @@ public class PlayerHealth : MonoBehaviour {
 		}
 	}
 
+	[PunRPC]
 	void Death() {
 		isDead = true;
 		capsuleCollider.isTrigger = true;
@@ -84,17 +96,34 @@ public class PlayerHealth : MonoBehaviour {
 		playerShooting.enabled = false;
 		ikControl.enabled = false;
 
-		StartCoroutine("StartSinking");
+		if (photonView.isMine) {
+			if (RespawnMe != null) {
+				RespawnMe(8.0f);
+			}
+			StartCoroutine("DestoryPlayer", 7.9f);
+		}
+
+		StartCoroutine("StartSinking", 2.5f);
 	}
 
-	IEnumerator StartSinking() {
-		yield return new WaitForSeconds(2.5f);
+	[PunRPC]
+	IEnumerator DestoryPlayer(float time) {
+		yield return new WaitForSeconds(time);
+		PhotonNetwork.Destroy(gameObject);
+	}
+
+	[PunRPC]
+	IEnumerator StartSinking(float time) {
+		yield return new WaitForSeconds(time);
 		GetComponent<Rigidbody>().isKinematic = true;
-		isSinking = true;
-		Destroy(gameObject, 7f);
+		isSinking = true;	
 	}
 
-	public void RestartLevel() {
-		SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+	void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info) {
+		if (stream.isWriting) {
+			stream.SendNext(currentHealth);
+		} else {
+			currentHealth = (int)stream.ReceiveNext();
+		}
 	}
 }

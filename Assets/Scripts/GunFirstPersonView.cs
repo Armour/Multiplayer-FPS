@@ -4,7 +4,6 @@ using UnityStandardAssets.CrossPlatformInput;
 
 public class GunFirstPersonView : MonoBehaviour {
 
-	public int damagePerShot = 20;
 	public float timeBetweenBullets = 0.2f;
 	public float range = 100.0f;
 	public Animator anim;

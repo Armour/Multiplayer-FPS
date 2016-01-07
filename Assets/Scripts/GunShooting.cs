@@ -1,8 +1,8 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 using UnityStandardAssets.CrossPlatformInput;
 
-public class GunShooting : MonoBehaviour {
+public class GunShooting : Photon.MonoBehaviour {
 
 	public int damagePerShot = 20;
 	public float timeBetweenBullets = 0.2f;
@@ -16,60 +16,71 @@ public class GunShooting : MonoBehaviour {
 	ParticleSystem gunParticles;
 	LineRenderer gunLine;
 	AudioSource gunAudio;
-	//Light gunLight;
 	float effectsDisplayTime = 0.2f;
+	Vector3 target;
 
 	void Awake() {
 		shootableMask = LayerMask.GetMask("Shootable");
 		gunParticles = GetComponent<ParticleSystem>();
 		gunLine = GetComponent<LineRenderer>();
 		gunAudio = GetComponent<AudioSource>();
-		//gunLight = GetComponent<Light>();
 	}
 
 	void Update() {
-		timer += Time.deltaTime;
+		if (photonView.isMine) {
+			timer += Time.deltaTime;
 
-		bool shooting = CrossPlatformInputManager.GetButton("Fire1");
+			bool shooting = CrossPlatformInputManager.GetButton("Fire1");
 
-		if (shooting && timer >= timeBetweenBullets && Time.timeScale != 0) {
-			Shoot();
-		} 
-			
-		anim.SetBool("Firing", shooting);
+			if (shooting && timer >= timeBetweenBullets && Time.timeScale != 0) {
+				GetComponent<PhotonView>().RPC("Shoot", PhotonTargets.All);
+				Shoot();
+			} 
 
-		if (timer >= timeBetweenBullets * effectsDisplayTime) {
-			DisableEffects();
+			anim.SetBool("Firing", shooting);
+
+			if (timer >= timeBetweenBullets * effectsDisplayTime) {
+				GetComponent<PhotonView>().RPC("DisableEffects", PhotonTargets.All);
+			}
 		}
 	}
 
+	[PunRPC]
 	public void DisableEffects() {
 		gunLine.enabled = false;
-		//gunLight.enabled = false;
 	}
 
+	[PunRPC]
 	void Shoot() {
 		timer = 0.0f;
 
 		gunAudio.Play();
 
-		//gunLight.enabled = true;
 		gunParticles.Stop();
 		gunParticles.Play();
 
 		gunLine.enabled = true;
 		gunLine.SetPosition(0, transform.position);
 
-		shootRay = Camera.main.ScreenPointToRay(new Vector3((Screen.width * 0.5f), (Screen.height * 0.5f), 0f));
-
-		if (Physics.Raycast(shootRay, out shootHit, range, shootableMask)) {
-			PlayerHealth playerHealth = shootHit.collider.GetComponent<PlayerHealth>();
-			if (playerHealth != null) {
-				playerHealth.TakeDamage(damagePerShot, shootHit.point);
+		if (photonView.isMine) {
+			shootRay = Camera.main.ScreenPointToRay(new Vector3((Screen.width * 0.5f), (Screen.height * 0.5f), 0f));
+			if (Physics.Raycast(shootRay, out shootHit, range, shootableMask)) {
+				target = shootHit.point;
+				shootHit.collider.GetComponent<PhotonView>().RPC("TakeDamage", PhotonTargets.All, damagePerShot, shootHit.point);
+			} else {
+				target = shootRay.origin + shootRay.direction * range;
 			}
-			gunLine.SetPosition(1, shootHit.point);
+		}
+		gunLine.SetPosition(1, target);
+	}
+
+	void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info) {
+		if (stream.isWriting) {
+			stream.SendNext(anim.GetBool("Firing"));
+			stream.SendNext(target);
 		} else {
-			gunLine.SetPosition(1, shootRay.origin + shootRay.direction * range);
+			anim.SetBool("Firing", (bool)stream.ReceiveNext());
+			target = (Vector3)stream.ReceiveNext();
 		}
 	}
 }
