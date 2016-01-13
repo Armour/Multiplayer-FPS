@@ -5,30 +5,34 @@ public class WeaponPos : Photon.MonoBehaviour {
 
 	public float mouseSensitivity = 0.5f;
 	public Animator anim;
+	[SerializeField] Vector3 localPosition;
+	[SerializeField] Vector3 localEulerAngles;
 
-	private float maxRotation = 293f;
-	private float minRotation = 272f;
+	private float maxRotation;
+	private float minRotation;
 	private float rotationY = 0;
 
 	void Start() {
 		transform.parent = anim.GetBoneTransform(HumanBodyBones.RightHand).transform; 
-		transform.localPosition = new Vector3(0.016f, 0.34f, 0.006f);
-		transform.localEulerAngles = new Vector3(287f, 110f, 348f);
+		transform.localPosition = localPosition;
+		transform.localEulerAngles = localEulerAngles;
+		maxRotation = localEulerAngles.x + 6f;
+		minRotation = localEulerAngles.x - 14f;
 	}
 		
 	void FixedUpdate() {
 		if (photonView.isMine) {
 			rotationY -= Input.GetAxis("Mouse Y") * mouseSensitivity;
-			rotationY = Mathf.Clamp(rotationY, minRotation - 287f, maxRotation - 287f);
+			rotationY = Mathf.Clamp(rotationY, minRotation - localEulerAngles.x, maxRotation - localEulerAngles.x);
+			transform.localEulerAngles = new Vector3(rotationY + localEulerAngles.x, localEulerAngles.y, localEulerAngles.z);
 		}
-		transform.localEulerAngles = new Vector3(rotationY + 287f, 110f, 348f);
 	}
 
 	void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info) {
 		if (stream.isWriting) {
-			stream.SendNext(rotationY);
+			stream.SendNext(transform.localEulerAngles.x);
 		} else {
-			rotationY = (float)stream.ReceiveNext();
+			transform.localEulerAngles = new Vector3 ((float)stream.ReceiveNext(), localEulerAngles.y, localEulerAngles.z);
 		}
 	}
 }
