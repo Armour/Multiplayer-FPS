@@ -9,8 +9,8 @@ public class PlayerNetworkMover : Photon.MonoBehaviour {
 
 	Vector3 position;
 	Quaternion rotation;
-	float horizontal;
-	float vertical;
+	float horizontal = 0;
+	float vertical = 0;
 	bool jump;
 	float smoothing = 10.0f;
 	float dampTime = 0.06f;
@@ -42,6 +42,8 @@ public class PlayerNetworkMover : Photon.MonoBehaviour {
 		while (true) {
 			transform.position = Vector3.Lerp(transform.position, position, Time.deltaTime * smoothing);
 			transform.rotation = Quaternion.Lerp(transform.rotation, rotation, Time.deltaTime * smoothing);
+			anim.SetFloat("Horizontal", horizontal, dampTime, Time.deltaTime);
+			anim.SetFloat("Vertical", vertical, dampTime, Time.deltaTime);
 			yield return null;
 		}
 	}
@@ -59,8 +61,20 @@ public class PlayerNetworkMover : Photon.MonoBehaviour {
 			rotation = (Quaternion)stream.ReceiveNext();
 			horizontal = (float)stream.ReceiveNext();
 			vertical = (float)stream.ReceiveNext();
-			anim.SetFloat("Horizontal", horizontal, dampTime, Time.deltaTime);
-			anim.SetFloat("Vertical", vertical, dampTime, Time.deltaTime);
+			if (Mathf.Abs(horizontal) < Mathf.Abs(anim.GetFloat("Horizontal"))) horizontal = 0f;
+			if (Mathf.Abs(vertical) < Mathf.Abs(anim.GetFloat("Vertical"))) vertical = 0f;
+			if (Mathf.Abs(horizontal) > Mathf.Abs(anim.GetFloat("Horizontal"))) {
+				if (horizontal > 0)
+					horizontal = 1f;
+				else 
+					horizontal = -1f;
+			}			
+			if (Mathf.Abs(vertical) > Mathf.Abs(anim.GetFloat("Vertical"))) {
+				if (vertical > 0)
+					vertical = 1f;
+				else 
+					vertical = -1f;
+			}
 			if ((bool)stream.ReceiveNext()) 
 				anim.SetTrigger("IsJumping");
 			anim.SetBool("Running", (bool)stream.ReceiveNext());

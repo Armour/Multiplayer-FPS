@@ -7,6 +7,7 @@ public class NetworkManager : MonoBehaviour {
 	[SerializeField] Text connectionText;
 	[SerializeField] Transform[] spawnPoints;
 	[SerializeField] Camera sceneCamera;
+	[SerializeField] GameObject[] playerModel; 
 
 	GameObject player;
 
@@ -36,8 +37,9 @@ public class NetworkManager : MonoBehaviour {
 	IEnumerator SpawnPlayer(float spawnTime) {
 		yield return new WaitForSeconds(spawnTime);
 
-		int index = Random.Range (0, spawnPoints.Length);
-		player = PhotonNetwork.Instantiate("PolicemanController", spawnPoints[index].position, spawnPoints[index].rotation, 0);
+		int playerIndex = Random.Range(0, playerModel.Length);
+		int spawnIndex = Random.Range(0, spawnPoints.Length);
+		player = PhotonNetwork.Instantiate(playerModel[playerIndex].name, spawnPoints[spawnIndex].position, spawnPoints[spawnIndex].rotation, 0);
 
 		player.GetComponent<PlayerHealth>().RespawnMe += StartSpawnProcess;
 

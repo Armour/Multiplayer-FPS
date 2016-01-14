@@ -34,7 +34,6 @@ public class GunShooting : Photon.MonoBehaviour {
 
 			if (shooting && timer >= timeBetweenBullets && Time.timeScale != 0) {
 				GetComponent<PhotonView>().RPC("Shoot", PhotonTargets.All);
-				Shoot();
 			} 
 
 			anim.SetBool("Firing", shooting);
@@ -70,17 +69,22 @@ public class GunShooting : Photon.MonoBehaviour {
 			} else {
 				target = shootRay.origin + shootRay.direction * range;
 			}
+			gunLine.SetPosition(1, target);
+		} else {
+			if (Physics.Raycast(transform.position, transform.forward, out shootHit, range, shootableMask)) {
+				target = shootHit.point;
+			} else {
+				target = transform.position + transform.forward * range;
+			}
+			gunLine.SetPosition(1, target);
 		}
-		gunLine.SetPosition(1, target);
 	}
 
 	void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info) {
 		if (stream.isWriting) {
 			stream.SendNext(anim.GetBool("Firing"));
-			stream.SendNext(target);
 		} else {
 			anim.SetBool("Firing", (bool)stream.ReceiveNext());
-			target = (Vector3)stream.ReceiveNext();
 		}
 	}
 }
