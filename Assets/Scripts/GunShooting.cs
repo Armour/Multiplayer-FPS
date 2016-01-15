@@ -65,7 +65,7 @@ public class GunShooting : Photon.MonoBehaviour {
 			shootRay = Camera.main.ScreenPointToRay(new Vector3((Screen.width * 0.5f), (Screen.height * 0.5f), 0f));
 			if (Physics.Raycast(shootRay, out shootHit, range, shootableMask)) {
 				target = shootHit.point;
-				shootHit.collider.GetComponent<PhotonView>().RPC("TakeDamage", PhotonTargets.All, damagePerShot, shootHit.point);
+				shootHit.collider.GetComponent<PhotonView>().RPC("TakeDamage", PhotonTargets.All, damagePerShot, shootHit.point, PhotonNetwork.player.name);
 			} else {
 				target = shootRay.origin + shootRay.direction * range;
 			}

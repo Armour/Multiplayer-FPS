@@ -8,6 +8,8 @@ public class PlayerHealth : Photon.MonoBehaviour {
 
 	public delegate void Respawn(float time);
 	public event Respawn RespawnMe;
+	public delegate void SendMessage(string Message);
+	public event SendMessage SendNetworkMessage;
 
 	public int startingHealth = 100;
 	public int currentHealth;
@@ -57,7 +59,7 @@ public class PlayerHealth : Photon.MonoBehaviour {
 	}
 
 	[PunRPC]
-	public void TakeDamage(int amount, Vector3 hitPoint) {
+	public void TakeDamage(int amount, Vector3 hitPoint, string enemyName) {
 		if (isDead) return;
 
 		currentHealth -= amount;
@@ -76,12 +78,12 @@ public class PlayerHealth : Photon.MonoBehaviour {
 		hitParticles.Play();
 
 		if (currentHealth <= 0) {
-			Death();
+			Death(enemyName);
 		}
 	}
 
 	[PunRPC]
-	void Death() {
+	void Death(string enemyName) {
 		isDead = true;
 		capsuleCollider.isTrigger = true;
 
@@ -97,6 +99,10 @@ public class PlayerHealth : Photon.MonoBehaviour {
 		ikControl.enabled = false;
 
 		if (photonView.isMine) {
+
+			if (SendNetworkMessage != null)
+				SendNetworkMessage(PhotonNetwork.player.name + " was killed by " + enemyName + "!");
+			
 			if (RespawnMe != null) {
 				RespawnMe(8.0f);
 			}
