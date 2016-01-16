@@ -26,7 +26,7 @@ public class NetworkManager : MonoBehaviour {
 		photonView = GetComponent<PhotonView>();
 		messages = new Queue<string> (messageCount);
 		PhotonNetwork.logLevel = PhotonLogLevel.Full;
-		PhotonNetwork.ConnectUsingSettings("0.1");
+		PhotonNetwork.ConnectUsingSettings("0.2");
 		StartCoroutine("UpdateConnectionState");
 	}
 		
@@ -102,7 +102,14 @@ public class NetworkManager : MonoBehaviour {
 			messagesLog.text += m + "\n";
 	}
 
-	void OnLeftRoom() {
-		AddMessage("Player " + PhotonNetwork.player.name + " Left Game.");
+	void OnPhotonPlayerDisconnected() {
+		if (photonView.isMine)
+			AddMessage("Player " + PhotonNetwork.player.name + " Left Game.");
+	}
+
+	void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info) {
+		if (stream.isWriting) {
+		} else {
+		}
 	}
 }

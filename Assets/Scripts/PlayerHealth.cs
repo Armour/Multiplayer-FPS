@@ -100,6 +100,8 @@ public class PlayerHealth : Photon.MonoBehaviour {
 		playerShooting.enabled = false;
 		ikControl.enabled = false;
 
+		gameObject.transform.FindChild("NameTag").gameObject.SetActive(false);
+
 		if (photonView.isMine) {
 
 			if (SendNetworkMessage != null) {
