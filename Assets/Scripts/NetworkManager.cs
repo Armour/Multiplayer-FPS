@@ -101,4 +101,8 @@ public class NetworkManager : MonoBehaviour {
 		foreach (string m in messages)
 			messagesLog.text += m + "\n";
 	}
+
+	void OnLeftRoom() {
+		AddMessage("Player " + PhotonNetwork.player.name + " Left Game.");
+	}
 }

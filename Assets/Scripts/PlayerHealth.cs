@@ -28,6 +28,7 @@ public class PlayerHealth : Photon.MonoBehaviour {
 	ParticleSystem hitParticles;
 	CapsuleCollider capsuleCollider;
 	IKControl ikControl;
+	PlayerScore score;
 	bool isDead;
 	bool isSinking;
 	bool damaged;
@@ -39,6 +40,7 @@ public class PlayerHealth : Photon.MonoBehaviour {
 		capsuleCollider = GetComponent<CapsuleCollider>();
 		fps = GetComponent<FirstPersonController>();
 		ikControl = GetComponentInChildren<IKControl>();
+		score = GetComponent<PlayerScore>();
 		healthSlider = GameObject.FindGameObjectWithTag("Screen").GetComponentInChildren<Slider>();
 		damageImage = GameObject.FindGameObjectWithTag("Screen").transform.FindChild("DamageImage").GetComponent<Image>();
 		currentHealth = startingHealth;
@@ -100,9 +102,10 @@ public class PlayerHealth : Photon.MonoBehaviour {
 
 		if (photonView.isMine) {
 
-			if (SendNetworkMessage != null)
+			if (SendNetworkMessage != null) {
 				SendNetworkMessage(PhotonNetwork.player.name + " was killed by " + enemyName + "!");
-			
+			}
+
 			if (RespawnMe != null) {
 				RespawnMe(8.0f);
 			}
