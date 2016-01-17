@@ -58,25 +58,54 @@ public class GunShooting : Photon.MonoBehaviour {
 		gunParticles.Stop();
 		gunParticles.Play();
 
-		gunLine.enabled = true;
-		gunLine.SetPosition(0, transform.position);
+		//gunLine.enabled = true;
+		//gunLine.SetPosition(0, transform.position);
 
 		if (photonView.isMine) {
 			shootRay = Camera.main.ScreenPointToRay(new Vector3((Screen.width * 0.5f), (Screen.height * 0.5f), 0f));
 			if (Physics.Raycast(shootRay, out shootHit, range, shootableMask)) {
+				GameObject impact;
 				target = shootHit.point;
-				shootHit.collider.GetComponent<PhotonView>().RPC("TakeDamage", PhotonTargets.All, damagePerShot, shootHit.point, PhotonNetwork.player.name);
+				switch (shootHit.transform.gameObject.tag) {
+				case "Player":
+					shootHit.collider.GetComponent<PhotonView>().RPC("TakeDamage", PhotonTargets.All, damagePerShot, PhotonNetwork.player.name);
+					impact = PhotonNetwork.Instantiate("impactFlesh", shootHit.point, Quaternion.Euler(shootHit.normal.x - 90, shootHit.normal.y, shootHit.normal.z), 0);
+					break;
+				case "Metal":
+					impact = PhotonNetwork.Instantiate("impactMetal", shootHit.point, Quaternion.Euler(shootHit.normal.x - 90, shootHit.normal.y, shootHit.normal.z), 0);
+					break;
+				case "Glass":
+					impact = PhotonNetwork.Instantiate("impactGlass", shootHit.point, Quaternion.Euler(shootHit.normal.x - 90, shootHit.normal.y, shootHit.normal.z), 0);
+					break;
+				case "Wood":
+					impact = PhotonNetwork.Instantiate("impactWood", shootHit.point, Quaternion.Euler(shootHit.normal.x - 90, shootHit.normal.y, shootHit.normal.z), 0);
+					break;
+				case "Brick":
+					impact = PhotonNetwork.Instantiate("impactBrick", shootHit.point, Quaternion.Euler(shootHit.normal.x - 90, shootHit.normal.y, shootHit.normal.z), 0);
+					break;
+				case "Concrete":
+					impact = PhotonNetwork.Instantiate("impactConcrete", shootHit.point, Quaternion.Euler(shootHit.normal.x - 90, shootHit.normal.y, shootHit.normal.z), 0);
+					break;
+				case "Dirt":
+					impact = PhotonNetwork.Instantiate("impactDirt", shootHit.point, Quaternion.Euler(shootHit.normal.x - 90, shootHit.normal.y, shootHit.normal.z), 0);
+					break;
+				case "Water":
+					impact = PhotonNetwork.Instantiate("impactWater", shootHit.point, Quaternion.Euler(shootHit.normal.x - 90, shootHit.normal.y, shootHit.normal.z), 0);
+					break;
+				default:
+					break;
+				}
 			} else {
 				target = shootRay.origin + shootRay.direction * range;
 			}
-			gunLine.SetPosition(1, target);
+			//gunLine.SetPosition(1, target);
 		} else {
 			if (Physics.Raycast(transform.position, transform.forward, out shootHit, range, shootableMask)) {
 				target = shootHit.point;
 			} else {
 				target = transform.position + transform.forward * range;
 			}
-			gunLine.SetPosition(1, target);
+			//gunLine.SetPosition(1, target);
 		}
 	}
 

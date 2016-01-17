@@ -3,7 +3,7 @@ using UnityEngine.UI;
 using System.Collections;
 using System.Collections.Generic;
 
-public class NetworkManager : MonoBehaviour {
+public class NetworkManager : Photon.MonoBehaviour {
 	
 	[SerializeField] Text connectionText;
 	[SerializeField] Transform[] spawnPoints;
@@ -102,9 +102,9 @@ public class NetworkManager : MonoBehaviour {
 			messagesLog.text += m + "\n";
 	}
 
-	void OnPhotonPlayerDisconnected() {
+	void OnPhotonPlayerDisconnected(PhotonPlayer other) {
 		if (photonView.isMine)
-			AddMessage("Player " + PhotonNetwork.player.name + " Left Game.");
+			AddMessage("Player " + other.name + " Left Game.");
 	}
 
 	void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info) {

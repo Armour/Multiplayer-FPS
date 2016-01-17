@@ -25,7 +25,6 @@ public class PlayerHealth : Photon.MonoBehaviour {
 	AudioSource playerAudio;
 	FirstPersonController fps;
 	GunShooting playerShooting;
-	ParticleSystem hitParticles;
 	CapsuleCollider capsuleCollider;
 	IKControl ikControl;
 	PlayerScore score;
@@ -35,7 +34,6 @@ public class PlayerHealth : Photon.MonoBehaviour {
 
 	void Awake() {
 		playerAudio = GetComponent<AudioSource>();
-		hitParticles = GetComponentInChildren<ParticleSystem>();
 		playerShooting = GetComponentInChildren<GunShooting>();
 		capsuleCollider = GetComponent<CapsuleCollider>();
 		fps = GetComponent<FirstPersonController>();
@@ -61,7 +59,7 @@ public class PlayerHealth : Photon.MonoBehaviour {
 	}
 
 	[PunRPC]
-	public void TakeDamage(int amount, Vector3 hitPoint, string enemyName) {
+	public void TakeDamage(int amount, string enemyName) {
 		if (isDead) return;
 
 		currentHealth -= amount;
@@ -75,9 +73,6 @@ public class PlayerHealth : Photon.MonoBehaviour {
 
 		playerAudio.clip = hurtClip;
 		playerAudio.Play();
-
-		hitParticles.transform.position = hitPoint;
-		hitParticles.Play();
 
 		if (currentHealth <= 0) {
 			Death(enemyName);

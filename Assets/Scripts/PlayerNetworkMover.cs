@@ -41,11 +41,9 @@ public class PlayerNetworkMover : Photon.MonoBehaviour {
 			}
 		} else {
 			GameObject[] mcs = GameObject.FindGameObjectsWithTag("MainCamera");
-			Debug.Log(mcs.Length);
 			if (mcs != null) {
 				foreach (GameObject mc in mcs) {
 					if (mc.GetComponent<Camera>().enabled) {
-						Debug.Log("!!!!");
 						GetComponentInChildren<NameTag>().target = mc.transform.parent.FindChild("NameTag").transform;
 						break;
 					}

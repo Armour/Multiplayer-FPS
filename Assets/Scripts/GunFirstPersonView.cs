@@ -33,9 +33,9 @@ public class GunFirstPersonView : MonoBehaviour {
 			
 		anim.SetBool("Firing", shooting);
 
-		if (timer >= timeBetweenBullets * effectsDisplayTime) {
-			DisableEffects();
-		}
+		//if (timer >= timeBetweenBullets * effectsDisplayTime) {
+		//	DisableEffects();
+		//}
 	}
 
 	public void DisableEffects() {
@@ -48,16 +48,16 @@ public class GunFirstPersonView : MonoBehaviour {
 		gunParticles.Stop();
 		gunParticles.Play();
 
-		gunLine.enabled = true;
-		gunLine.SetPosition(0, transform.position);
+		//gunLine.enabled = true;
+		//gunLine.SetPosition(0, transform.position);
 
-		shootRay = Camera.main.ScreenPointToRay(new Vector3((Screen.width * 0.5f), (Screen.height * 0.5f), 0f));
+		//shootRay = Camera.main.ScreenPointToRay(new Vector3((Screen.width * 0.5f), (Screen.height * 0.5f), 0f));
 
-		if (Physics.Raycast(shootRay, out shootHit, range, shootableMask)) {
-			gunLine.SetPosition(1, shootHit.point);
-		} else {
-			gunLine.SetPosition(1, shootRay.origin + shootRay.direction * range);
-		}
+		//if (Physics.Raycast(shootRay, out shootHit, range, shootableMask)) {
+			//gunLine.SetPosition(1, shootHit.point);
+		//} else {
+			//gunLine.SetPosition(1, shootRay.origin + shootRay.direction * range);
+		//}
 	}
 }
 
