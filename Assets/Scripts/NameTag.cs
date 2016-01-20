@@ -27,7 +27,7 @@ public class NameTag : Photon.MonoBehaviour {
 		if (stream.isWriting) {
 			stream.SendNext(PhotonNetwork.playerName);
 		} else {
-			GetComponent<Text>().text = (string)stream.ReceiveNext();
+			GetComponentInChildren<Text>().text = (string)stream.ReceiveNext();
 		}
 	}
 }

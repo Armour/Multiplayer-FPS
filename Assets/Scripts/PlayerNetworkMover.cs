@@ -37,14 +37,14 @@ public class PlayerNetworkMover : Photon.MonoBehaviour {
 			foreach (GameObject player in players) {
 				if (player == gameObject) continue;
 				NameTag nt = player.GetComponentInChildren<NameTag>();
-				nt.target = gameObject.transform.FindChild("NameTag").transform;
+				nt.target = gameObject.transform.Find("NameCanvas/NameTag").transform;
 			}
 		} else {
 			GameObject[] mcs = GameObject.FindGameObjectsWithTag("MainCamera");
 			if (mcs != null) {
 				foreach (GameObject mc in mcs) {
-					if (mc.GetComponent<Camera>().enabled) {
-						GetComponentInChildren<NameTag>().target = mc.transform.parent.FindChild("NameTag").transform;
+					if (mc.GetComponent<Camera>().isActiveAndEnabled) {
+						GetComponentInChildren<NameTag>().target = mc.transform.parent.Find("NameCanvas/NameTag").transform;
 						break;
 					}
 				}

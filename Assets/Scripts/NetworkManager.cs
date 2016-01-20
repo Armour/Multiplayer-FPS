@@ -20,10 +20,8 @@ public class NetworkManager : Photon.MonoBehaviour {
 	GameObject player;
 	Queue<string> messages;
 	const int messageCount = 10;
-	PhotonView photonView;
 
 	void Start() {
-		photonView = GetComponent<PhotonView>();
 		messages = new Queue<string> (messageCount);
 		PhotonNetwork.logLevel = PhotonLogLevel.Full;
 		PhotonNetwork.ConnectUsingSettings("0.2");
@@ -88,7 +86,7 @@ public class NetworkManager : Photon.MonoBehaviour {
 	}
 
 	void AddMessage(string message) {
-		photonView.RPC("AddMessage_RPC", PhotonTargets.All, message);
+		GetComponent<PhotonView>().RPC("AddMessage_RPC", PhotonTargets.All, message);
 	}
 
 	[PunRPC]

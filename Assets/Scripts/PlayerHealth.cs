@@ -18,7 +18,7 @@ public class PlayerHealth : Photon.MonoBehaviour {
 	public Image damageImage;
 	public AudioClip deathClip;
 	public AudioClip hurtClip;
-	public float flashSpeed = 5f;
+	public float flashSpeed = 2f;
 	public Color flashColour = new Color(1f, 0f, 0f, 0.1f);
 	public Animator anim;
 
@@ -27,7 +27,7 @@ public class PlayerHealth : Photon.MonoBehaviour {
 	GunShooting playerShooting;
 	CapsuleCollider capsuleCollider;
 	IKControl ikControl;
-	PlayerScore score;
+	//PlayerScore score;
 	bool isDead;
 	bool isSinking;
 	bool damaged;
@@ -38,7 +38,7 @@ public class PlayerHealth : Photon.MonoBehaviour {
 		capsuleCollider = GetComponent<CapsuleCollider>();
 		fps = GetComponent<FirstPersonController>();
 		ikControl = GetComponentInChildren<IKControl>();
-		score = GetComponent<PlayerScore>();
+		//score = GetComponent<PlayerScore>();
 		healthSlider = GameObject.FindGameObjectWithTag("Screen").GetComponentInChildren<Slider>();
 		damageImage = GameObject.FindGameObjectWithTag("Screen").transform.FindChild("DamageImage").GetComponent<Image>();
 		currentHealth = startingHealth;
@@ -95,7 +95,7 @@ public class PlayerHealth : Photon.MonoBehaviour {
 		playerShooting.enabled = false;
 		ikControl.enabled = false;
 
-		gameObject.transform.FindChild("NameTag").gameObject.SetActive(false);
+		gameObject.transform.FindChild("NameCanvas/NameTag").gameObject.SetActive(false);
 
 		if (photonView.isMine) {
 

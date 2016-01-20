@@ -11,13 +11,13 @@ public class GunFirstPersonView : MonoBehaviour {
 	float timer;
 	Ray shootRay;
 	RaycastHit shootHit;
-	int shootableMask;
+	//int shootableMask;
 	ParticleSystem gunParticles;
 	LineRenderer gunLine;
-	float effectsDisplayTime = 0.2f;
+	//float effectsDisplayTime = 0.2f;
 
 	void Awake() {
-		shootableMask = LayerMask.GetMask("Shootable");
+		//shootableMask = LayerMask.GetMask("Shootable");
 		gunParticles = GetComponent<ParticleSystem>();
 		gunLine = GetComponent<LineRenderer>();
 	}
