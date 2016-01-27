@@ -3,7 +3,12 @@ guid: 8d2d477a8a3454e45a545f49a2001f77
 ModelImporter:
   serializedVersion: 19
   fileIDToRecycleName:
+    100000: //RootNode
+    400000: //RootNode
+    2300000: //RootNode
+    3300000: //RootNode
     4300000: LW-Hydrant
+    11100000: //RootNode
   materials:
     importMaterials: 1
     materialName: 0
