@@ -16,8 +16,6 @@ public class GunShooting : Photon.MonoBehaviour {
 	ParticleSystem gunParticles;
 	LineRenderer gunLine;
 	AudioSource gunAudio;
-	//float effectsDisplayTime = 0.2f;
-	//Vector3 target;
 
 	void Awake() {
 		shootableMask = LayerMask.GetMask("Shootable");
@@ -37,10 +35,6 @@ public class GunShooting : Photon.MonoBehaviour {
 			} 
 
 			anim.SetBool("Firing", shooting);
-
-			//if (timer >= timeBetweenBullets * effectsDisplayTime) {
-			//	GetComponent<PhotonView>().RPC("DisableEffects", PhotonTargets.All);
-			//}
 		}
 	}
 
@@ -58,13 +52,9 @@ public class GunShooting : Photon.MonoBehaviour {
 		gunParticles.Stop();
 		gunParticles.Play();
 
-		//gunLine.enabled = true;
-		//gunLine.SetPosition(0, transform.position);
-
 		if (photonView.isMine) {
 			shootRay = Camera.main.ScreenPointToRay(new Vector3((Screen.width * 0.5f), (Screen.height * 0.5f), 0f));
 			if (Physics.Raycast(shootRay, out shootHit, range, shootableMask)) {
-				//target = shootHit.point;
 				switch (shootHit.transform.gameObject.tag) {
 				case "Player":
 					shootHit.collider.GetComponent<PhotonView>().RPC("TakeDamage", PhotonTargets.All, damagePerShot, PhotonNetwork.player.name);
@@ -94,17 +84,7 @@ public class GunShooting : Photon.MonoBehaviour {
 				default:
 					break;
 				}
-			} else {
-				//target = shootRay.origin + shootRay.direction * range;
 			}
-			//gunLine.SetPosition(1, target);
-		} else {
-			//if (Physics.Raycast(transform.position, transform.forward, out shootHit, range, shootableMask)) {
-			//	target = shootHit.point;
-			//} else {
-			//	target = transform.position + transform.forward * range;
-			//}
-			//gunLine.SetPosition(1, target);
 		}
 	}
 
