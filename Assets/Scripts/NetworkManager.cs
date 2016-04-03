@@ -4,110 +4,123 @@ using System.Collections;
 using System.Collections.Generic;
 
 public class NetworkManager : Photon.MonoBehaviour {
-	
-	[SerializeField] Text connectionText;
-	[SerializeField] Transform[] spawnPoints;
-	[SerializeField] Camera sceneCamera;
-	[SerializeField] GameObject[] playerModel; 
-	[SerializeField] GameObject serverWindow;
-	[SerializeField] GameObject messageWindow;
-	[SerializeField] GameObject sightImage;
-	[SerializeField] InputField username;
-	[SerializeField] InputField roomName;
-	[SerializeField] InputField roomList;
-	[SerializeField] InputField messagesLog;
 
-	GameObject player;
-	Queue<string> messages;
-	const int messageCount = 10;
+    [SerializeField] Text connectionText;
+    [SerializeField] Transform[] spawnPoints;
+    [SerializeField] Camera sceneCamera;
+    [SerializeField] GameObject[] playerModel;
+    [SerializeField] GameObject serverWindow;
+    [SerializeField] GameObject messageWindow;
+    [SerializeField] GameObject sightImage;
+    [SerializeField] InputField username;
+    [SerializeField] InputField roomName;
+    [SerializeField] InputField roomList;
+    [SerializeField] InputField messagesLog;
 
-	void Start() {
-		messages = new Queue<string> (messageCount);
-		PhotonNetwork.logLevel = PhotonLogLevel.Full;
-		PhotonNetwork.ConnectUsingSettings("0.2");
-		StartCoroutine("UpdateConnectionState");
-	}
-		
-	IEnumerator UpdateConnectionState() {
-		while(true) {
-			connectionText.text = PhotonNetwork.connectionStateDetailed.ToString();
-			yield return null;
-		}
-	}
+    private GameObject player;
+    private Queue<string> messages;
+    private const int messageCount = 10;
 
-	void OnJoinedLobby() {
-		serverWindow.SetActive (true);
-	}
+    // Called when game start
+    void Start() {
+        messages = new Queue<string> (messageCount);
+        PhotonNetwork.logLevel = PhotonLogLevel.Full;
+        PhotonNetwork.ConnectUsingSettings("0.2");
+        StartCoroutine("UpdateConnectionState");
+    }
 
-	void OnReceivedRoomListUpdate() {
-		roomList.text = "";
-		RoomInfo[] rooms = PhotonNetwork.GetRoomList();
-		foreach (RoomInfo room in rooms)
-			roomList.text += room.name + "\n";
-	}
+    // The coroutine function to update the connection state message
+    IEnumerator UpdateConnectionState() {
+        while (true) {
+            connectionText.text = PhotonNetwork.connectionStateDetailed.ToString();
+            yield return null;
+        }
+    }
 
-	void OnJoinedRoom() {
-		StopCoroutine ("UpdateConnectionState");
-		connectionText.text = "";
-		StartSpawnProcess(0.0f);
-	}
+    // Callback function on joined lobby
+    void OnJoinedLobby() {
+        serverWindow.SetActive(true);
+    }
 
-	public void JoinRoom() {
-		serverWindow.SetActive(false);
-		PhotonNetwork.player.name = username.text;
-		RoomOptions roomOptions = new RoomOptions() {isVisible = true, maxPlayers = 12};
-		PhotonNetwork.JoinOrCreateRoom(roomName.text, roomOptions, TypedLobby.Default);
-	}
+    // Callback function on reveived room list update
+    void OnReceivedRoomListUpdate() {
+        roomList.text = "";
+        RoomInfo[] rooms = PhotonNetwork.GetRoomList();
+        foreach (RoomInfo room in rooms)
+            roomList.text += room.name + "\n";
+    }
 
-	void StartSpawnProcess(float spawnTime) {
-		sightImage.SetActive(false);
-		sceneCamera.enabled = true;
-		StartCoroutine(SpawnPlayer(spawnTime));
-	}
+    // Callback function on joined room
+    void OnJoinedRoom() {
+        StopCoroutine ("UpdateConnectionState");
+        connectionText.text = "";
+        StartSpawnProcess(0.0f);
+    }
 
-	IEnumerator SpawnPlayer(float spawnTime) {
-		yield return new WaitForSeconds(spawnTime);
+    // The button click callback function for join room
+    public void JoinRoom() {
+        serverWindow.SetActive(false);
+        PhotonNetwork.player.name = username.text;
+        RoomOptions roomOptions = new RoomOptions() {isVisible = true, maxPlayers = 12};
+        PhotonNetwork.JoinOrCreateRoom(roomName.text, roomOptions, TypedLobby.Default);
+    }
 
-		messageWindow.SetActive(true);
-		sightImage.SetActive(true);
-		int playerIndex = Random.Range(0, playerModel.Length);
-		int spawnIndex = Random.Range(0, spawnPoints.Length);
-		player = PhotonNetwork.Instantiate(playerModel[playerIndex].name, spawnPoints[spawnIndex].position, spawnPoints[spawnIndex].rotation, 0);
+    // Start spawn player
+    void StartSpawnProcess(float spawnTime) {
+        sightImage.SetActive(false);
+        sceneCamera.enabled = true;
+        StartCoroutine(SpawnPlayer(spawnTime));
+    }
 
-		player.GetComponent<PlayerHealth>().RespawnMe += StartSpawnProcess;
-		player.GetComponent<PlayerHealth>().SendNetworkMessage += AddMessage;
+    // The coroutine function for spawn player
+    IEnumerator SpawnPlayer(float spawnTime) {
+        yield return new WaitForSeconds(spawnTime);
 
-		sceneCamera.enabled = false;
+        messageWindow.SetActive(true);
+        sightImage.SetActive(true);
+        int playerIndex = Random.Range(0, playerModel.Length);
+        int spawnIndex = Random.Range(0, spawnPoints.Length);
+        player = PhotonNetwork.Instantiate(playerModel[playerIndex].name, spawnPoints[spawnIndex].position, spawnPoints[spawnIndex].rotation, 0);
 
-		if (spawnTime == 0.0f)
-			AddMessage("Player " + PhotonNetwork.player.name + " Joined Game.");
-		else
-			AddMessage("Player " + PhotonNetwork.player.name + " Respawned.");
-	}
+        player.GetComponent<PlayerHealth>().RespawnMe += StartSpawnProcess;
+        player.GetComponent<PlayerHealth>().SendNetworkMessage += AddMessage;
 
-	void AddMessage(string message) {
-		GetComponent<PhotonView>().RPC("AddMessage_RPC", PhotonTargets.All, message);
-	}
+        sceneCamera.enabled = false;
 
-	[PunRPC]
-	void AddMessage_RPC(string message) {
-		messages.Enqueue(message);
-		if (messages.Count > messageCount)
-			messages.Dequeue();
+        if (spawnTime == 0.0f)
+            AddMessage("Player " + PhotonNetwork.player.name + " Joined Game.");
+        else
+            AddMessage("Player " + PhotonNetwork.player.name + " Respawned.");
+    }
 
-		messagesLog.text = "";
-		foreach (string m in messages)
-			messagesLog.text += m + "\n";
-	}
+    // Add message to message panel
+    void AddMessage(string message) {
+        GetComponent<PhotonView>().RPC("AddMessage_RPC", PhotonTargets.All, message);
+    }
 
-	void OnPhotonPlayerDisconnected(PhotonPlayer other) {
-		if (photonView.isMine)
-			AddMessage("Player " + other.name + " Left Game.");
-	}
+    // The RPC function to call add message for each client
+    [PunRPC]
+    void AddMessage_RPC(string message) {
+        messages.Enqueue(message);
+        if (messages.Count > messageCount)
+            messages.Dequeue();
 
-	void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info) {
-		if (stream.isWriting) {
-		} else {
-		}
-	}
+        messagesLog.text = "";
+        foreach (string m in messages)
+            messagesLog.text += m + "\n";
+    }
+
+    // Callback function when player disconnected
+    void OnPhotonPlayerDisconnected(PhotonPlayer other) {
+        if (photonView.isMine)
+            AddMessage("Player " + other.name + " Left Game.");
+    }
+
+    // Synchronize data on the network
+    void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info) {
+        if (stream.isWriting) {
+        } else {
+        }
+    }
+
 }

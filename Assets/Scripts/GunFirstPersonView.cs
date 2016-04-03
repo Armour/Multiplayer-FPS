@@ -4,41 +4,46 @@ using UnityStandardAssets.CrossPlatformInput;
 
 public class GunFirstPersonView : MonoBehaviour {
 
-	public float timeBetweenBullets = 0.2f;
-	public float range = 100.0f;
-	public Animator anim;
+    public float timeBetweenBullets = 0.2f;
+    public float range = 100.0f;
+    public Animator anim;
 
-	float timer;
-	Ray shootRay;
-	RaycastHit shootHit;
-	ParticleSystem gunParticles;
-	LineRenderer gunLine;
+    private float timer;
+    private Ray shootRay;
+    private RaycastHit shootHit;
+    private ParticleSystem gunParticles;
+    private LineRenderer gunLine;
 
-	void Awake() {
-		gunParticles = GetComponent<ParticleSystem>();
-		gunLine = GetComponent<LineRenderer>();
-	}
+    // Called when script awake in editor
+    void Awake() {
+        gunParticles = GetComponent<ParticleSystem>();
+        gunLine = GetComponent<LineRenderer>();
+    }
 
-	void Update() {
-		timer += Time.deltaTime;
+    // Update is called once per frame
+    void Update() {
+        timer += Time.deltaTime;
 
-		bool shooting = CrossPlatformInputManager.GetButton("Fire1");
+        bool shooting = CrossPlatformInputManager.GetButton("Fire1");
 
-		if (shooting && timer >= timeBetweenBullets && Time.timeScale != 0) {
-			Shoot();
-		} 
-			
-		anim.SetBool("Firing", shooting);
-	}
+        if (shooting && timer >= timeBetweenBullets && Time.timeScale != 0) {
+            Shoot();
+        }
 
-	public void DisableEffects() {
-		gunLine.enabled = false;
-	}
+        anim.SetBool("Firing", shooting);
+    }
 
-	void Shoot() {
-		timer = 0.0f;
-		gunParticles.Stop();
-		gunParticles.Play();
-	}
+    // Disable the shooting effects
+    public void DisableEffects() {
+        gunLine.enabled = false;
+    }
+
+    // Shoot!
+    void Shoot() {
+        timer = 0.0f;
+        gunParticles.Stop();
+        gunParticles.Play();
+    }
+
 }
 
