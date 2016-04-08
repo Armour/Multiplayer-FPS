@@ -1,0 +1,327 @@
+fileFormatVersion: 2
+guid: 77be2d34588f94f148029da0fc06afa0
+ModelImporter:
+  serializedVersion: 16
+  fileIDToRecycleName:
+    100000: group10_group7 polySurface230
+    100002: group10_group7 polySurface231
+    100004: group10_group7 pPlane1
+    100006: group10_group7 pPlane2
+    100008: group1_polySurface230
+    100010: group1_polySurface231
+    100012: group1_pPlane1
+    100014: group1_pPlane2
+    100016: group2_polySurface230
+    100018: group2_polySurface231
+    100020: group2_pPlane1
+    100022: group2_pPlane2
+    100024: group3_polySurface230
+    100026: group3_polySurface231
+    100028: group3_pPlane1
+    100030: group3_pPlane2
+    100032: group4_polySurface230
+    100034: group4_polySurface231
+    100036: group4_pPlane1
+    100038: group4_pPlane2
+    100040: group8_group5 polySurface230
+    100042: group8_group5 polySurface231
+    100044: group8_group5 pPlane1
+    100046: group8_group5 pPlane2
+    100048: group9_group6 polySurface230
+    100050: group9_group6 polySurface231
+    100052: group9_group6 pPlane1
+    100054: group9_group6 pPlane2
+    100056: LEAPMOTION_LOW_POLY_HAND_v01:polySurface1_polySurface18
+    100058: LEAPMOTION_LOW_POLY_HAND_v01:polySurface1_polySurface30
+    100060: LEAPMOTION_LOW_POLY_HAND_v01:polySurface1_polySurface32
+    100062: LEAPMOTION_LOW_POLY_HAND_v01:polySurface1_polySurface44
+    100064: LEAPMOTION_LOW_POLY_HAND_v01:polySurface1_polySurface51
+    100066: LEAPMOTION_LOW_POLY_HAND_v01:polySurface1_polySurface54
+    100068: LEAPMOTION_LOW_POLY_HAND_v01:polySurface1_polySurface65
+    100070: LEAPMOTION_LOW_POLY_HAND_v01:polySurface1_polySurface67
+    100072: //RootNode
+    100074: polySurface11_LEAPMOTION_LOW_POLY_HAND_v01:polySurface1
+    100076: polySurface227_group1
+    100078: polySurface227_group10 group7
+    100080: polySurface227_group2
+    100082: polySurface227_group3
+    100084: polySurface227_group4
+    100086: polySurface227_group8 group5
+    100088: polySurface227_group9 group6
+    100090: pPipe1
+    100092: pPipe2
+    100094: pPipe3
+    100096: pPipe4
+    100098: pPipe5
+    100100: pPipe6
+    100102: pPipe7
+    100104: pPipe8
+    100106: pPipe9
+    400000: group10_group7 polySurface230
+    400002: group10_group7 polySurface231
+    400004: group10_group7 pPlane1
+    400006: group10_group7 pPlane2
+    400008: group1_polySurface230
+    400010: group1_polySurface231
+    400012: group1_pPlane1
+    400014: group1_pPlane2
+    400016: group2_polySurface230
+    400018: group2_polySurface231
+    400020: group2_pPlane1
+    400022: group2_pPlane2
+    400024: group3_polySurface230
+    400026: group3_polySurface231
+    400028: group3_pPlane1
+    400030: group3_pPlane2
+    400032: group4_polySurface230
+    400034: group4_polySurface231
+    400036: group4_pPlane1
+    400038: group4_pPlane2
+    400040: group8_group5 polySurface230
+    400042: group8_group5 polySurface231
+    400044: group8_group5 pPlane1
+    400046: group8_group5 pPlane2
+    400048: group9_group6 polySurface230
+    400050: group9_group6 polySurface231
+    400052: group9_group6 pPlane1
+    400054: group9_group6 pPlane2
+    400056: LEAPMOTION_LOW_POLY_HAND_v01:polySurface1_polySurface18
+    400058: LEAPMOTION_LOW_POLY_HAND_v01:polySurface1_polySurface30
+    400060: LEAPMOTION_LOW_POLY_HAND_v01:polySurface1_polySurface32
+    400062: LEAPMOTION_LOW_POLY_HAND_v01:polySurface1_polySurface44
+    400064: LEAPMOTION_LOW_POLY_HAND_v01:polySurface1_polySurface51
+    400066: LEAPMOTION_LOW_POLY_HAND_v01:polySurface1_polySurface54
+    400068: LEAPMOTION_LOW_POLY_HAND_v01:polySurface1_polySurface65
+    400070: LEAPMOTION_LOW_POLY_HAND_v01:polySurface1_polySurface67
+    400072: //RootNode
+    400074: polySurface11_LEAPMOTION_LOW_POLY_HAND_v01:polySurface1
+    400076: polySurface227_group1
+    400078: polySurface227_group10 group7
+    400080: polySurface227_group2
+    400082: polySurface227_group3
+    400084: polySurface227_group4
+    400086: polySurface227_group8 group5
+    400088: polySurface227_group9 group6
+    400090: pPipe1
+    400092: pPipe2
+    400094: pPipe3
+    400096: pPipe4
+    400098: pPipe5
+    400100: pPipe6
+    400102: pPipe7
+    400104: pPipe8
+    400106: pPipe9
+    2300000: group10_group7 polySurface230
+    2300002: group10_group7 polySurface231
+    2300004: group10_group7 pPlane1
+    2300006: group10_group7 pPlane2
+    2300008: group1_polySurface230
+    2300010: group1_polySurface231
+    2300012: group1_pPlane1
+    2300014: group1_pPlane2
+    2300016: group2_polySurface230
+    2300018: group2_polySurface231
+    2300020: group2_pPlane1
+    2300022: group2_pPlane2
+    2300024: group3_polySurface230
+    2300026: group3_polySurface231
+    2300028: group3_pPlane1
+    2300030: group3_pPlane2
+    2300032: group4_polySurface230
+    2300034: group4_polySurface231
+    2300036: group4_pPlane1
+    2300038: group4_pPlane2
+    2300040: group8_group5 polySurface230
+    2300042: group8_group5 polySurface231
+    2300044: group8_group5 pPlane1
+    2300046: group8_group5 pPlane2
+    2300048: group9_group6 polySurface230
+    2300050: group9_group6 polySurface231
+    2300052: group9_group6 pPlane1
+    2300054: group9_group6 pPlane2
+    2300056: LEAPMOTION_LOW_POLY_HAND_v01:polySurface1_polySurface18
+    2300058: LEAPMOTION_LOW_POLY_HAND_v01:polySurface1_polySurface30
+    2300060: LEAPMOTION_LOW_POLY_HAND_v01:polySurface1_polySurface32
+    2300062: LEAPMOTION_LOW_POLY_HAND_v01:polySurface1_polySurface44
+    2300064: LEAPMOTION_LOW_POLY_HAND_v01:polySurface1_polySurface51
+    2300066: LEAPMOTION_LOW_POLY_HAND_v01:polySurface1_polySurface54
+    2300068: LEAPMOTION_LOW_POLY_HAND_v01:polySurface1_polySurface65
+    2300070: LEAPMOTION_LOW_POLY_HAND_v01:polySurface1_polySurface67
+    2300072: polySurface11_LEAPMOTION_LOW_POLY_HAND_v01:polySurface1
+    2300074: polySurface227_group1
+    2300076: polySurface227_group10 group7
+    2300078: polySurface227_group2
+    2300080: polySurface227_group3
+    2300082: polySurface227_group4
+    2300084: polySurface227_group8 group5
+    2300086: polySurface227_group9 group6
+    2300088: pPipe1
+    2300090: pPipe2
+    2300092: pPipe3
+    2300094: pPipe4
+    2300096: pPipe5
+    2300098: pPipe6
+    2300100: pPipe7
+    2300102: pPipe8
+    2300104: pPipe9
+    3300000: group10_group7 polySurface230
+    3300002: group10_group7 polySurface231
+    3300004: group10_group7 pPlane1
+    3300006: group10_group7 pPlane2
+    3300008: group1_polySurface230
+    3300010: group1_polySurface231
+    3300012: group1_pPlane1
+    3300014: group1_pPlane2
+    3300016: group2_polySurface230
+    3300018: group2_polySurface231
+    3300020: group2_pPlane1
+    3300022: group2_pPlane2
+    3300024: group3_polySurface230
+    3300026: group3_polySurface231
+    3300028: group3_pPlane1
+    3300030: group3_pPlane2
+    3300032: group4_polySurface230
+    3300034: group4_polySurface231
+    3300036: group4_pPlane1
+    3300038: group4_pPlane2
+    3300040: group8_group5 polySurface230
+    3300042: group8_group5 polySurface231
+    3300044: group8_group5 pPlane1
+    3300046: group8_group5 pPlane2
+    3300048: group9_group6 polySurface230
+    3300050: group9_group6 polySurface231
+    3300052: group9_group6 pPlane1
+    3300054: group9_group6 pPlane2
+    3300056: LEAPMOTION_LOW_POLY_HAND_v01:polySurface1_polySurface18
+    3300058: LEAPMOTION_LOW_POLY_HAND_v01:polySurface1_polySurface30
+    3300060: LEAPMOTION_LOW_POLY_HAND_v01:polySurface1_polySurface32
+    3300062: LEAPMOTION_LOW_POLY_HAND_v01:polySurface1_polySurface44
+    3300064: LEAPMOTION_LOW_POLY_HAND_v01:polySurface1_polySurface51
+    3300066: LEAPMOTION_LOW_POLY_HAND_v01:polySurface1_polySurface54
+    3300068: LEAPMOTION_LOW_POLY_HAND_v01:polySurface1_polySurface65
+    3300070: LEAPMOTION_LOW_POLY_HAND_v01:polySurface1_polySurface67
+    3300072: polySurface11_LEAPMOTION_LOW_POLY_HAND_v01:polySurface1
+    3300074: polySurface227_group1
+    3300076: polySurface227_group10 group7
+    3300078: polySurface227_group2
+    3300080: polySurface227_group3
+    3300082: polySurface227_group4
+    3300084: polySurface227_group8 group5
+    3300086: polySurface227_group9 group6
+    3300088: pPipe1
+    3300090: pPipe2
+    3300092: pPipe3
+    3300094: pPipe4
+    3300096: pPipe5
+    3300098: pPipe6
+    3300100: pPipe7
+    3300102: pPipe8
+    3300104: pPipe9
+    4300000: group10_group7 polySurface230
+    4300002: group10_group7 polySurface231
+    4300004: group10_group7 pPlane1
+    4300006: group10_group7 pPlane2
+    4300008: group1_polySurface230
+    4300010: group1_polySurface231
+    4300012: group1_pPlane1
+    4300014: group1_pPlane2
+    4300016: group2_polySurface230
+    4300018: group2_polySurface231
+    4300020: group2_pPlane1
+    4300022: group2_pPlane2
+    4300024: group3_polySurface230
+    4300026: group3_polySurface231
+    4300028: group3_pPlane1
+    4300030: group3_pPlane2
+    4300032: group4_polySurface230
+    4300034: group4_polySurface231
+    4300036: group4_pPlane1
+    4300038: group4_pPlane2
+    4300040: group8_group5 polySurface230
+    4300042: group8_group5 polySurface231
+    4300044: group8_group5 pPlane1
+    4300046: group8_group5 pPlane2
+    4300048: group9_group6 polySurface230
+    4300050: group9_group6 polySurface231
+    4300052: group9_group6 pPlane1
+    4300054: group9_group6 pPlane2
+    4300056: LEAPMOTION_LOW_POLY_HAND_v01:polySurface1_polySurface18
+    4300058: LEAPMOTION_LOW_POLY_HAND_v01:polySurface1_polySurface30
+    4300060: LEAPMOTION_LOW_POLY_HAND_v01:polySurface1_polySurface32
+    4300062: LEAPMOTION_LOW_POLY_HAND_v01:polySurface1_polySurface44
+    4300064: LEAPMOTION_LOW_POLY_HAND_v01:polySurface1_polySurface51
+    4300066: LEAPMOTION_LOW_POLY_HAND_v01:polySurface1_polySurface54
+    4300068: LEAPMOTION_LOW_POLY_HAND_v01:polySurface1_polySurface65
+    4300070: LEAPMOTION_LOW_POLY_HAND_v01:polySurface1_polySurface67
+    4300072: polySurface11_LEAPMOTION_LOW_POLY_HAND_v01:polySurface1
+    4300074: polySurface227_group1
+    4300076: polySurface227_group10 group7
+    4300078: polySurface227_group2
+    4300080: polySurface227_group3
+    4300082: polySurface227_group4
+    4300084: polySurface227_group8 group5
+    4300086: polySurface227_group9 group6
+    4300088: pPipe1
+    4300090: pPipe2
+    4300092: pPipe3
+    4300094: pPipe4
+    4300096: pPipe5
+    4300098: pPipe6
+    4300100: pPipe7
+    4300102: pPipe8
+    4300104: pPipe9
+    9500000: //RootNode
+  materials:
+    importMaterials: 0
+    materialName: 0
+    materialSearch: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    optimizeGameObjects: 0
+    motionNodeName: 
+    animationCompression: 1
+    animationRotationError: .5
+    animationPositionError: .5
+    animationScaleError: .5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    clipAnimations: []
+    isReadable: 1
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 1
+    meshCompression: 0
+    addColliders: 0
+    importBlendShapes: 1
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    optimizeMeshForGPU: 1
+    weldVertices: 1
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+  tangentSpace:
+    normalSmoothAngle: 99
+    splitTangentsAcrossUV: 1
+    normalImportMode: 1
+    tangentImportMode: 1
+  importAnimation: 0
+  copyAvatar: 0
+  humanDescription:
+    human: []
+    skeleton: []
+    armTwist: .5
+    foreArmTwist: .5
+    upperLegTwist: .5
+    legTwist: .5
+    armStretch: .0500000007
+    legStretch: .0500000007
+    feetSpacing: 0
+    rootMotionBoneName: 
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  animationType: 2
+  additionalBone: 0
+  userData: 

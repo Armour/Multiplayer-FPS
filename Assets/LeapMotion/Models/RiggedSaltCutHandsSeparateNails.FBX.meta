@@ -1,0 +1,143 @@
+fileFormatVersion: 2
+guid: a263540df2704495e91da11beb21885a
+ModelImporter:
+  serializedVersion: 16
+  fileIDToRecycleName:
+    100000: Bip01 R Finger0
+    100002: Bip01 R Finger01
+    100004: Bip01 R Finger02
+    100006: Bip01 R Finger043
+    100008: Bip01 R Finger044
+    100010: Bip01 R Finger045
+    100012: Bip01 R Finger046
+    100014: Bip01 R Finger047
+    100016: Bip01 R Finger048
+    100018: Bip01 R Finger049
+    100020: Bip01 R Finger050
+    100022: Bip01 R Finger051
+    100024: Bip01 R Finger052
+    100026: Bip01 R Finger053
+    100028: Bip01 R Finger054
+    100030: Bip01 R Finger055
+    100032: Bip01 R Finger056
+    100034: Bip01 R Finger057
+    100036: Bip01 R Finger1
+    100038: Bip01 R Finger11
+    100040: Bip01 R Finger12
+    100042: Bip01 R Finger2
+    100044: Bip01 R Finger21
+    100046: Bip01 R Finger22
+    100048: Bip01 R Finger3
+    100050: Bip01 R Finger31
+    100052: Bip01 R Finger32
+    100054: Bip01 R Finger4
+    100056: Bip01 R Finger41
+    100058: Bip01 R Finger42
+    100060: Bip01 R Hand
+    100062: Bip01 R Hand001
+    100064: //RootNode
+    100066: female_hand_right
+    100068: female_hand_right001
+    100070: female_nails_right
+    100072: female_nails_right001
+    400000: Bip01 R Finger0
+    400002: Bip01 R Finger01
+    400004: Bip01 R Finger02
+    400006: Bip01 R Finger043
+    400008: Bip01 R Finger044
+    400010: Bip01 R Finger045
+    400012: Bip01 R Finger046
+    400014: Bip01 R Finger047
+    400016: Bip01 R Finger048
+    400018: Bip01 R Finger049
+    400020: Bip01 R Finger050
+    400022: Bip01 R Finger051
+    400024: Bip01 R Finger052
+    400026: Bip01 R Finger053
+    400028: Bip01 R Finger054
+    400030: Bip01 R Finger055
+    400032: Bip01 R Finger056
+    400034: Bip01 R Finger057
+    400036: Bip01 R Finger1
+    400038: Bip01 R Finger11
+    400040: Bip01 R Finger12
+    400042: Bip01 R Finger2
+    400044: Bip01 R Finger21
+    400046: Bip01 R Finger22
+    400048: Bip01 R Finger3
+    400050: Bip01 R Finger31
+    400052: Bip01 R Finger32
+    400054: Bip01 R Finger4
+    400056: Bip01 R Finger41
+    400058: Bip01 R Finger42
+    400060: Bip01 R Hand
+    400062: Bip01 R Hand001
+    400064: //RootNode
+    400066: female_hand_right
+    400068: female_hand_right001
+    400070: female_nails_right
+    400072: female_nails_right001
+    4300000: female_nails_right001
+    4300002: female_hand_right001
+    4300004: female_nails_right
+    4300006: female_hand_right
+    7400000: Take 001
+    9500000: //RootNode
+    13700000: female_hand_right
+    13700002: female_hand_right001
+    13700004: female_nails_right
+    13700006: female_nails_right001
+  materials:
+    importMaterials: 0
+    materialName: 0
+    materialSearch: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    optimizeGameObjects: 0
+    motionNodeName: 
+    animationCompression: 1
+    animationRotationError: .5
+    animationPositionError: .5
+    animationScaleError: .5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    clipAnimations: []
+    isReadable: 1
+  meshes:
+    lODScreenPercentages: []
+    globalScale: .00999999978
+    meshCompression: 0
+    addColliders: 0
+    importBlendShapes: 1
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    optimizeMeshForGPU: 1
+    weldVertices: 1
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+  tangentSpace:
+    normalSmoothAngle: 60
+    splitTangentsAcrossUV: 1
+    normalImportMode: 0
+    tangentImportMode: 1
+  importAnimation: 0
+  copyAvatar: 0
+  humanDescription:
+    human: []
+    skeleton: []
+    armTwist: .5
+    foreArmTwist: .5
+    upperLegTwist: .5
+    legTwist: .5
+    armStretch: .0500000007
+    legStretch: .0500000007
+    feetSpacing: 0
+    rootMotionBoneName: 
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  animationType: 2
+  additionalBone: 0
+  userData: 

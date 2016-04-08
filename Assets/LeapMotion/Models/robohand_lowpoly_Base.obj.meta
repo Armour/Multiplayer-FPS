@@ -1,0 +1,147 @@
+fileFormatVersion: 2
+guid: f08247433332d4b908a8db6e0a05c3af
+ModelImporter:
+  serializedVersion: 16
+  fileIDToRecycleName:
+    100000: //RootNode
+    100002: robohand_lowpoly_Base:Finger_00
+    100004: robohand_lowpoly_Base:Finger_01
+    100006: robohand_lowpoly_Base:Finger_02
+    100008: robohand_lowpoly_Base:Finger_10
+    100010: robohand_lowpoly_Base:Finger_11
+    100012: robohand_lowpoly_Base:Finger_12
+    100014: robohand_lowpoly_Base:Finger_20
+    100016: robohand_lowpoly_Base:Finger_21
+    100018: robohand_lowpoly_Base:FingeR_22
+    100020: robohand_lowpoly_Base:Finger_30
+    100022: robohand_lowpoly_Base:Finger_31
+    100024: robohand_lowpoly_Base:Finger_32
+    100026: robohand_lowpoly_Base:Finger_40
+    100028: robohand_lowpoly_Base:Finger_41
+    100030: robohand_lowpoly_Base:Finger_42
+    100032: robohand_lowpoly_base_emissive
+    100034: robohand_lowpoly_base_palm
+    400000: //RootNode
+    400002: robohand_lowpoly_Base:Finger_00
+    400004: robohand_lowpoly_Base:Finger_01
+    400006: robohand_lowpoly_Base:Finger_02
+    400008: robohand_lowpoly_Base:Finger_10
+    400010: robohand_lowpoly_Base:Finger_11
+    400012: robohand_lowpoly_Base:Finger_12
+    400014: robohand_lowpoly_Base:Finger_20
+    400016: robohand_lowpoly_Base:Finger_21
+    400018: robohand_lowpoly_Base:FingeR_22
+    400020: robohand_lowpoly_Base:Finger_30
+    400022: robohand_lowpoly_Base:Finger_31
+    400024: robohand_lowpoly_Base:Finger_32
+    400026: robohand_lowpoly_Base:Finger_40
+    400028: robohand_lowpoly_Base:Finger_41
+    400030: robohand_lowpoly_Base:Finger_42
+    400032: robohand_lowpoly_base_emissive
+    400034: robohand_lowpoly_base_palm
+    2300000: robohand_lowpoly_Base:Finger_00
+    2300002: robohand_lowpoly_Base:Finger_01
+    2300004: robohand_lowpoly_Base:Finger_02
+    2300006: robohand_lowpoly_Base:Finger_10
+    2300008: robohand_lowpoly_Base:Finger_11
+    2300010: robohand_lowpoly_Base:Finger_12
+    2300012: robohand_lowpoly_Base:Finger_20
+    2300014: robohand_lowpoly_Base:Finger_21
+    2300016: robohand_lowpoly_Base:FingeR_22
+    2300018: robohand_lowpoly_Base:Finger_30
+    2300020: robohand_lowpoly_Base:Finger_31
+    2300022: robohand_lowpoly_Base:Finger_32
+    2300024: robohand_lowpoly_Base:Finger_40
+    2300026: robohand_lowpoly_Base:Finger_41
+    2300028: robohand_lowpoly_Base:Finger_42
+    2300030: robohand_lowpoly_base_emissive
+    2300032: robohand_lowpoly_base_palm
+    3300000: robohand_lowpoly_Base:Finger_00
+    3300002: robohand_lowpoly_Base:Finger_01
+    3300004: robohand_lowpoly_Base:Finger_02
+    3300006: robohand_lowpoly_Base:Finger_10
+    3300008: robohand_lowpoly_Base:Finger_11
+    3300010: robohand_lowpoly_Base:Finger_12
+    3300012: robohand_lowpoly_Base:Finger_20
+    3300014: robohand_lowpoly_Base:Finger_21
+    3300016: robohand_lowpoly_Base:FingeR_22
+    3300018: robohand_lowpoly_Base:Finger_30
+    3300020: robohand_lowpoly_Base:Finger_31
+    3300022: robohand_lowpoly_Base:Finger_32
+    3300024: robohand_lowpoly_Base:Finger_40
+    3300026: robohand_lowpoly_Base:Finger_41
+    3300028: robohand_lowpoly_Base:Finger_42
+    3300030: robohand_lowpoly_base_emissive
+    3300032: robohand_lowpoly_base_palm
+    4300000: robohand_lowpoly_Base:Finger_00
+    4300002: robohand_lowpoly_Base:Finger_01
+    4300004: robohand_lowpoly_Base:Finger_02
+    4300006: robohand_lowpoly_Base:Finger_10
+    4300008: robohand_lowpoly_Base:Finger_11
+    4300010: robohand_lowpoly_Base:Finger_12
+    4300012: robohand_lowpoly_Base:Finger_20
+    4300014: robohand_lowpoly_Base:Finger_21
+    4300016: robohand_lowpoly_Base:FingeR_22
+    4300018: robohand_lowpoly_Base:Finger_30
+    4300020: robohand_lowpoly_Base:Finger_31
+    4300022: robohand_lowpoly_Base:Finger_32
+    4300024: robohand_lowpoly_Base:Finger_40
+    4300026: robohand_lowpoly_Base:Finger_41
+    4300028: robohand_lowpoly_Base:Finger_42
+    4300030: robohand_lowpoly_base_emissive
+    4300032: robohand_lowpoly_base_palm
+    9500000: //RootNode
+  materials:
+    importMaterials: 0
+    materialName: 0
+    materialSearch: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    optimizeGameObjects: 0
+    motionNodeName: 
+    animationCompression: 1
+    animationRotationError: .5
+    animationPositionError: .5
+    animationScaleError: .5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    clipAnimations: []
+    isReadable: 1
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 1
+    meshCompression: 0
+    addColliders: 0
+    importBlendShapes: 1
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    optimizeMeshForGPU: 1
+    weldVertices: 1
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+  tangentSpace:
+    normalSmoothAngle: 60
+    splitTangentsAcrossUV: 1
+    normalImportMode: 0
+    tangentImportMode: 1
+  importAnimation: 0
+  copyAvatar: 0
+  humanDescription:
+    human: []
+    skeleton: []
+    armTwist: .5
+    foreArmTwist: .5
+    upperLegTwist: .5
+    legTwist: .5
+    armStretch: .0500000007
+    legStretch: .0500000007
+    feetSpacing: 0
+    rootMotionBoneName: 
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  animationType: 2
+  additionalBone: 0
+  userData: 
