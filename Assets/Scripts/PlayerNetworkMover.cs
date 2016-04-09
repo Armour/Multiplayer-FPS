@@ -33,7 +33,7 @@ public class PlayerNetworkMover : Photon.MonoBehaviour {
                 camera.enabled = true;
             }
             MoveToLayer(this.transform.FindChild("T_Ak-47"), LayerMask.NameToLayer("Hidden"));
-            MoveToLayer(this.transform.FindChild("FPSMainCamera/F_Ak-47"), LayerMask.NameToLayer("FPSGun"));
+            MoveToLayer(this.transform.FindChild("CardboardMain/Head/F_Ak-47"), LayerMask.NameToLayer("FPSGun"));
             MoveToLayer(this.transform.FindChild("PlayerModel"), LayerMask.NameToLayer("Hidden"));
             GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
             foreach (GameObject player in players) {
@@ -46,7 +46,7 @@ public class PlayerNetworkMover : Photon.MonoBehaviour {
             if (mcs != null) {
                 foreach (GameObject mc in mcs) {
                     if (mc.GetComponent<Camera>().isActiveAndEnabled) {
-                        GetComponentInChildren<NameTag>().target = mc.transform.parent.Find("NameCanvas/NameTag").transform;
+                        GetComponentInChildren<NameTag>().target = mc.transform.parent.parent.parent.Find("NameCanvas/NameTag").transform;
                         break;
                     }
                 }

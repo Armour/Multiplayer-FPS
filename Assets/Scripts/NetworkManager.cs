@@ -9,13 +9,6 @@ public class NetworkManager : Photon.MonoBehaviour {
     [SerializeField] Transform[] spawnPoints;
     [SerializeField] Camera sceneCamera;
     [SerializeField] GameObject[] playerModel;
-    [SerializeField] GameObject serverWindow;
-    [SerializeField] GameObject messageWindow;
-    [SerializeField] GameObject sightImage;
-    [SerializeField] InputField username;
-    [SerializeField] InputField roomName;
-    [SerializeField] InputField roomList;
-    [SerializeField] InputField messagesLog;
 
     private GameObject player;
     private Queue<string> messages;
@@ -25,7 +18,7 @@ public class NetworkManager : Photon.MonoBehaviour {
     void Start() {
         messages = new Queue<string> (messageCount);
         PhotonNetwork.logLevel = PhotonLogLevel.Full;
-        PhotonNetwork.ConnectUsingSettings("0.2");
+        PhotonNetwork.ConnectUsingSettings("0.3");
         StartCoroutine("UpdateConnectionState");
     }
 
@@ -38,37 +31,21 @@ public class NetworkManager : Photon.MonoBehaviour {
     }
 
     // Callback function on joined lobby
-    void OnJoinedLobby() {
-        serverWindow.SetActive(true);
-    }
-
-    // Callback function on reveived room list update
-    void OnReceivedRoomListUpdate() {
-        roomList.text = "";
-        RoomInfo[] rooms = PhotonNetwork.GetRoomList();
-        foreach (RoomInfo room in rooms)
-            roomList.text += room.name + "\n";
+	void OnJoinedLobby() {
+		PhotonNetwork.player.name = "VR Player";
+		RoomOptions roomOptions = new RoomOptions() {isVisible = true, maxPlayers = 12};
+		PhotonNetwork.JoinOrCreateRoom("DefaultRoom", roomOptions, TypedLobby.Default);
     }
 
     // Callback function on joined room
     void OnJoinedRoom() {
         StopCoroutine ("UpdateConnectionState");
         connectionText.text = "";
-        StartSpawnProcess(0.0f);
-    }
-
-    // The button click callback function for join room
-    public void JoinRoom() {
-        serverWindow.SetActive(false);
-        PhotonNetwork.player.name = username.text;
-        RoomOptions roomOptions = new RoomOptions() {isVisible = true, maxPlayers = 12};
-        PhotonNetwork.JoinOrCreateRoom(roomName.text, roomOptions, TypedLobby.Default);
+		StartSpawnProcess(0.0f);
     }
 
     // Start spawn player
     void StartSpawnProcess(float spawnTime) {
-        sightImage.SetActive(false);
-        sceneCamera.enabled = true;
         StartCoroutine(SpawnPlayer(spawnTime));
     }
 
@@ -76,16 +53,15 @@ public class NetworkManager : Photon.MonoBehaviour {
     IEnumerator SpawnPlayer(float spawnTime) {
         yield return new WaitForSeconds(spawnTime);
 
-        messageWindow.SetActive(true);
-        sightImage.SetActive(true);
         int playerIndex = Random.Range(0, playerModel.Length);
         int spawnIndex = Random.Range(0, spawnPoints.Length);
         player = PhotonNetwork.Instantiate(playerModel[playerIndex].name, spawnPoints[spawnIndex].position, spawnPoints[spawnIndex].rotation, 0);
 
+		sceneCamera.enabled = false;
+
         player.GetComponent<PlayerHealth>().RespawnMe += StartSpawnProcess;
         player.GetComponent<PlayerHealth>().SendNetworkMessage += AddMessage;
 
-        sceneCamera.enabled = false;
 
         if (spawnTime == 0.0f)
             AddMessage("Player " + PhotonNetwork.player.name + " Joined Game.");
@@ -104,10 +80,6 @@ public class NetworkManager : Photon.MonoBehaviour {
         messages.Enqueue(message);
         if (messages.Count > messageCount)
             messages.Dequeue();
-
-        messagesLog.text = "";
-        foreach (string m in messages)
-            messagesLog.text += m + "\n";
     }
 
     // Callback function when player disconnected

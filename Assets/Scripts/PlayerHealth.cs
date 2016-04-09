@@ -30,7 +30,6 @@ public class PlayerHealth : Photon.MonoBehaviour {
     private bool isDead;
     private bool isSinking;
 	private bool damaged;
-	//PlayerScore score;
 
     // Called when script awake in editor
     void Awake() {
@@ -39,9 +38,6 @@ public class PlayerHealth : Photon.MonoBehaviour {
         capsuleCollider = GetComponent<CapsuleCollider>();
         fps = GetComponent<FirstPersonController>();
         ikControl = GetComponentInChildren<IKControl>();
-        //score = GetComponent<PlayerScore>();
-        healthSlider = GameObject.FindGameObjectWithTag("Screen").GetComponentInChildren<Slider>();
-        damageImage = GameObject.FindGameObjectWithTag("Screen").transform.FindChild("DamageImage").GetComponent<Image>();
         currentHealth = startingHealth;
         healthSlider.value = currentHealth;
     }
