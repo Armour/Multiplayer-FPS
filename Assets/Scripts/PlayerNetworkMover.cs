@@ -14,6 +14,7 @@ public class PlayerNetworkMover : Photon.MonoBehaviour {
     private bool jump;
     private float smoothing = 10.0f;
     private float dampTime = 0.06f;
+	private GameObject cardboard;
 
     // Move game objects to another layer
     void MoveToLayer(Transform root, int layer) {
@@ -24,6 +25,7 @@ public class PlayerNetworkMover : Photon.MonoBehaviour {
 
     // Called when game start
     void Start() {
+		cardboard = this.transform.FindChild("CardboardMain").gameObject;
         if (photonView.isMine) {
             GetComponent<CharacterController>().enabled = true;
             GetComponent<FirstPersonController>().enabled = true;
@@ -42,6 +44,7 @@ public class PlayerNetworkMover : Photon.MonoBehaviour {
                 nt.target = gameObject.transform.Find("NameCanvas/NameTag").transform;
             }
         } else {
+			Destroy(cardboard);
             GameObject[] mcs = GameObject.FindGameObjectsWithTag("MainCamera");
             if (mcs != null) {
                 foreach (GameObject mc in mcs) {

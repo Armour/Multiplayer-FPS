@@ -30,13 +30,17 @@ public class GunShooting : Photon.MonoBehaviour {
         if (photonView.isMine) {
             timer += Time.deltaTime;
 
-            bool shooting = CrossPlatformInputManager.GetButton("Fire1");
+			bool shooting1 = CrossPlatformInputManager.GetButton("Fire1");
+			bool shooting2 = Cardboard.SDK.Triggered;
+			bool shooting3 = Input.GetButton("Fire1");
+			bool shooting = shooting1 || shooting2 || shooting3;
 
             // RPC call every client "Shoot" function
-            if (shooting && timer >= timeBetweenBullets && Time.timeScale != 0) {
+			if (shooting && timer >= timeBetweenBullets && Time.timeScale != 0) {
                 GetComponent<PhotonView>().RPC("Shoot", PhotonTargets.All);
             }
 
+			Debug.Log(shooting);
             anim.SetBool("Firing", shooting);
         }
     }
