@@ -221,13 +221,13 @@ namespace UnityStandardAssets.Characters.FirstPerson
 #if !MOBILE_INPUT
             // On standalone builds, walk/run speed is modified by a key press.
             // keep track of whether or not the character is walking or running
-            m_IsWalking = !Input.GetKey(KeyCode.LeftShift);
+			m_IsWalking = !Input.GetKey(KeyCode.LeftShift) && !CrossPlatformInputManager.GetButton("Run");
 #endif
             // set the desired speed to be walking or running
             speed = m_IsWalking ? m_WalkSpeed : m_RunSpeed;
             m_Input = new Vector2(horizontal, vertical);
 
-			m_Anim.SetBool("Running", Input.GetKey(KeyCode.LeftShift));
+			m_Anim.SetBool("Running", Input.GetKey(KeyCode.LeftShift) || CrossPlatformInputManager.GetButton("Run"));
 
             // normalize input if it exceeds 1 in combined length:
             if (m_Input.sqrMagnitude > 1)

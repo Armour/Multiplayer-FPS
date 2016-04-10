@@ -32,8 +32,7 @@ public class GunShooting : Photon.MonoBehaviour {
 
 			bool shooting1 = CrossPlatformInputManager.GetButton("Fire1");
 			bool shooting2 = Cardboard.SDK.Triggered;
-			bool shooting3 = Input.GetButton("Fire1");
-			bool shooting = shooting1 || shooting2 || shooting3;
+			bool shooting = shooting1 || shooting2;
 
             // RPC call every client "Shoot" function
 			if (shooting && timer >= timeBetweenBullets && Time.timeScale != 0) {
