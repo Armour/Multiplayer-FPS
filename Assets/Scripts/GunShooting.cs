@@ -15,7 +15,8 @@ public class GunShooting : Photon.MonoBehaviour {
     private int shootableMask;
     private ParticleSystem gunParticles;
     private LineRenderer gunLine;
-    private AudioSource gunAudio;
+	private AudioSource gunAudio;
+	private GameObject hand;
 
     // Called when script awake in editor
     void Awake() {
@@ -27,10 +28,15 @@ public class GunShooting : Photon.MonoBehaviour {
 
     // Update is called once per frame
     void Update() {
-        if (photonView.isMine) {
+		if (photonView.isMine) {
             timer += Time.deltaTime;
 
             bool shooting = CrossPlatformInputManager.GetButton("Fire1");
+
+			hand = null;
+			if ((hand = GameObject.FindGameObjectWithTag("LeapMotionRightHand")) != null) {
+				shooting = (hand.GetComponent<SkeletalHand>().GetLeapHand().GrabStrength == 1);
+			}
 
             // RPC call every client "Shoot" function
             if (shooting && timer >= timeBetweenBullets && Time.timeScale != 0) {

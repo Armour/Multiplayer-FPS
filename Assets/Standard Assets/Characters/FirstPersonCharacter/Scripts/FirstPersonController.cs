@@ -8,6 +8,7 @@ namespace UnityStandardAssets.Characters.FirstPerson
 {
     [RequireComponent(typeof (CharacterController))]
     [RequireComponent(typeof (AudioSource))]
+
     public class FirstPersonController : MonoBehaviour
     {
         [SerializeField] private bool m_IsWalking;
@@ -30,6 +31,8 @@ namespace UnityStandardAssets.Characters.FirstPerson
 
 		public float m_DampTime = 0.1f;
 		public Animator m_Anim;
+		public float XSensitivity = 2f;
+		public float YSensitivity = 2f;
 
         private Camera m_Camera;
         private bool m_Jump;
@@ -44,6 +47,10 @@ namespace UnityStandardAssets.Characters.FirstPerson
         private float m_NextStep;
         private bool m_Jumping;
         private AudioSource m_AudioSource;
+		private GameObject hand;
+		private float yRot;
+		private float xRot;
+
 
         // Use this for initialization
         private void Start()
@@ -63,12 +70,24 @@ namespace UnityStandardAssets.Characters.FirstPerson
 
         // Update is called once per frame
         private void Update()
-        {
+		{
+			yRot = CrossPlatformInputManager.GetAxis("Mouse X") * YSensitivity;
+			xRot = CrossPlatformInputManager.GetAxis("Mouse Y") * XSensitivity;
+
+			if (hand != null) {
+				yRot = hand.transform.Find("palm").transform.localPosition.x * 35;
+				xRot = 0.0f;//hand.transform.Find("palm").transform.localPosition.y * 10;
+			}
+
             RotateView();
+
             // the jump state needs to read here to make sure it is not missed
             if (!m_Jump)
             {
                 m_Jump = CrossPlatformInputManager.GetButtonDown("Jump");
+				if (hand != null) {
+					m_Jump = (hand.transform.Find("palm").transform.localPosition.y > 0.30f);
+				}
 				if (m_Jump) 
 					m_Anim.SetTrigger("IsJumping");
             }
@@ -207,10 +226,19 @@ namespace UnityStandardAssets.Characters.FirstPerson
 
 
         private void GetInput(out float speed)
-        {
-            // Read input
-            float horizontal = CrossPlatformInputManager.GetAxis("Horizontal");
-            float vertical = CrossPlatformInputManager.GetAxis("Vertical");
+		{
+
+			// Read input
+			float horizontal = CrossPlatformInputManager.GetAxis("Horizontal");
+			float vertical = CrossPlatformInputManager.GetAxis("Vertical");
+
+			hand = null;
+			if ((hand = GameObject.FindGameObjectWithTag("LeapMotionRightHand")) != null) {
+				Vector3 palmPosition = hand.transform.Find("palm").transform.localPosition;
+				horizontal = 0;
+				vertical = palmPosition.z + 0.02f;
+				if (Mathf.Abs(vertical) < 0.01f) vertical = 0.0f;
+			}
 
 			m_Anim.SetFloat("Horizontal", horizontal, m_DampTime, Time.deltaTime);
 			m_Anim.SetFloat("Vertical", vertical, m_DampTime, Time.deltaTime);
@@ -223,6 +251,10 @@ namespace UnityStandardAssets.Characters.FirstPerson
             // keep track of whether or not the character is walking or running
             m_IsWalking = !Input.GetKey(KeyCode.LeftShift);
 #endif
+			if (hand != null) {
+				m_IsWalking = (hand.transform.Find("palm").transform.localPosition.y > 0.10f);
+			}
+
             // set the desired speed to be walking or running
             speed = m_IsWalking ? m_WalkSpeed : m_RunSpeed;
             m_Input = new Vector2(horizontal, vertical);
@@ -247,7 +279,7 @@ namespace UnityStandardAssets.Characters.FirstPerson
 
         private void RotateView()
         {
-            m_MouseLook.LookRotation (transform, m_Camera.transform);
+            m_MouseLook.LookRotation (transform, m_Camera.transform, yRot, xRot);
         }
 
 

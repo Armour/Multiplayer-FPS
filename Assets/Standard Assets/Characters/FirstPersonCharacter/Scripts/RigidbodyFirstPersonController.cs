@@ -7,7 +7,10 @@ namespace UnityStandardAssets.Characters.FirstPerson
     [RequireComponent(typeof (Rigidbody))]
     [RequireComponent(typeof (CapsuleCollider))]
     public class RigidbodyFirstPersonController : MonoBehaviour
-    {
+	{			
+		public float XSensitivity = 2f;
+		public float YSensitivity = 2f;
+
         [Serializable]
         public class MovementSettings
         {
@@ -18,8 +21,10 @@ namespace UnityStandardAssets.Characters.FirstPerson
 	        public KeyCode RunKey = KeyCode.LeftShift;
             public float JumpForce = 30f;
             public AnimationCurve SlopeCurveModifier = new AnimationCurve(new Keyframe(-90.0f, 1.0f), new Keyframe(0.0f, 1.0f), new Keyframe(90.0f, 0.0f));
-            [HideInInspector] public float CurrentTargetSpeed = 8f;
+			[HideInInspector] public float CurrentTargetSpeed = 8f;
 
+			private float yRot;
+			private float xRot;
 #if !MOBILE_INPUT
             private bool m_Running;
 #endif
@@ -230,7 +235,10 @@ namespace UnityStandardAssets.Characters.FirstPerson
             // get the rotation before it's changed
             float oldYRotation = transform.eulerAngles.y;
 
-            mouseLook.LookRotation (transform, cam.transform);
+			float yRot = CrossPlatformInputManager.GetAxis("Mouse X") * XSensitivity;
+			float xRot = CrossPlatformInputManager.GetAxis("Mouse Y") * YSensitivity;
+			Debug.Log("!!!");
+            mouseLook.LookRotation (transform, cam.transform, yRot, xRot);
 
             if (m_IsGrounded || advancedSettings.airControl)
             {

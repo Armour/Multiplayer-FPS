@@ -14,6 +14,8 @@ public class PlayerNetworkMover : Photon.MonoBehaviour {
     private bool jump;
     private float smoothing = 10.0f;
     private float dampTime = 0.06f;
+	private GameObject hand;
+	private int flag = 0;
 
     // Move game objects to another layer
     void MoveToLayer(Transform root, int layer) {
@@ -66,6 +68,16 @@ public class PlayerNetworkMover : Photon.MonoBehaviour {
             yield return null;
         }
     }
+
+	void Update() {
+		hand = null;
+		if (flag == 0 && (hand = GameObject.FindGameObjectWithTag("LeapMotionRightHand")) != null) {
+			hand.transform.SetParent(this.transform);
+			flag = 1;
+		} else {
+			flag = 0;
+		}
+	}
 
     // Synchronize data on the network
     void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info) {
