@@ -39,7 +39,6 @@ public class GunShooting : Photon.MonoBehaviour {
                 GetComponent<PhotonView>().RPC("Shoot", PhotonTargets.All);
             }
 
-			Debug.Log(shooting);
             anim.SetBool("Firing", shooting);
         }
     }
