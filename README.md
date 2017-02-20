@@ -11,27 +11,27 @@ A multiplayer first person shooter game based on Unity3D, to improve players' ga
     ![img](Images/2.jpg)
       
 * Game interface
-    * **Player's HP** showing on the top left corner
-    * The **message panal** showing on the bottom left corner, which is used to notify player other players status (like dead or respawn)
-    * A **gun (AK-47)** will always show on the bottom right corner above every thing you can see
+    * **Player's HP** on the top left corner
+    * The **message panal** on the bottom left corner, which is used to notify player other players status (like dead or respawn)
+    * A **gun (AK-47)** will always show on the bottom right corner in front of every thing you can see
     * A red **shooting sight** always in the center of the screen
     <img src="Images/3.jpg" style="width:500px"></img>
     
 * Player model
-    * There are three type of player model:
+    * There are three types of player model:
         * **Policeman**: a policeman-like model with yellow skin
         * **RobotX**: a robot-like model with dark pink skin
         * **RobotY**: a robot-like model with dark blue skin
         * <img src="Images/9.jpg" style="width:150px"></img> <img src="Images/11.jpg" style="width:147px"></img> <img src="Images/10.jpg" style="width:149px"></img>
             
     * Animation:
-        * **Walk** towards four different direction
-        * **Run** towards four different direction
-        * **Jump** without affact upper part body (**achieved by unity3d body mask**)
-        * **Shooting** without affact lower part body (**achieved by unity3d body mask**)   
-        * All the original models and their animation can be get from **Mixamo**, which is a pretty good game model website runned by Adobe
+        * **Walk** towards four different directions
+        * **Run** towards four different directions
+        * **Jump** without affecting upper part body (**achieved by unity3d body mask**)
+        * **Shooting** without affecting lower part body (**achieved by unity3d body mask**)   
+        * All the original models and their animation can be gotten from **Mixamo**, which is a pretty good game model website run by Adobe
     * **Unity Blend Tree**
-        * This is used to make the player walk or run more naturally, it uses interpolation function to map different combinations of user input to the different animations. 
+        * This is used to make the player walk or run more naturally, it uses interpolation function to map different combinations of user input to different animations. 
         * ![img](Images/4.jpg)
         
     * **State Machine** 
@@ -62,7 +62,7 @@ A multiplayer first person shooter game based on Unity3D, to improve players' ga
     * Used **Photon Unity Networking** which is a good network model in Unity Assets Store 
 
 * Bullet effects
-    * Bullet will have different effects when hit different materials 
+    * Bullets will have different effects when they hit different materials 
     * Wood
     <img src="Images/13.jpg" style="width:510px"></img>
     * Ground
@@ -76,9 +76,9 @@ A multiplayer first person shooter game based on Unity3D, to improve players' ga
 
 * Door animation
     * Door will automatically open when there is someone near it, and close when no one around
-    * Before open
+    * Before opening
     <img src="Images/18.jpg" style="width:550px"></img>
-    * After open
+    * After opening
     <img src="Images/19.jpg" style="width:550px"></img>
 
     
@@ -91,11 +91,11 @@ A multiplayer first person shooter game based on Unity3D, to improve players' ga
 * **GunFirstPersonView.cs**
     * Used to control the first person view of gun shooting animation
 * **GunShooting.cs**
-    * Used to control the gun shooting action on the network domain, send shooting function to evert client if necessary
+    * Used to control the gun shooting action on the network domain, sending shooting function to evert client if necessary
 * **IKControl.cs**
-    * Used to make sure the model hold the gun on their hand no matter how they moved and rotated
+    * Used to make sure the model hold the gun on their hand no matter how they move or rotate
 * **ImpactLifeCycle.cs**
-    * Used to destory the bullet after several seconds to save CPU and memory
+    * Used to destory the bullet after several seconds to save CPU time and memory
 * **NameTag.cs**
     * Used to set other players' name above their head on local game
 * **NetworkManager.cs**
@@ -103,11 +103,11 @@ A multiplayer first person shooter game based on Unity3D, to improve players' ga
 * **PlayerHealth.cs**
     * Used to calculate and update each player's health                 
 * **PlayerNetworkMover.cs**
-    * Used to sychronize player's postion among different clients
+    * Used to sychronize player's position among different clients
 * **ShowName.cs**
     * Used to show the player name above their head
 * **WeaponPos.cs**
-    * Used to move the gun to the place near player's hand 
+    * Used to move the gun to the place near the player's hand 
 
 ### Input Devices
 
@@ -116,8 +116,8 @@ A multiplayer first person shooter game based on Unity3D, to improve players' ga
     * Cheap and easy to use
     
 * Kinect
-    * Detail see below
-    * *This part was implemented by my friend [Ruochen Jiang](https://github.com/VHUCXAONG), thanks to him!*
+    * See below for details
+    * *This part was implemented by my friend [Ruochen Jiang](https://github.com/VHUCXAONG), many thanks to him!*
 
 * Xbox Controller
     * Like the combination of mouse and keyboard
@@ -130,7 +130,7 @@ A multiplayer first person shooter game based on Unity3D, to improve players' ga
 * VR glasses 
     * More vivid, like reality   
     * Recently very popular but devices are most likely expensive 
-    * Player can't move now due to my device limitation
+    * Player can't move now due to the limitation of my device
 
 ### Kinect Detail
 
@@ -141,16 +141,16 @@ A multiplayer first person shooter game based on Unity3D, to improve players' ga
     - Visual Studio
 
 * Recogonition Method:
-    * Use Kinect for Windows SKD (BodySourceManager) to get the positions of skeleton of the player, then use those positions to judge the actions of moving, jumping, shooting and view rotation as game’s input.
+    * Use Kinect for Windows SKD (BodySourceManager) to get the positions of skeleton of the player, then use those positions to distinguish the actions of moving, jumping, shooting and view rotation as game’s input.
 
     * **Shooting**：
-Use the action of lifting right arm to shoot in the game, so I calculated the distance between the nodes of skeleton of right hand and right shoulder. If it reaches a critical value, then mark the action as shooting.
+Use the action of lifting right arm to shoot in the game. I calculate the distance between the nodes of skeleton of right hand and right shoulder. If it reaches a critical value, then mark the action as shooting.
 
    * **Moving**:
-Use the action of stepping front, back, left and right to move in the game, so I recognized moving actions by the offset of right foot’s skeleton node on x-z plane. If the offset reaches a critical value, it will be recognized as moving.
+Use the action of stepping front, back, left and right to move in the game. I recognize moving actions by the offset of right foot’s skeleton node on x-z plane. If the offset reaches a critical value, it will be recognized as moving.
 
     * **Jumping**:
-Use the action of jumping to jump in the game. I used offset of right foot’s skeleton node on z-axis to recognize jumping. If the offset reaches a critical value, I recognized the action as jumping.
+Use the action of jumping to jump in the game. I use offset of right foot’s skeleton node on z-axis to recognize jumping. If the offset reaches a critical value, I recognize the action as jumping.
 
     * **View Rotation**:
 Use right hand as a virtual mouse to control the camera rotation. I record the initial position of left hand as the initial position of mouse. Then recognize the camera rotation by left hand’s offset.
