@@ -1,3 +1,5 @@
+// Upgrade NOTE: replaced '_Object2World' with 'unity_ObjectToWorld'
+
 Shader "FX/Water" {
 Properties {
 	_WaveScale ("Wave scale", Range (0.02,0.15)) = 0.063
@@ -75,7 +77,7 @@ v2f vert(appdata v)
 
 	// scroll bump waves
 	float4 temp;
-	float4 wpos = mul (_Object2World, v.vertex);
+	float4 wpos = mul (unity_ObjectToWorld, v.vertex);
 	temp.xyzw = wpos.xzxz * _WaveScale4 + _WaveOffset;
 	o.bumpuv0 = temp.xy;
 	o.bumpuv1 = temp.wz;
