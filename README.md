@@ -13,7 +13,7 @@ A multiplayer first person shooter game based on Unity3D, to improve players' ga
 * Game interface
     * **Player's HP** on the top left corner
     * The **message panal** on the bottom left corner, which is used to notify player other players status (like dead or respawn)
-    * A **gun (AK-47)** will always show on the bottom right corner in front of every thing you can see
+    * A **gun (AK-47)** will always show on the bottom right corner in front of every thing you can see
     * A red **shooting sight** always in the center of the screen
     <img src="Images/3.jpg" style="width:500px"></img>
     
@@ -28,8 +28,8 @@ A multiplayer first person shooter game based on Unity3D, to improve players' ga
         * **Walk** towards four different directions
         * **Run** towards four different directions
         * **Jump** without affecting upper part body (**achieved by unity3d body mask**)
-        * **Shooting** without affecting lower part body (**achieved by unity3d body mask**)   
-        * All the original models and their animation can be gotten from **Mixamo**, which is a pretty good game model website run by Adobe
+        * **Shooting** without affecting lower part body (**achieved by unity3d body mask**)
+        * All the original models and their animation can be gotten from **Mixamo**, which is a pretty good game model website run by Adobe
     * **Unity Blend Tree**
         * This is used to make the player walk or run more naturally, it uses interpolation function to map different combinations of user input to different animations. 
         * ![img](Images/4.jpg)
