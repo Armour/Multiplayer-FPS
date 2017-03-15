@@ -22,7 +22,7 @@ A multiplayer first person shooter game based on Unity3D, to improve players' ga
         * **Policeman**: a policeman-like model with yellow skin
         * **RobotX**: a robot-like model with dark pink skin
         * **RobotY**: a robot-like model with dark blue skin
-        * <img src="Images/9.jpg" style="width:150px"></img> <img src="Images/11.jpg" style="width:147px"></img> <img src="Images/10.jpg" style="width:149px"></img>
+        * <img src="Images/9.jpg" height="200px"></img> <img src="Images/11.jpg" height="200px"></img> <img src="Images/10.jpg" height="200px"></img>
             
     * Animation:
         * **Walk** towards four different directions
