@@ -1,6 +1,6 @@
 # Multiplayer-FPS
 
-A multiplayer first person shooter game based on Unity3D, to improve players' game experience, I added different kinds of input device such like Kinect, Xbox controller, Leap motion and VR Glasses. (All in different branches) 
+A multiplayer first-person shooter game based on Unity3D, to improve players' game experience, I added different kinds of input devices such like Kinect, Xbox controller, Leap motion and VR Glasses. (All in different branches) 
 
 ### Game logic and function
 
@@ -54,7 +54,7 @@ A multiplayer first person shooter game based on Unity3D, to improve players' ga
         * <img src="https://cloud.githubusercontent.com/assets/5276065/12594066/02aa6d34-c429-11e5-86ce-ef458bb7f7c3.jpg" style="width:420px"></img>
 
 * Gun model
-    * The orignal gun model (AK-47) was from Unity Assets Store
+    * The original gun model (AK-47) was from Unity Assets Store
     * **Added shooting animation** by setting keyframes in unity3d animation panel 
     ![img](Images/12.jpg)
 
@@ -95,7 +95,7 @@ A multiplayer first person shooter game based on Unity3D, to improve players' ga
 * **IKControl.cs**
     * Used to make sure the model hold the gun on their hand no matter how they move or rotate
 * **ImpactLifeCycle.cs**
-    * Used to destory the bullet after several seconds to save CPU time and memory
+    * Used to destroy the bullet after several seconds to save CPU time and memory
 * **NameTag.cs**
     * Used to set other players' name above their head on local game
 * **NetworkManager.cs**
@@ -103,7 +103,7 @@ A multiplayer first person shooter game based on Unity3D, to improve players' ga
 * **PlayerHealth.cs**
     * Used to calculate and update each player's health                 
 * **PlayerNetworkMover.cs**
-    * Used to sychronize player's position among different clients
+    * Used to synchronize player's position among different clients
 * **ShowName.cs**
     * Used to show the player name above their head
 * **WeaponPos.cs**
@@ -124,7 +124,7 @@ A multiplayer first person shooter game based on Unity3D, to improve players' ga
     * Most Xbox games use this way to play
 
 * Leap Motion
-    * User hand gestrue to control game
+    * User hand gesture to control game
     * More advance, maybe future it will be more popular
 
 * VR glasses 
@@ -140,7 +140,7 @@ A multiplayer first person shooter game based on Unity3D, to improve players' ga
     - Unity
     - Visual Studio
 
-* Recogonition Method:
+* Recognition Method:
     * Use Kinect for Windows SKD (BodySourceManager) to get the positions of skeleton of the player, then use those positions to distinguish the actions of moving, jumping, shooting and view rotation as game’s input.
 
     * **Shooting**：
@@ -150,10 +150,10 @@ Use the action of lifting right arm to shoot in the game. I calculate the distan
 Use the action of stepping front, back, left and right to move in the game. I recognize moving actions by the offset of right foot’s skeleton node on x-z plane. If the offset reaches a critical value, it will be recognized as moving.
 
     * **Jumping**:
-Use the action of jumping to jump in the game. I use offset of right foot’s skeleton node on z-axis to recognize jumping. If the offset reaches a critical value, I recognize the action as jumping.
+Use the action of jumping to jump in the game. I use offset of right foot’s skeleton node on the z-axis to recognize jumping. If the offset reaches a critical value, I recognize the action as jumping.
 
     * **View Rotation**:
-Use right hand as a virtual mouse to control the camera rotation. I record the initial position of left hand as the initial position of mouse. Then recognize the camera rotation by left hand’s offset.
+Use right hand as a virtual mouse to control the camera rotation. I record the initial position of left hand as the initial position of the mouse. Then recognize the camera rotation by left hand’s offset.
     
     * <img src="Images/skeleton_overview.png" style="width:110px"> </img><img src="Images/shooting.png" style="width:134px"></img> <img src="Images/jumping.png" style="width:122px"> </img><img src="Images/rotation.png" style="width:156px"></img>
 
