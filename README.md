@@ -153,7 +153,7 @@ Use the action of stepping front, back, left and right to move in the game. I re
 Use the action of jumping to jump in the game. I use offset of right foot’s skeleton node on the z-axis to recognize jumping. If the offset reaches a critical value, I recognize the action as jumping.
 
     * **View Rotation**:
-Use right hand as a virtual mouse to control the camera rotation. I record the initial position of left hand as the initial position of a mouse. Then recognize the camera rotation by left hand’s offset.
+Use right hand as a virtual mouse to control the camera rotation. I record the initial position of left hand as the initial position of the mouse. Then recognize the camera rotation by left hand’s offset.
     
     * <img src="Images/skeleton_overview.png" style="width:110px"> </img><img src="Images/shooting.png" style="width:134px"></img> <img src="Images/jumping.png" style="width:122px"> </img><img src="Images/rotation.png" style="width:156px"></img>
 
