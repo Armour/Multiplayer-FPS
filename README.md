@@ -1,6 +1,6 @@
 # Multiplayer-FPS
 
-A multiplayer first-person shooter game based on Unity3D, to improve players' game experience, I added different kinds of input devices such like Kinect, Xbox controller, Leap motion and VR Glasses. (All in different branches) 
+A multiplayer first-person shooter game based on Unity3D. To improve players' game experience, I added different kinds of input devices such as Kinect, Xbox controller, Leap motion and VR Glasses. (All in different branches) 
 
 ### Game logic and function
 
@@ -17,21 +17,21 @@ A multiplayer first-person shooter game based on Unity3D, to improve players' ga
     * A red **shooting sight** always in the center of the screen
     <img src="Images/3.jpg" style="width:500px"></img>
     
-* Player model
-    * There are three types of player model:
+* Player models
+    * There are three types of player models:
         * **Policeman**: a policeman-like model with yellow skin
         * **RobotX**: a robot-like model with dark pink skin
         * **RobotY**: a robot-like model with dark blue skin
         * <img src="Images/9.jpg" height="200px"></img> <img src="Images/11.jpg" height="200px"></img> <img src="Images/10.jpg" height="200px"></img>
             
-    * Animation:
+    * Animations:
         * **Walk** towards four different directions
         * **Run** towards four different directions
         * **Jump** without affecting upper part body (**achieved by unity3d body mask**)
         * **Shooting** without affecting lower part body (**achieved by unity3d body mask**)
-        * All the original models and their animation can be gotten from **Mixamo**, which is a pretty good game model website run by Adobe
+        * All the original models and their animations can be gotten from **Mixamo**, which is a pretty good game model website run by Adobe
     * **Unity Blend Tree**
-        * This is used to make the player walk or run more naturally, it uses interpolation function to map different combinations of user input to different animations. 
+        * This is used to make the player walk or run more naturally. It uses interpolation function to map different combinations of user input to different animations. 
         * ![img](Images/4.jpg)
         
     * **State Machine** 
@@ -75,7 +75,7 @@ A multiplayer first-person shooter game based on Unity3D, to improve players' ga
     <img src="Images/17.jpg" style="width:510px"></img>
 
 * Door animation
-    * Door will automatically open when there is someone near it, and close when no one around
+    * Door will automatically be open when there is someone near it, and close when no one around
     * Before opening
     <img src="Images/18.jpg" style="width:550px"></img>
     * After opening
@@ -87,13 +87,13 @@ A multiplayer first-person shooter game based on Unity3D, to improve players' ga
 * **CameraRotation.cs**
     * Used to rotate the scene camera in every updated frame 
 * **DoorAnimtion.cs**
-    * Used to control the door animation, detect if player enter or exit the door trigger area
+    * Used to control the door animation and detect if the player enter or exit the door trigger area
 * **GunFirstPersonView.cs**
     * Used to control the first person view of gun shooting animation
 * **GunShooting.cs**
     * Used to control the gun shooting action on the network domain, sending shooting function to evert client if necessary
 * **IKControl.cs**
-    * Used to make sure the model hold the gun on their hand no matter how they move or rotate
+    * Used to make sure the model holding the gun on their hand no matter how they move or rotate
 * **ImpactLifeCycle.cs**
     * Used to destroy the bullet after several seconds to save CPU time and memory
 * **NameTag.cs**
@@ -150,7 +150,7 @@ Use the action of lifting right arm to shoot in the game. I calculate the distan
 Use the action of stepping front, back, left and right to move in the game. I recognize moving actions by the offset of right foot’s skeleton node on x-z plane. If the offset reaches a critical value, it will be recognized as moving.
 
     * **Jumping**:
-Use the action of jumping to jump in the game. I use offset of right foot’s skeleton node on the z-axis to recognize jumping. If the offset reaches a critical value, I recognize the action as jumping.
+Use the action of jumping to jump in the game. I use offset of right foot’s skeleton node on the z-axis to recognize jumping. If the offset reaches a critical value, I regard the action as jumping.
 
     * **View Rotation**:
 Use right hand as a virtual mouse to control the camera rotation. I record the initial position of left hand as the initial position of the mouse. Then recognize the camera rotation by left hand’s offset.
