@@ -41,7 +41,7 @@ public class PlayerHealth : Photon.MonoBehaviour {
         ikControl = GetComponentInChildren<IKControl>();
         //score = GetComponent<PlayerScore>();
         healthSlider = GameObject.FindGameObjectWithTag("Screen").GetComponentInChildren<Slider>();
-        damageImage = GameObject.FindGameObjectWithTag("Screen").transform.FindChild("DamageImage").GetComponent<Image>();
+        damageImage = GameObject.FindGameObjectWithTag("Screen").transform.Find("DamageImage").GetComponent<Image>();
         currentHealth = startingHealth;
         healthSlider.value = currentHealth;
     }
@@ -99,7 +99,7 @@ public class PlayerHealth : Photon.MonoBehaviour {
         playerShooting.enabled = false;
         ikControl.enabled = false;
 
-        gameObject.transform.FindChild("NameCanvas/NameTag").gameObject.SetActive(false);
+        gameObject.transform.Find("NameCanvas/NameTag").gameObject.SetActive(false);
 
         if (photonView.isMine) {
 
