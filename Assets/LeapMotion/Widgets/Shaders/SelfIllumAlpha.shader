@@ -1,4 +1,6 @@
-﻿Shader "SelfIllumAlpha" {
+﻿// Upgrade NOTE: replaced 'mul(UNITY_MATRIX_MVP,*)' with 'UnityObjectToClipPos(*)'
+
+Shader "SelfIllumAlpha" {
 Properties {
     _Color ("Main Color", Color) = (1,1,1,1)
     _MainTex ("Texture", 2D) = "white" { }
@@ -31,7 +33,7 @@ SubShader {
 		v2f vert (appdata_base v)
 		{
 		    v2f o;
-		    o.pos = mul (UNITY_MATRIX_MVP, v.vertex);
+		    o.pos = UnityObjectToClipPos (v.vertex);
 		    o.uv = TRANSFORM_TEX (v.texcoord, _MainTex);
 		    return o;
 		}

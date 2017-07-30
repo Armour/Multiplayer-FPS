@@ -1,6 +1,6 @@
 
 Photon Unity Networking (PUN)
-	This package is a re-implementation of Unity's Networking, using Photon.
+	This package is a re-implementation of Unity 4's Networking, using Photon.
 	Also included: A setup wizard, demo scenes, documentation and Editor extensions.
 
 
@@ -12,7 +12,7 @@ PUN & PUN+
 
 Android and iOS Exports
 	See "PUN & PUN+"
-    iOS:    Set the stripping level to "Strip Bytecode" and use "DotNet 2.0 Subset" in the player settings. 
+    iOS:    Set the stripping level to "Strip Bytecode" and use ".Net 2.0" in the player settings. 
             More aggressive stripping will break the runtime and you can't connect anymore with PUN Free.
 
 
@@ -28,8 +28,8 @@ UnityScript / JavaScript
 
 Help and Documentation
 	Please read the included chm (or pdf).
+    Online documentation:   http://doc.photonengine.com/en/pun
 	Exit Games Forum:       http://forum.photonengine.com/categories/unity-networking-plugin-pun
-	Online documentation:   http://doc.photonengine.com/en/pun
     Unity Forum Thread:     http://forum.unity3d.com/threads/photon-unity-networking.101734/
 
 
@@ -64,11 +64,11 @@ Server
 PUN+ and Networking Guide Subscriptions
     Follow these steps when you bought an asset that includes an upgrade for a Photon Cloud subscription:
         • Use an existing Photon Cloud Account or register.     https://www.photonengine.com/Account/SignUp
-        • Sign in and open the Dashboard.                       https://www.photonengine.com/Dashboard/Realtime/
+        • Sign in and open the Dashboard.                       https://www.photonengine.com/dashboard/Realtime/
         • Select the Subscription to upgrade and click "Apply Unity Purchase".
         • Enter your Unity Invoice Number and App ID.
         
-        • You find the App ID on: https://www.photonengine.com/Dashboard/Realtime/
+        • You find the App ID on: https://www.photonengine.com/dashboard/Realtime/
         • You find your Unity Invoice Number in the Unity AssetStore: 
             https://www.assetstore.unity3d.com/en/#!/account/transactions
             Or while logged in to the Asset Store, click on your name on the top right. 
