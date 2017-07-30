@@ -64,9 +64,17 @@ public class PhotonView : Photon.MonoBehaviour
 
     public int ownerId;
 
-    public int group = 0;
+    public byte group = 0;
 
     protected internal bool mixedModeIsReliable = false;
+
+
+	/// <summary>
+	/// Flag to check if ownership of this photonView was set during the lifecycle. Used for checking when joining late if event with mismatched owner and sender needs addressing.
+	/// </summary>
+	/// <value><c>true</c> if owner ship was transfered; otherwise, <c>false</c>.</value>
+	public bool OwnerShipWasTransfered;
+
 
     // NOTE: this is now an integer because unity won't serialize short (needed for instantiation). we SEND only a short though!
     // NOTE: prefabs have a prefixBackup of -1. this is replaced with any currentLevelPrefix that's used at runtime. instantiated GOs get their prefix set pre-instantiation (so those are not -1 anymore)
@@ -116,8 +124,6 @@ public class PhotonView : Photon.MonoBehaviour
     /// </summary>
     protected internal object[] lastOnSerializeDataReceived = null;
 
-    public Component observed;
-
     public ViewSynchronization synchronization;
 
     public OnSerializeTransform onSerializeTransformOption = OnSerializeTransform.PositionAndRotation;
@@ -133,7 +139,7 @@ public class PhotonView : Photon.MonoBehaviour
     public OwnershipOption ownershipTransfer = OwnershipOption.Fixed;
 
     public List<Component> ObservedComponents;
-    Dictionary<Component, MethodInfo> m_OnSerializeMethodInfos = new Dictionary<Component, MethodInfo>();
+    Dictionary<Component, MethodInfo> m_OnSerializeMethodInfos = new Dictionary<Component, MethodInfo>(3);
 
 #if UNITY_EDITOR
     // Suppressing compiler warning "this variable is never used". Only used in the CustomEditor, only in Editor
@@ -236,6 +242,12 @@ public class PhotonView : Photon.MonoBehaviour
         }
     }
 
+	/// <summary>
+	/// The current master ID so that we can compare when we receive OnMasterClientSwitched() callback
+	/// It's public so that we can check it during ownerId assignments in networkPeer script
+	/// TODO: Maybe we can have the networkPeer always aware of the previous MasterClient?
+	/// </summary>
+	public int currentMasterID = -1;
     protected internal bool didAwake;
 
     [SerializeField]
@@ -298,6 +310,21 @@ public class PhotonView : Photon.MonoBehaviour
         this.ownerId = newOwnerId;  // immediately switch ownership locally, to avoid more updates sent from this client.
     }
 
+	/// <summary>
+	///Check ownerId assignment for sceneObjects to keep being owned by the MasterClient.
+	/// </summary>
+	/// <param name="newMasterClient">New master client.</param>
+	public void OnMasterClientSwitched(PhotonPlayer newMasterClient)
+	{
+		if (this.CreatorActorNr == 0 && !this.OwnerShipWasTransfered && (this.currentMasterID== -1 || this.ownerId==this.currentMasterID))
+		{
+			this.ownerId = newMasterClient.ID;
+		}
+
+		this.currentMasterID = newMasterClient.ID;
+	}
+
+
     protected internal void OnDestroy()
     {
         if (!this.removedFromLocalViewList)
@@ -318,8 +345,6 @@ public class PhotonView : Photon.MonoBehaviour
 
     public void SerializeView(PhotonStream stream, PhotonMessageInfo info)
     {
-        SerializeComponent(this.observed, stream, info);
-
         if (this.ObservedComponents != null && this.ObservedComponents.Count > 0)
         {
             for (int i = 0; i < this.ObservedComponents.Count; ++i)
@@ -331,8 +356,6 @@ public class PhotonView : Photon.MonoBehaviour
 
     public void DeserializeView(PhotonStream stream, PhotonMessageInfo info)
     {
-        DeserializeComponent(this.observed, stream, info);
-
         if (this.ObservedComponents != null && this.ObservedComponents.Count > 0)
         {
             for (int i = 0; i < this.ObservedComponents.Count; ++i)
@@ -503,25 +526,31 @@ public class PhotonView : Photon.MonoBehaviour
 
     protected internal void ExecuteComponentOnSerialize(Component component, PhotonStream stream, PhotonMessageInfo info)
     {
-        if (component != null)
+        IPunObservable observable = component as IPunObservable;
+        if (observable != null)
         {
-            if (this.m_OnSerializeMethodInfos.ContainsKey(component) == false)
+            observable.OnPhotonSerializeView(stream, info);
+        }
+        else if (component != null)
+        {
+            MethodInfo method = null;
+            bool found = this.m_OnSerializeMethodInfos.TryGetValue(component, out method);
+            if (!found)
             {
-                MethodInfo newMethod = null;
-                bool foundMethod = NetworkingPeer.GetMethod(component as MonoBehaviour, PhotonNetworkingMessage.OnPhotonSerializeView.ToString(), out newMethod);
+                bool foundMethod = NetworkingPeer.GetMethod(component as MonoBehaviour, PhotonNetworkingMessage.OnPhotonSerializeView.ToString(), out method);
 
                 if (foundMethod == false)
                 {
                     Debug.LogError("The observed monobehaviour (" + component.name + ") of this PhotonView does not implement OnPhotonSerializeView()!");
-                    newMethod = null;
+                    method = null;
                 }
 
-                this.m_OnSerializeMethodInfos.Add(component, newMethod);
+                this.m_OnSerializeMethodInfos.Add(component, method);
             }
 
-            if (this.m_OnSerializeMethodInfos[component] != null)
+            if (method != null)
             {
-                this.m_OnSerializeMethodInfos[component].Invoke(component, new object[] {stream, info});
+                method.Invoke(component, new object[] {stream, info});
             }
         }
     }

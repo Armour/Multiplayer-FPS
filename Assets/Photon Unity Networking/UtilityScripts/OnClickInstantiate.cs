@@ -11,7 +11,7 @@ public class OnClickInstantiate : MonoBehaviour
 
     void OnClick()
     {
-        if (PhotonNetwork.connectionStateDetailed != PeerState.Joined)
+        if (!PhotonNetwork.inRoom)
         {
             // only use PhotonNetwork.Instantiate while in a room.
             return;
