@@ -1,9 +1,5 @@
 fileFormatVersion: 2
 guid: 748eb70bc0d7515498ef73fed155520a
-MonoAssemblyImporter:
-  serializedVersion: 1
-  iconMap: {}
-  executionOrder: {}
 PluginImporter:
   serializedVersion: 1
   iconMap: {}
@@ -60,9 +56,14 @@ PluginImporter:
         DontProcess: False
         PlaceholderPath: 
         SDK: AnySDK
+    XboxOne:
+      enabled: 1
+      settings: {}
     iOS:
       enabled: 0
       settings:
         CompileFlags: 
         FrameworkDependencies: 
   userData: 
+  assetBundleName: 
+  assetBundleVariant: 

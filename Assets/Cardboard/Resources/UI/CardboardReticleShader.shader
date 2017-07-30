@@ -1,4 +1,6 @@
-﻿// Copyright 2015 Google Inc. All rights reserved.
+﻿// Upgrade NOTE: replaced 'mul(UNITY_MATRIX_MVP,*)' with 'UnityObjectToClipPos(*)'
+
+// Copyright 2015 Google Inc. All rights reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -57,7 +59,7 @@ Shader "Cardboard/CardboardReticle" {
         float4 vert_out = float4(i.vertex.x * scale, i.vertex.y * scale, _DistanceInMeters, 1.0);
 
         fragmentInput o;
-        o.position = mul (UNITY_MATRIX_MVP, vert_out);
+        o.position = UnityObjectToClipPos (vert_out);
         return o;
       }
 

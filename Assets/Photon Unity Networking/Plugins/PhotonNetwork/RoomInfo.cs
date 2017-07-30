@@ -15,7 +15,7 @@ using ExitGames.Client.Photon;
 
 /// <summary>
 /// A simplified room with just the info required to list and join, used for the room listing in the lobby.
-/// The properties are not settable (open, maxPlayers, etc).
+/// The properties are not settable (open, MaxPlayers, etc).
 /// </summary>
 /// <remarks>
 /// This class resembles info about available rooms, as sent by the Master server's lobby.
@@ -32,6 +32,9 @@ public class RoomInfo
 
     /// <summary>Backing field for property.</summary>
     protected byte maxPlayersField = 0;
+
+    /// <summary>Backing field for property.</summary>
+    protected string[] expectedUsersField;
 
     /// <summary>Backing field for property.</summary>
     protected bool openField = true;
@@ -53,7 +56,7 @@ public class RoomInfo
     /// <summary>Read-only "cache" of custom properties of a room. Set via Room.SetCustomProperties (not available for RoomInfo class!).</summary>
     /// <remarks>All keys are string-typed and the values depend on the game/application.</remarks>
     /// <see cref="Room.SetCustomProperties"/>
-    public Hashtable customProperties
+    public Hashtable CustomProperties
     {
         get
         {
@@ -62,7 +65,7 @@ public class RoomInfo
     }
 
     /// <summary>The name of a room. Unique identifier (per Loadbalancing group) for a room/match.</summary>
-    public string name
+    public string Name
     {
         get
         {
@@ -73,12 +76,12 @@ public class RoomInfo
     /// <summary>
     /// Only used internally in lobby, to display number of players in room (while you're not in).
     /// </summary>
-    public int playerCount { get; private set; }
+    public int PlayerCount { get; private set; }
 
     /// <summary>
     /// State if the local client is already in the game or still going to join it on gameserver (in lobby always false).
     /// </summary>
-    public bool isLocalClientInside { get; set; }
+    public bool IsLocalClientInside { get; set; }
 
     /// <summary>
     /// Sets a limit of players to this room. This property is shown in lobby, too.
@@ -88,7 +91,7 @@ public class RoomInfo
     /// As part of RoomInfo this can't be set.
     /// As part of a Room (which the player joined), the setter will update the server and all clients.
     /// </remarks>
-    public byte maxPlayers
+    public byte MaxPlayers
     {
         get
         {
@@ -108,7 +111,7 @@ public class RoomInfo
     /// As part of RoomInfo this can't be set.
     /// As part of a Room (which the player joined), the setter will update the server and all clients.
     /// </remarks>
-    public bool open
+    public bool IsOpen
     {
         get
         {
@@ -125,7 +128,7 @@ public class RoomInfo
     /// As part of RoomInfo this can't be set.
     /// As part of a Room (which the player joined), the setter will update the server and all clients.
     /// </remarks>
-    public bool visible
+    public bool IsVisible
     {
         get
         {
@@ -148,10 +151,10 @@ public class RoomInfo
     /// <summary>
     /// Makes RoomInfo comparable (by name).
     /// </summary>
-    public override bool Equals(object p)
+    public override bool Equals(object other)
     {
-        Room pp = p as Room;
-        return (pp != null && this.nameField.Equals(pp.nameField));
+        RoomInfo otherRoomInfo = other as RoomInfo;
+        return (otherRoomInfo != null && this.Name.Equals(otherRoomInfo.nameField));
     }
 
     /// <summary>
@@ -163,21 +166,22 @@ public class RoomInfo
         return this.nameField.GetHashCode();
     }
 
+
     /// <summary>Simple printingin method.</summary>
     /// <returns>Summary of this RoomInfo instance.</returns>
     public override string ToString()
     {
-        return string.Format("Room: '{0}' {1},{2} {4}/{3} players.", this.nameField, this.visibleField ? "visible" : "hidden", this.openField ? "open" : "closed", this.maxPlayersField, this.playerCount);
+        return string.Format("Room: '{0}' {1},{2} {4}/{3} players.", this.nameField, this.visibleField ? "visible" : "hidden", this.openField ? "open" : "closed", this.maxPlayersField, this.PlayerCount);
     }
 
     /// <summary>Simple printingin method.</summary>
     /// <returns>Summary of this RoomInfo instance.</returns>
     public string ToStringFull()
     {
-        return string.Format("Room: '{0}' {1},{2} {4}/{3} players.\ncustomProps: {5}", this.nameField, this.visibleField ? "visible" : "hidden", this.openField ? "open" : "closed", this.maxPlayersField, this.playerCount, this.customPropertiesField.ToStringFull());
+        return string.Format("Room: '{0}' {1},{2} {4}/{3} players.\ncustomProps: {5}", this.nameField, this.visibleField ? "visible" : "hidden", this.openField ? "open" : "closed", this.maxPlayersField, this.PlayerCount, this.customPropertiesField.ToStringFull());
     }
 
-    /// <summary>Copies "well known" properties to fields (isVisible, etc) and caches the custom properties (string-keys only) in a local hashtable.</summary>
+    /// <summary>Copies "well known" properties to fields (IsVisible, etc) and caches the custom properties (string-keys only) in a local hashtable.</summary>
     /// <param name="propertiesToCache">New or updated properties to store in this RoomInfo.</param>
     protected internal void InternalCacheProperties(Hashtable propertiesToCache)
     {
@@ -216,7 +220,7 @@ public class RoomInfo
 
         if (propertiesToCache.ContainsKey(GamePropertyKey.PlayerCount))
         {
-            this.playerCount = (int)((byte)propertiesToCache[GamePropertyKey.PlayerCount]);
+            this.PlayerCount = (int)((byte)propertiesToCache[GamePropertyKey.PlayerCount]);
         }
 
         if (propertiesToCache.ContainsKey(GamePropertyKey.CleanupCacheOnLeave))
@@ -240,7 +244,39 @@ public class RoomInfo
         //    // could be cached but isn't useful
         //}
 
+        if (propertiesToCache.ContainsKey((byte)GamePropertyKey.ExpectedUsers))
+        {
+            this.expectedUsersField = (string[])propertiesToCache[GamePropertyKey.ExpectedUsers];
+        }
+
         // merge the custom properties (from your application) to the cache (only string-typed keys will be kept)
         this.customPropertiesField.MergeStringKeys(propertiesToCache);
+        this.customPropertiesField.StripKeysWithNullValues();
     }
+
+
+    #region Obsoleted variable names
+
+    [Obsolete("Please use CustomProperties (updated case for naming).")]
+    public Hashtable customProperties { get { return this.CustomProperties; } }
+
+    [Obsolete("Please use Name (updated case for naming).")]
+    public string name { get { return this.Name; } }
+
+    [Obsolete("Please use PlayerCount (updated case for naming).")]
+    public int playerCount { get { return this.PlayerCount; } set { this.PlayerCount = value; } }
+
+    [Obsolete("Please use IsLocalClientInside (updated case for naming).")]
+    public bool isLocalClientInside { get { return this.IsLocalClientInside; } set { this.IsLocalClientInside = value; } }
+
+    [Obsolete("Please use MaxPlayers (updated case for naming).")]
+    public byte maxPlayers { get { return this.MaxPlayers; } }
+
+    [Obsolete("Please use IsOpen (updated case for naming).")]
+    public bool open { get { return this.IsOpen; } }
+
+    [Obsolete("Please use IsVisible (updated case for naming).")]
+    public bool visible { get { return this.IsVisible; } }
+
+    #endregion
 }

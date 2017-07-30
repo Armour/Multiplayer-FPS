@@ -125,7 +125,7 @@ public class CardboardPostRender : MonoBehaviour {
     distortionMesh.uv = tex;
     distortionMesh.colors = colors;
     distortionMesh.triangles = indices;
-    distortionMesh.Optimize();
+    ;
     distortionMesh.UploadMeshData(true);
   }
 

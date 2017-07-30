@@ -68,7 +68,7 @@ public enum PhotonNetworkingMessage
     /// <remarks>
     /// This is not called when this client enters a room.
     /// The former MasterClient is still in the player list when this method get called.
-    /// 
+    ///
     /// Example: void OnMasterClientSwitched(PhotonPlayer newMasterClient) { ... }
     /// </remarks>
     OnMasterClientSwitched,
@@ -352,12 +352,26 @@ public enum PhotonNetworkingMessage
     /// During development of a game, it might also fail due to wrong configuration on the server side.
     /// In those cases, logging the debugMessage is very important.
     ///
-    /// Unless you setup a custom authentication service for your app (in the [Dashboard](https://www.exitgames.com/dashboard)),
+    /// Unless you setup a custom authentication service for your app (in the [Dashboard](https://www.photonengine.com/dashboard)),
     /// this won't be called!
     ///
     /// Example: void OnCustomAuthenticationFailed(string debugMessage) { ... }
     /// </remarks>
     OnCustomAuthenticationFailed,
+
+    /// <summary>
+    /// Called when your Custom Authentication service responds with additional data.
+    /// </summary>
+    /// <remarks>
+    /// Custom Authentication services can include some custom data in their response.
+    /// When present, that data is made available in this callback as Dictionary.
+    /// While the keys of your data have to be strings, the values can be either string or a number (in Json).
+    /// You need to make extra sure, that the value type is the one you expect. Numbers become (currently) int64.
+    ///
+    /// Example: void OnCustomAuthenticationResponse(Dictionary&lt;string, object&gt; data) { ... }
+    /// </remarks>
+    /// <see cref="https://doc.photonengine.com/en/realtime/current/reference/custom-authentication"/>
+    OnCustomAuthenticationResponse,
 
     /// <summary>
     /// Called by PUN when the response to a WebRPC is available. See PhotonNetwork.WebRPC.
@@ -391,7 +405,7 @@ public enum PhotonNetworkingMessage
     /// </remarks>
     /// <example>void OnOwnershipRequest(object[] viewAndPlayer) {} //</example>
     OnOwnershipRequest,
-    
+
     /// <summary>
     /// Called when the Master Server sent an update for the Lobby Statistics, updating PhotonNetwork.LobbyStatistics.
     /// </summary>
@@ -401,6 +415,36 @@ public enum PhotonNetworkingMessage
     /// And the client has to be connected to the Master Server, which is providing the info about lobbies.
     /// </remarks>
     OnLobbyStatisticsUpdate,
+
+
+	/// <summary>
+	/// Called when a remote Photon Player activity changed. This will be called ONLY is PlayerTtl is greater then 0.
+	///
+	/// Use PhotonPlayer.IsInactive to check the current activity state
+	///
+	/// Example: void OnPhotonPlayerActivityChanged(PhotonPlayer otherPlayer) {...}
+	/// </summary>
+	/// <remarks>
+	/// This callback has precondition:
+	/// PlayerTtl must be greater then 0
+	/// </remarks>
+	OnPhotonPlayerActivityChanged,
+
+
+	/// <summary>
+	/// Called when a PhotonView Owner is transfered to a Player.
+	/// </summary>
+	/// <remarks>
+	/// The parameter viewAndPlayers contains:
+	///
+	/// PhotonView view = viewAndPlayers[0] as PhotonView;
+	///
+	/// PhotonPlayer newOwner = viewAndPlayers[1] as PhotonPlayer;
+	///
+	/// PhotonPlayer oldOwner = viewAndPlayers[2] as PhotonPlayer;
+	/// </remarks>
+	/// <example>void OnOwnershipTransfered(object[] viewAndPlayers) {} //</example>
+	OnOwnershipTransfered,
 }
 
 
@@ -462,7 +506,18 @@ public enum CloudRegionCode
     jp = 3,
     /// <summary>Australian servers in Melbourne.</summary>
     au = 5,
-    /// <summary>No region selectedcs.</summary>
+    ///<summary>USA West, San José, usw</summary>
+    usw = 6,
+    ///<summary>South America, Sao Paulo, sa</summary>
+    sa = 7,
+    ///<summary>Canada East, Montreal, cae</summary>
+    cae = 8,
+    ///<summary>South Korea, Seoul, kr</summary>
+    kr = 9,
+    ///<summary>India, Chennai, in</summary>
+    @in = 10,
+
+    /// <summary>No region selected.</summary>
     none = 4
 };
 
@@ -479,24 +534,16 @@ public enum CloudRegionFlag
     asia =  1 << 2,
     jp =    1 << 3,
     au =    1 << 4,
+    usw =   1 << 5,
+    sa =    1 << 6,
+    cae =   1 << 7,
+    kr =    1 << 8,
+    @in =   1 << 9,
 };
 
 
-/// <summary>Available server (types) for internally used field: server.</summary>
-/// <remarks>Photon uses 3 different roles of servers: Name Server, Master Server and Game Server.</remarks>
-public enum ServerConnection
-{
-    /// <summary>This server is where matchmaking gets done and where clients can get lists of rooms in lobbies.</summary>
-    MasterServer,
-    /// <summary>This server handles a number of rooms to execute and relay the messages between players (in a room).</summary>
-    GameServer,
-    /// <summary>This server is used initially to get the address (IP) of a Master Server for a specific region. Not used for Photon OnPremise (self hosted).</summary>
-    NameServer
-}
-
-
 /// <summary>
-/// High level connection state of the client. Better use the more detailed <see cref="PeerState"/>.
+/// High level connection state of the client. Better use the more detailed <see cref="ClientState"/>.
 /// </summary>
 public enum ConnectionState
 {
@@ -509,168 +556,36 @@ public enum ConnectionState
 
 
 /// <summary>
-/// Detailed connection / networking peer state.
-/// PUN implements a loadbalancing and authentication workflow "behind the scenes", so
-/// some states will automatically advance to some follow up state. Those states are
-/// commented with "(will-change)".
+/// Defines how the communication gets encrypted.
 /// </summary>
-/// \ingroup publicApi
-public enum PeerState
+public enum EncryptionMode
 {
-    /// <summary>Not running. Only set before initialization and first use.</summary>
-    Uninitialized,
-
-    /// <summary>Created and available to connect.</summary>
-    PeerCreated,
-
-    /// <summary>Not used at the moment.</summary>
-    Queued,
-
-    /// <summary>The application is authenticated. PUN usually joins the lobby now.</summary>
-    /// <remarks>(will-change) Unless AutoJoinLobby is false.</remarks>
-    Authenticated,
-
-    /// <summary>Client is in the lobby of the Master Server and gets room listings.</summary>
-    /// <remarks>Use Join, Create or JoinRandom to get into a room to play.</remarks>
-    JoinedLobby,
-
-    /// <summary>Disconnecting.</summary>
-    /// <remarks>(will-change)</remarks>
-    DisconnectingFromMasterserver,
-
-    /// <summary>Connecting to game server (to join/create a room and play).</summary>
-    /// <remarks>(will-change)</remarks>
-    ConnectingToGameserver,
-
-    /// <summary>Similar to Connected state but on game server. Still in process to join/create room.</summary>
-    /// <remarks>(will-change)</remarks>
-    ConnectedToGameserver,
-
-    /// <summary>In process to join/create room (on game server).</summary>
-    /// <remarks>(will-change)</remarks>
-    Joining,
-
-    /// <summary>Final state of a room join/create sequence. This client can now exchange events / call RPCs with other clients.</summary>
-    Joined,
-
-    /// <summary>Leaving a room.</summary>
-    /// <remarks>(will-change)</remarks>
-    Leaving,
-
-    /// <summary>Workflow is leaving the game server and will re-connect to the master server.</summary>
-    /// <remarks>(will-change)</remarks>
-    DisconnectingFromGameserver,
-
-    /// <summary>Workflow is connected to master server and will establish encryption and authenticate your app.</summary>
-    /// <remarks>(will-change)</remarks>
-    ConnectingToMasterserver,
-
-    /// <summary>Same Queued but coming from game server.</summary>
-    /// <remarks>(will-change)</remarks>
-    QueuedComingFromGameserver,
-
-    /// <summary>PUN is disconnecting. This leads to Disconnected.</summary>
-    /// <remarks>(will-change)</remarks>
-    Disconnecting,
-
-    /// <summary>No connection is setup, ready to connect. Similar to PeerCreated.</summary>
-    Disconnected,
-
-    /// <summary>Final state for connecting to master without joining the lobby (AutoJoinLobby is false).</summary>
-    ConnectedToMaster,
-
-    /// <summary>Client connects to the NameServer. This process includes low level connecting and setting up encryption. When done, state becomes ConnectedToNameServer.</summary>
-    ConnectingToNameServer,
-
-    /// <summary>Client is connected to the NameServer and established enctryption already. You should call OpGetRegions or ConnectToRegionMaster.</summary>
-    ConnectedToNameServer,
-
-    /// <summary>When disconnecting from a Photon NameServer.</summary>
-    /// <remarks>(will-change)</remarks>
-    DisconnectingFromNameServer,
-
-    /// <summary>When connecting to a Photon Server, this state is intermediate before you can call any operations.</summary>
-    /// <remarks>(will-change)</remarks>
-    Authenticating
-}
-
-
-// Photon properties, internally set by PhotonNetwork (PhotonNetwork builtin properties)
-
-
-/// <summary>
-/// Summarizes the cause for a disconnect. Used in: OnConnectionFail and OnFailedToConnectToPhoton.
-/// </summary>
-/// <remarks>Extracted from the status codes from ExitGames.Client.Photon.StatusCode.</remarks>
-/// <seealso cref="PhotonNetworkingMessage"/>
-/// \ingroup publicApi
-public enum DisconnectCause
-{
-    /// <summary>Connection could not be established.
-    /// Possible cause: Local server not running.</summary>
-    ExceptionOnConnect = StatusCode.ExceptionOnConnect,
-
-    /// <summary>The security settings for client or server don't allow a connection (see remarks).</summary>
+    /// <summary>
+    /// This is the default encryption mode: Messages get encrypted only on demand (when you send operations with the "encrypt" parameter set to true).
+    /// </summary>
+    PayloadEncryption,
+    /// <summary>
+    /// With this encryption mode for UDP, the connection gets setup and all further datagrams get encrypted almost entirely. On-demand message encryption (like in PayloadEncryption) is skipped.
+    /// </summary>
     /// <remarks>
-    /// A common cause for this is that browser clients read a "crossdomain" file from the server.
-    /// If that file is unavailable or not configured to let the client connect, this exception is thrown.
-    /// Photon usually provides this crossdomain file for Unity.
-    /// If it fails, read:
-    /// http://doc.exitgames.com/photon-server/PolicyApp
+    /// This mode requires AuthOnce or AuthOnceWss as AuthMode!
     /// </remarks>
-    SecurityExceptionOnConnect = StatusCode.SecurityExceptionOnConnect,
-
-    /// <summary>Connection timed out.
-    /// Possible cause: Remote server not running or required ports blocked (due to router or firewall).</summary>
-    [System.Obsolete("Replaced by clearer: DisconnectByClientTimeout")]
-    TimeoutDisconnect = StatusCode.TimeoutDisconnect,
-
-    /// <summary>Timeout disconnect by client (which decided an ACK was missing for too long).</summary>
-    DisconnectByClientTimeout = StatusCode.TimeoutDisconnect,
-
-    /// <summary>Exception in the receive-loop.
-    /// Possible cause: Socket failure.</summary>
-    InternalReceiveException = StatusCode.ExceptionOnReceive,
-
-    /// <summary>Server actively disconnected this client.</summary>
-    [System.Obsolete("Replaced by clearer: DisconnectByServerTimeout")]
-    DisconnectByServer = StatusCode.DisconnectByServer,
-
-    /// <summary>Timeout disconnect by server (which decided an ACK was missing for too long).</summary>
-    DisconnectByServerTimeout = StatusCode.DisconnectByServer,
-
-    /// <summary>Server actively disconnected this client.
-    /// Possible cause: Server's send buffer full (too much data for client).</summary>
-    DisconnectByServerLogic = StatusCode.DisconnectByServerLogic,
-
-    /// <summary>Server actively disconnected this client.
-    /// Possible cause: The server's user limit was hit and client was forced to disconnect (on connect).</summary>
-    DisconnectByServerUserLimit = StatusCode.DisconnectByServerUserLimit,
-
-    /// <summary>Some exception caused the connection to close.</summary>
-    Exception = StatusCode.Exception,
-
-    /// <summary>(32756) Authorization on the Photon Cloud failed because the app's subscription does not allow to use a particular region's server.</summary>
-    InvalidRegion = ErrorCode.InvalidRegion,
-
-    /// <summary>(32757) Authorization on the Photon Cloud failed because the concurrent users (CCU) limit of the app's subscription is reached.</summary>
-    MaxCcuReached = ErrorCode.MaxCcuReached,
-
-    /// <summary>(32767) The Photon Cloud rejected the sent AppId. Check your Dashboard and make sure the AppId you use is complete and correct.</summary>
-    InvalidAuthentication = ErrorCode.InvalidAuthentication,
-
-    /// <summary>(32753) The Authentication ticket expired. Handle this by connecting again (which includes an authenticate to get a fresh ticket).</summary>
-    AuthenticationTicketExpired = 32753,
+    DatagramEncryption = 10,
 }
 
 
-/// <summary>
-/// Internal state how this peer gets into a particular room (joining it or creating it).
-/// </summary>
-internal enum JoinType
+public static class EncryptionDataParameters
 {
-    CreateGame,
-    JoinGame,
-    JoinRandomGame,
-    JoinOrCreateOnDemand
+    /// <summary>
+    /// Key for encryption mode
+    /// </summary>
+    public const byte Mode = 0;
+    /// <summary>
+    /// Key for first secret
+    /// </summary>
+    public const byte Secret1 = 1;
+    /// <summary>
+    /// Key for second secret
+    /// </summary>
+    public const byte Secret2 = 2;
 }

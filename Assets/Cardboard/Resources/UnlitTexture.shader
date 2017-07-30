@@ -1,4 +1,6 @@
-﻿// Copyright 2016 Google Inc. All rights reserved.
+﻿// Upgrade NOTE: replaced 'mul(UNITY_MATRIX_MVP,*)' with 'UnityObjectToClipPos(*)'
+
+// Copyright 2016 Google Inc. All rights reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -51,7 +53,7 @@ Shader "Cardboard/UnlitTexture" {
 
      v2f vert (appdata v) {
        v2f o;
-       o.vertex = mul(UNITY_MATRIX_MVP, v.vertex);
+       o.vertex = UnityObjectToClipPos(v.vertex);
        o.color = v.color;
        o.uv = TRANSFORM_TEX(v.uv, _MainTex);
        return o;
