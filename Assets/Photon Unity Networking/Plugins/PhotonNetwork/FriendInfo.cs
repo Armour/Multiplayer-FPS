@@ -1,4 +1,14 @@
-﻿
+﻿// ----------------------------------------------------------------------------
+// <copyright file="FriendInfo.cs" company="Exit Games GmbH">
+//   Loadbalancing Framework for Photon - Copyright (C) 2013 Exit Games GmbH
+// </copyright>
+// <summary>
+//   Collection of values related to a user / friend.
+// </summary>
+// <author>developer@photonengine.com</author>
+// ----------------------------------------------------------------------------
+
+
 /// <summary>
 /// Used to store info about a friend's online state and in which room he/she is.
 /// </summary>

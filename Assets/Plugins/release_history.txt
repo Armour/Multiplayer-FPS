@@ -1,6 +1,6 @@
 * release_history.txt
-* Release history for the DotNet Photon Client Library (DotNet / Unity / Windows Store / Windows Phone / Xamarin)
-(C) 2015 Exit Games GmbH, http://www.photonengine.com
+* Release history for the DotNet Photon Client Library (DotNet / Unity / Windows Store 8.1 and 10)
+(C) 2016 Exit Games GmbH, http://www.photonengine.com
 
 Questions? Visit:
 https://www.photonengine.com
@@ -8,13 +8,203 @@ https://doc.photonengine.com
 http://forum.photonengine.com
 
 
+*** Version 4.1.1.14 (5. July 2017 - rev4191)
+    Changed: SupportClass StartBackgroundCalls method now assigns an ID to each thread/task and enables you to cancel it explicitly via StopBackgroundCalls. CallInBackground is now obsolete due to renaming.
+LoadBalancing
+    Changed: The ClientState "Uninitialized" is now "PeerCreated". This is the initial state. ConnectedToMaster is now ConnectedToMasterserver (both use the same value).
+    Updated: ClientState values descriptions.
+    Internal: GameEnteredOnGameServer() first sets the local player's actorNumber, then updates the player lists.
+Chat:
+    Added: ChatClient can optionally run a thread to call SendOutgoingCommands in intervals. This makes sure the connection doesn't fail easily (e.g. when Unity is loading scenes, etc.). You still have to call Service to dispatch received messages.
+    Added: ChatClient.UseBackgroundWorkerForSending. Set this to true, to use the new background thread. Note: Do not use this in WebGL exports from Unity cause Threads are unavailable in them.
+WebSocket:
+    Changed: Updated enabled protocols for WebSocket.cs. Now it is posible to connect to a server which supports only either TLS 1.1 or TLS 1.2 or TLS 1.0 or any combination of them.
+
+
+*** Version 4.1.1.13 (2. June 2017 - rev4112)
+    Internal: Fixed StreamBuffer.Seek() which was throwing an exception when seeking position 0 in an empty stream.
+    Removed: The queue-length checks which were using OnStatusChanged to warn about the amount of data queued for sending. Several StatusCode values are now obsolete accordingly.
+    Removed: StatusCode InternalReceiveException = 1039 and TcpRouter* which were obsolete for a longer time.
+
+*** Version 4.1.1.12 (24. May 2017 - rev4086)
+    Fixed: Peer.timeLastSendOutgoing was set in SendAcksOnly and ReceiveIncomingCommands. This should not happen. In PUN, this led to an issue with the fallback thread, which could not keep the connection.
+    Fixed: DNS resolution in the UDP socket is no longer inside a lock. Even if it takes longer (without network), the socket can now be closed before it's even opened properly, avoiding a freeze.
+    Fixed: UWP clients can set a SocketImplementationConfig. This opens up the use of WebSockets or any IPhotonSocket implementation in UWP, too.
+    Internal: Acknowledgements are no longer created as "commands" and serialized on send. Instead, they are directly written to a byte[] buffer, which is using less memory.
+    Added: PhotonPeer.EnableServerTracing to enable UDP Datagram Tracing on server side. We might ask you to use this when debugging connection issues. Otherwise, don't use this, as you can't access the server's logs anyways.
+
+*** Version 4.1.1.11 (13. April 2017 - rev3922)
+    Fixed: Bug of v4.1.1.10, which caused disconnects after a short time.
+
+*** Version 4.1.1.10 (11. April 2017 - rev3916)
+    Internal: Memory Allocation for nCommand and EnetPeer within SendoutGoingCommand, and AreReliableCommandInTransit
+    Internal: Refactoring of SerializeToBuffer to prevent memory allocation and access udpBuffer directly instead of using BlockCopy.
+    Internal: EnetPeer.channels got removed and replaced by a simple array and a GetChannel() method to access all channels.
+
+*** Version 4.1.1.9 (15. March 2017 - rev3884)
+    Fixed: Size calculation for Datagram Encryption (used on one console only, so far), when the MTU was changed from default. In some cases, an Exception was thrown: ArgumentException: Offset and length were out of bounds [...] at System.Buffer.BlockCopy. Adjusted GetFragmentLength() and CalculateBufferLen() internally.
+
+*** Version 4.1.1.8 (24. February 2017 - rev3873)
+    Fixed: Handling of non-fatal "WouldBlock" SocketExceptions when receiving data via TCP. This led to disconnects before. This affects only TCP connections in libs other than Windows Store.
+    Changed: Memory usage for TCP socket usage. Less memory is being allocated per receive. As we have to queue incoming data, it still has to get copied once.
+    Changed: Memory usage for encrypting messages.
+    Changed: SupportClass.DictionaryToString() now logs the length of a byte-array (not the content).
+    Changed: Deserializing unknown "Custom Types" returns the sent byte[]. There is no warning/error log yet but deserialization won't fail entirely.
+    Changed: PeerBase.SerializeMessageToMessage() to use less memory for encryption. Also, Raw-Messages can now be de/encrypted successfully.
+    Internal: Added StreamBuffer.ToArrayFromPos(), enabling you to get a buffer copy, starting with some offset (position of the buffer).
+    Internal: Removed some NETFX special build cases (obsolete due to using our own SteamBuffer).
+PhotonVoice:
+    Breaking: LocalVoice.Transmit = true by default.
+    Fixed: LoadBalancingFrontend.DebugEchoMode setter checks if value changed.
+    Changed: better singleton handling and error logging.
+LoadBalancing:
+    Added: Player.UserId field and code to read published UserIds from the player properties in CacheProperties(). When publishing the UserId in a room (RoomOptions.PublishUserId = true), the UserId becomes available for all players in a room. Good to find/make friends or follow a team player into another room.
+    Added: New matchmaking operation: OpGetGameList(typedLobby, sqlFilter). This fetches a list of rooms that match the filter. You can show lists of rooms with specific properties, if needed (or still use OpJoinRandom).
+    Fixed: WebFlags properties setters.
+
+*** Version 4.1.1.7 (16. December 2016)
+    Note: No new lib version. Just updated demos for the SDK.
+Demos:
+    Fixed: Demos with persistent (Turnbased) games. The Memory Demo was not setting up rooms correctly (which led to errors joining them) and used a "join" rather than a "rejoin" to get into saved games (getting added to the room once more).
+
+*** Version 4.1.1.6 (9. December 2016 - rev3801)
+    Changed: Default SentCountAllowance = 7.
+Loadbalancing:
+    Added: OpJoinRandom will now "remember" to send ExpectedUsers to the Game Server (by caching the value).
+    Added: AuthEvent and it's handling. This (internally sent) event can now update the client's token anytime (before that expires).
+    Added: LoadBalancingClient.OpChangeGroups().
+    Changed: LoadBalancingClient.Disconnect() no longer sets it's own State to Disconnected. It waits till the state-change callback gets called by the lib.
+
+*** Version 4.1.1.5 (18. November 2016 - rev3775)
+Internal:
+    Fixed: Photon-init request is now created by the factory method CreateAndEnqueueCommand to make sure we fragment the init if needed (for small MTU and more init-data).
+    Fixed: Bug in TrafficStatsReset method, which caused the averaged stats to go up infinitely after a reset.
+
+*** Version 4.1.1.4 (21. October 2016 - rev3737)
+    Internal: Added ArraySegment<T> support for byte[]. This way, we can internally reuse more memory.
+    Changed: Implementations of PeerBase Disconnect() are now using EnqueueStatusCallback(StatusCode.Disconnect) to delay the "callback". That enables any thread to call Disconnect() while the status change correctly gets called in the main thread via DispatchIncomingCommands().
+    Changed: When a SocketImplementationConfig for UDP is set, this will be used via Activator.CreateInstance(socketImplementation, this).
+
+*** Version 4.1.1.3 (20. September 2016 - rev3673)
+    Changed: NETFX_CORE implementation for UDP. This no longer attempts to detach the stream after every single Send, which caused issues when connecting and getting a lot of messages.
+
+*** Version 4.1.1.2 (13. September 2016 - rev3652)
+    Changed: There are less variants of the Photon library now, which makes it easier to integrate, run and test. There is a general "DotNet" version and a Windows Store (universal) dll. These two also come as Unity build and in Debug and Release. UWP can use the Universal/WSA library.
+    Added: PhotonPeer.SocketImplementationConfig. This allows easier configuration of the IPhotonSocket type to use per protocol, so that switching protocols is easier (compared to having to set a SocketImplementation before connecting).
+    Changed: PhotonPeer.SocketImplementation can't be set public. Use the SocketImplementationConfig instead.
+    Internal: This release summarizes a lot of internal refactorings. It's easy now to switch protocols (internally), to set socket implementations (platform dependent) if needed, etc.
+LoadBalancing:
+    Removed: LoadBalancingClient.PlayerName and Player.Name. Were obsolete for more than a year. There is a NickName and the UserId can be set in the AuthValues.
+    Removed: OpJoinRoom() overload with actorNumber. This was obsolete. To enable clients to return to a room, set AuthValues and a userID.
+    Changed: LoadBalancingClient no longer overrides the protocol for Unity WebGL. This is done in the LoadBalancingPeer.ConfigUnitySockets().
+    Changed: GetNameServerAddress() is the same in Chat and LoadBalancing APIs now.
+    Added: DisconnectCause.DisconnectByServerLogic and handling for this case. You can check this DisconnectedCause when the LoadBalancingClient.State is ClientState.Disconnected.
+    Added: Hashtable definition to use Photon's own implementation for Windows Store builds (NETFX_CORE). This must be used but it means you to use the same Hashtable definition in all builds (no matter if 8.1 or 10).
+    Added: Support for WebGL export in Unity.
+    Changed: OnStateChangeAction, OnEventAction and OnOpResponseAction are now events. To register a method in one of those, use += and to deregister you need to use -=. This prevents assigning a new method and de-registering any previously registered ones.
+Chat:
+    Changed: ChatPeer now has ConfigUnitySockets(), which defines the SocketImplementationConfig. It's only used in Unity (using UNITY define).
+    Changed: ChatClient is not setting socket implementations anymore.
+    Added: Hashtable definition to use Photon's own implementation for Windows Store builds (NETFX_CORE). This must be used but it means you to use the same Hashtable definition in all builds (no matter if 8.1 or 10).
+    Added: Support for WebGL export in Unity.
+
+*** Version 4.1.1.1 (22. August 2016 - rev3549)
+    Fixed: IPv6 support. The init-message was missing it in 4.1.1.0.
+    Fixed: UWP build for Unity now has (Photon-)Hashtable class once more. Unlike Windows RT, UWP does support Hashtable (again). But in Unity, we always use ours.
+
+*** Version 4.1.1.0 (15. August 2016 - rev3536)
+    Changed: Unity exports now need to set the API Compatibility to ".Net 2.0". The ".Net 2.0 Subset" won't work anymore, due to need of some features for a new encryption mode.
+    Fixed: Windows Store implementation of TCP Socket. This is now compatible with 8.1 and 10 and the locally configured timeout is also applied while connecting initially.
+    Fixed: OpWebRPC documentation.
+LoadBalancing:
+    Fixed: Room.ClearExpectedUsers() is now sending it's current, local "expected users" to update the server with "CAS" (Check and Swap). This gives the client an update when the values become valid (which updates the local cache after the roundtrip).
+    Added: Support for the 'Server Side Master Client' feature. The Room will read master client updates from the server accordingly. Room.SetMasterClient() enables you to override the server's selection (provided it did not change before your operation gets executed).
+    Changed: Option for bool WebForward into the new "WebFlags". This allows fine control of which data is being sent to WebHooks. This affects all SetProperties, OpWebRPC and the RaiseEventOptions.
+    Added: WebRPC.cs to the LoadBalancing API folder (was available separately before). It contains WebFlags and WebRpcResponse.
+Internal:
+    Changed: Instead of Windows Phone 8.0 support, we now have a Windows 8.1 Universal library ("Metro") and one for Windows 10 Universal ("UWP").
+    Changed: Changed initialization of PhotonPeer and related classes.
+    Changed: Workflow to send Init command.
+    Added: Option for "Datagram Encryption" and a new Authentication Workflow ("AuthOnce" and "AuthOnceWss"). This is part of the LoadBalancing API.
+    Added: ClientSdkId, which is used internally for reference.
+
+*** Version 4.1.0.6 (30. June 2016 - rev3400)
+    Changed: ExchangeKeysForEncryption() and internally called DeriveSharedKey() can now be executed in their own Thread.
+    Added: static PhotonPeer.AsyncKeyExchange to define if encryption calculations are done in parallel.
+Internal:
+    Changed: NetworkSimulationSet.IsSimulationEnabled only does any work, if the value gets changed (saving some surplus work).
+
+*** Version 4.1.0.6 (21. June 2016 - rev3376)
+Internal:
+    Removed: The wrapper for the optional "native encryption library" from most assemblies. It didn't get certified for the Windows Store and caused problems in the Unity WebPlayer. This will be provided on demand instead.
+    Removed: Our upcoming protocol implementation until it's fully compatible with all supported platforms. Despite not being used, it also caused some issues on some Unity exports.
+    Changed: Usage of MemoryStream is being replaced with a StreamBuffer. This is our own implementation and always grants access to the underlying byte[] (which is not possible in Windows Phone / Store API in some cases). For your Custom Type serialization, replace MemoryStream with StreamBuffer. That's all.
+    Internal: Commands are now split into header and payload byte-arrays, instead of copying them into yet another buffer before sending them.
+    Added: Support for IPv6 adresses in Photon Ping classes. This supports "Best Region" usage in PUN.
+    Fixed: After DNS resolution, IPv6 adresses are preferred over IPv4 ones.
+LoadBalancing:
+    Fixed: LoadBalancingPeer.OpRaiseEvent(...) to send operations (and events) unencrypted again.
+
+*** Version 4.1.0.4 (19. May 2016 - rev3322)
+Internal:
+    Updated: For Unity, the usage of the optional "native sockets" library is now compatible with IPv6 addresses, as required by Apple.
+
+*** Version 4.1.0.3 (28. April 2016)
+Internal:
+    Added: An optional native library for encryption. This speeds up the (rarely used) key-exchange and encryption of messages. The usual case is to use the C# variant, as before.
+
+*** Version 4.1.0.2 (21. April 2016 - rev3283)
+Internal:
+    Changed: PeerBase: ipv6 flag set in INIT_BYTES[5] after dns lookup, when ip address type already known
+    Changed: PeerBase: INIT_BYTES[4] contains clientlibid and release flag (15)
+    Changed: PeerBase: client version packed in INIT_BYTES[5,7,6] bytes
+    Changed: pProtocol prefix and path parsed (and trimmed) in IPhotonSocket.TryParseAddress to support websocket urls
+    Changed: Client version moved to separate version.cs
+    Changed: Protocol static methods reworked to instance methods, IProtocol interface extracted
+    Changed: PeerBase.DeserializeMessageAndCallback() to use a variant of new MemoryStream that exists in Windows 10 Universal APIs, too.
+LoadBalancing:
+    Added: Expected Users. This affects the Room, LoadBalancingClient, JoinRoom, JoinOrCreateRoom and CreateRoom.
+    Added: null check in Extensions.StripToStringKeys().
+    Fixed: FriendInfo.IsInRoom, which returned the opposite of it's naming! Also changed FriendInfo ToString() according to PUN's.
+    Added: RoomInfo expectedUsersField, which is updated with room properties (well known ones).
+    Added: Room.ExpectedUsers and ClearExpectedUsers() to expose the list of expected players.
+    Added: RoomInfo.serverSideMasterClient and masterClientIdField (also updated with well known properties).
+    Changed: OpRaiseEvent now re-uses a Dictionary in the LoadBalancingPeer. It uses Clear(), rather than creating a new Dict each time.
+    Changed: AuthenticationValues to also use C# properties and and backup-fields. This is guaranteed to work in Unity.
+    Updated: EventCode ErrorInfo reference with a link to "WebHooks" doc online.
+    Changed: Disconnect handling in the LoadBalancingClient. The client should reset correctly and log info, if it's in a State where a disconnect is a proper error. Note: In some cases like "switching server", a disconnect is expected, so it's not an error then.
+    Fixed: PlayerProperties sent to game server will now include well-known properties again. This fixes the "NickName missing" bug.
+    Fixed: LoadBalancingClient.State value when the client fails to join or create a game on the Master Server. The state is correctly re-set to ClientState.JoinedLobby or ClientState.ConnectedToMaster.
+    Internal: Added private inLobby value, to store if the client was/is in a lobby on the Master Server.
+    Fixed: DemoClient (in demo-loadbalancing) now makes use of the Name Server by using: ConnectToRegionMaster("eu").
+    Added: DemoClient now has debug output when the connection times out or can't be established.
+
+
+*** Version 4.0.5.1 (18. January 2016 - rev3187)
+    Fixed: EnetPeer.ExecuteCommand(). Fixed: Receiving a Disconnect-command didn't clear the receive-buffers. However, it has to be the last command executed.
+    Note: The bug related to the Disconnect-command happened, when an app paused, queued incoming commands and executed the Disconnect while incoming commands were queued.
+    Fixed: Setting of DisconnectTimeout for TCP connections (ReceiveTimeout and SendTimeout).
+    Changed: Our protocol serializes Enums implicitly as their underlying Type. This means you can easily send them but will lose the Type info (they don't arrive as your Enum type). This is now also working in Windows Store libraries (NETFX_CORE).
+LoadBalancing:
+    Added: OpSetCustomPropertiesOfActor() and OpSetCustomPropertiesOfRoom() now check locally, if the client is currently in a room. It must be, to be able to set these properties. An exception exists for setting properties for the local player's actorNumber, but those are better set via LoadBalancingClient.LocalPlayer.
+Unity SDK:
+    Changed: The Unity condition which defines "using Hashtable = ExitGames.Client.Photon.Hashtable;". All versions of Unity 4 and up now define that Photon's Hashtable is needed. This is only in the LoadBalancing API, not in the demos.
+    Added: WebGL support
+
+*** Version 4.0.5.0 (3. December 2015 - rev3144)
+    Changed: Signature of SetCustomProperties methods. All overloads now include a final, optional "webForward" parameter. This enables you to update a WebHook when properties change. This is intended for turnbased games, not for high-frequency updates - use with care.
+    Internal: Added more debug output to error messages from the socket usage. This should now always include the ServerAddress to make things easier to debug server-side, if needed.
+    Added: Serveral new ErrorCode values, which will be used by v4RC5 and newer servers. See ErrorCode.JoinFailed***, HttpLimitReached and ExternalHttpCallFailed.
+    Fixed: LoadBalancing API now reads the correct "NickName" key from the server's authentication response. So far, it was reading a key that is never used. Note: This means you can set a user's NickName server-side to override the client's nickname.
+Chat
+    Added: A MessageLimit field for ChatClient and ChatChannel to limit the number of messages the client keeps locally. It might be useful to limit memory usage in long running chats. Set ChatClient.MessageLimit to apply the limit to any channel subscribed afterwards or apply a limit individually.
+
 *** Version 4.0.0.12 (3. November 2015 - rev3112)
-    Added: Suppor for IPv6. Note: IPv6 does not work in Unity yet. It has issues with IPv6. (Case 740910) 
+    Added: Support for IPv6. Note: IPv6 does not work in Unity yet. It has issues with IPv6. (Case 740910)
     Note: Host name resolution will prefer IPv4 over IPv6, if both IPs should be available. IPv6 Addresses must use brackets! Example: [::1]:5055. This separates the port from the address.
     Added: Error logging when Addresses can not be resolved to IPs.
     Changed: LoadBalancingClient OpJoinOrCreateRoom() no longer allows you to re-join a room. Simply remove the ActorNumber from the parameters. To re-join, use OpJoin with actorNumber (Player.ID that was assigned in the room).
     Added: Support for PS4 in Unity LoadBalancing SDK. Note: The demos are not all updated with controller support, as we use the old UI, still. To test export, use the Particle Demo.
-
 
 *** Version 4.0.0.11 (28. October 2015 - rev3093)
     Changed: Sending a generic Dictionary (with specific types) will now throw an Exception, if any key or value is null. This limitation does not include Dictionaries which use object as type. Those Exceptions are one of the few, which are not catched and turned into a debug message. Catch them by wrapping Operation calls, where needed (OpRaiseEvent()).

@@ -1,4 +1,14 @@
-﻿using UnityEngine;
+﻿// ----------------------------------------------------------------------------
+// <copyright file="PhotonTransformViewScaleControl.cs" company="Exit Games GmbH">
+//   PhotonNetwork Framework for Unity - Copyright (C) 2016 Exit Games GmbH
+// </copyright>
+// <summary>
+//   Component to synchronize scale via PUN PhotonView.
+// </summary>
+// <author>developer@exitgames.com</author>
+// ----------------------------------------------------------------------------
+
+using UnityEngine;
 using System.Collections;
 
 public class PhotonTransformViewScaleControl 
@@ -10,6 +20,15 @@ public class PhotonTransformViewScaleControl
     {
         m_Model = model;
     }
+
+	/// <summary>
+	/// Gets the last scale that was received through the network
+	/// </summary>
+	/// <returns></returns>
+	public Vector3 GetNetworkScale()
+	{
+		return m_NetworkScale;
+	}
 
     public Vector3 GetScale( Vector3 currentScale )
     {

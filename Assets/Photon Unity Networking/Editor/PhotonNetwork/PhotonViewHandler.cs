@@ -70,7 +70,7 @@ public class PhotonViewHandler : EditorWindow
                     view.viewID = 0;
                     view.prefixBackup = -1;
                     view.instantiationId = -1;
-                    EditorUtility.SetDirty(view);
+                    EditorUtility.SetDirty(view);   // even in Unity 5.3+ it's OK to SetDirty() for non-scene objects. 
                     fixedSomeId = true;
                 }
             }
@@ -126,6 +126,8 @@ public class PhotonViewHandler : EditorWindow
         {
             if (view.viewID == 0)
             {
+                Undo.RecordObject(view, "Automatic viewID change for: "+view.gameObject.name);
+
                 // Debug.LogWarning("setting scene ID: " + view.gameObject.name + " ID: " + view.subId.ID + " scene ID: " + view.GetSceneID() + " IsPersistent: " + EditorUtility.IsPersistent(view.gameObject) + " IsSceneViewIDFree: " + IsSceneViewIDFree(view.subId.ID, view));
                 int nextViewId = PhotonViewHandler.GetID(lastUsedId, usedInstanceViewNumbers);
 
@@ -134,7 +136,6 @@ public class PhotonViewHandler : EditorWindow
                 int instId = 0;
                 if (idPerObject.TryGetValue(view.gameObject, out instId))
                 {
-                    Debug.Log("Set inst ID");
                     view.instantiationId = instId;
                 }
                 else
@@ -143,12 +144,12 @@ public class PhotonViewHandler : EditorWindow
                     idPerObject[view.gameObject] = nextViewId;
                 }
 
-                //// when using the Editor's serialization (view.subId in this case), this is not needed, it seems
-                //PrefabUtility.RecordPrefabInstancePropertyModifications(view);
-
                 lastUsedId = nextViewId;
-                EditorUtility.SetDirty(view);
                 fixedSomeId = true;
+
+                #if !UNITY_MIN_5_3
+                EditorUtility.SetDirty(view);
+                #endif
             }
         }
 
@@ -190,4 +191,3 @@ public class PhotonViewHandler : EditorWindow
         Debug.Log("Corrected scene views where needed.");
     }
 }
-
