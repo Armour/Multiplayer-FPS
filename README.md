@@ -151,3 +151,7 @@ A multiplayer first-person shooter game based on Unity3D. To improve players' ga
   * Use right hand as a virtual mouse to control the camera rotation. I record the initial position of left hand as the initial position of the mouse. Then recognize the camera rotation by left hand’s offset.
 
 * <img src="Images/skeleton_overview.png" style="width:110px"> </img><img src="Images/shooting.png" style="width:134px"></img> <img src="Images/jumping.png" style="width:122px"> </img><img src="Images/rotation.png" style="width:156px"></img>
+
+## License
+
+MIT License
