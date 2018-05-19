@@ -4,7 +4,7 @@
 // <copyright company="Exit Games GmbH">Photon Chat Api - Copyright (C) 2014 Exit Games GmbH</copyright>
 // ----------------------------------------------------------------------------------------------------------------------
 
-#if UNITY_4_7 || UNITY_5 || UNITY_5_0 || UNITY_5_1 || UNITY_6_0
+#if UNITY_4_7 || UNITY_5 || UNITY_5_0 || UNITY_5_1 || UNITY_5_3_OR_NEWER
 #define UNITY
 #endif
 
@@ -144,6 +144,35 @@ namespace ExitGames.Client.Photon.Chat
         /// </remarks>
         public bool UseBackgroundWorkerForSending { get; set; }
 
+        /// <summary>Exposes the TransportProtocol of the used PhotonPeer. Settable while not connected.</summary>
+        public ConnectionProtocol TransportProtocol
+        {
+            get { return this.chatPeer.TransportProtocol; }
+            set
+            {
+                if (this.chatPeer == null || this.chatPeer.PeerState != PeerStateValue.Disconnected)
+                {
+                    this.listener.DebugReturn(DebugLevel.WARNING, "Can't set TransportProtocol. Disconnect first! " + ((this.chatPeer != null) ? "PeerState: " + this.chatPeer.PeerState : "The chatPeer is null."));
+                    return;
+                }
+                this.chatPeer.TransportProtocol = value;
+            }
+        }
+
+        /// <summary>Defines which IPhotonSocket class to use per ConnectionProtocol.</summary>
+        /// <remarks>
+        /// Several platforms have special Socket implementations and slightly different APIs.
+        /// To accomodate this, switching the socket implementation for a network protocol was made available.
+        /// By default, UDP and TCP have socket implementations assigned.
+        ///
+        /// You only need to set the SocketImplementationConfig once, after creating a PhotonPeer
+        /// and before connecting. If you switch the TransportProtocol, the correct implementation is being used.
+        /// </remarks>
+        public Dictionary<ConnectionProtocol, Type> SocketImplementationConfig
+        {
+            get { return this.chatPeer.SocketImplementationConfig; }
+        }
+
 
         public ChatClient(IChatClientListener listener, ConnectionProtocol protocol = ConnectionProtocol.Udp)
         {
@@ -201,6 +230,16 @@ namespace ExitGames.Client.Photon.Chat
             this.PublicChannels.Clear();
             this.PrivateChannels.Clear();
             this.PublicChannelsUnsubscribing.Clear();
+
+
+            #if UNITY_WEBGL
+            if (this.TransportProtocol == ConnectionProtocol.Tcp || this.TransportProtocol == ConnectionProtocol.Udp)
+            {
+                this.listener.DebugReturn(DebugLevel.WARNING, "WebGL requires WebSockets. Switching TransportProtocol to WebSocketSecure.");
+                this.TransportProtocol = ConnectionProtocol.WebSocketSecure;
+            }
+            #endif
+
 
             this.NameServerAddress = this.chatPeer.NameServerAddress;
             bool isConnecting = this.chatPeer.Connect();
@@ -1085,6 +1124,14 @@ namespace ExitGames.Client.Photon.Chat
             {
                 this.listener.DebugReturn(DebugLevel.INFO, "Connecting to frontend " + this.FrontendAddress);
             }
+
+            #if UNITY_WEBGL
+            if (this.TransportProtocol == ConnectionProtocol.Tcp || this.TransportProtocol == ConnectionProtocol.Udp)
+            {
+                this.listener.DebugReturn(DebugLevel.WARNING, "WebGL requires WebSockets. Switching TransportProtocol to WebSocketSecure.");
+                this.TransportProtocol = ConnectionProtocol.WebSocketSecure;
+            }
+            #endif
 
             this.chatPeer.Connect(this.FrontendAddress, ChatAppName);
         }

@@ -66,7 +66,6 @@ public class NetworkCullingHandler : MonoBehaviour, IPunObservable
                 this.pView.group = this.cullArea.FIRST_GROUP_ID;
 
                 PhotonNetwork.SetInterestGroups(this.cullArea.FIRST_GROUP_ID, true);
-                PhotonNetwork.SetSendingEnabled(this.cullArea.FIRST_GROUP_ID, true);
             }
             else
             {
@@ -118,12 +117,12 @@ public class NetworkCullingHandler : MonoBehaviour, IPunObservable
         {
             if (index <= this.cullArea.NumberOfSubdivisions)
             {
-                subscribedAndActiveCells += this.activeCells[index] + "  ";
+                subscribedAndActiveCells += this.activeCells[index] + " | ";
             }
 
-            subscribedCells += this.activeCells[index] + "  ";
+            subscribedCells += this.activeCells[index] + " | ";
         }
-
+        GUI.Label(new Rect(20.0f, Screen.height - 120.0f, 200.0f, 40.0f), "<color=white>PhotonView Group: " + this.pView.group + "</color>", new GUIStyle() { alignment = TextAnchor.UpperLeft, fontSize = 16 });
         GUI.Label(new Rect(20.0f, Screen.height - 100.0f, 200.0f, 40.0f), "<color=white>" + subscribedAndActiveCells + "</color>", new GUIStyle() { alignment = TextAnchor.UpperLeft, fontSize = 16 });
         GUI.Label(new Rect(20.0f, Screen.height - 60.0f, 200.0f, 40.0f), "<color=white>" + subscribedCells + "</color>", new GUIStyle() { alignment = TextAnchor.UpperLeft, fontSize = 16 });
     }
@@ -180,7 +179,6 @@ public class NetworkCullingHandler : MonoBehaviour, IPunObservable
         }
 
         PhotonNetwork.SetInterestGroups(disable.ToArray(), this.activeCells.ToArray());
-        PhotonNetwork.SetSendingEnabled(disable.ToArray(), this.activeCells.ToArray());
     }
 
     #region IPunObservable implementation

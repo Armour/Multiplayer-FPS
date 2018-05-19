@@ -14,7 +14,7 @@ using System.Collections;
 using System.Collections.Generic;
 using ExitGames.Client.Photon;
 
-#if UNITY_4_0 || UNITY_4_1 || UNITY_4_2 || UNITY_4_3 || UNITY_4_4 || UNITY_4_5 || UNITY_4_6 || UNITY_4_7 || UNITY_5 || UNITY_5_0 || UNITY_5_1 || UNITY_2017
+#if UNITY_4_0 || UNITY_4_1 || UNITY_4_2 || UNITY_4_3 || UNITY_4_4 || UNITY_4_5 || UNITY_4_6 || UNITY_4_7 || UNITY_5 || UNITY_5_0 || UNITY_5_1 || UNITY_5_3_OR_NEWER
     using UnityEngine;
     using Hashtable = ExitGames.Client.Photon.Hashtable;
     using SupportClassPun = ExitGames.Client.Photon.SupportClass;
@@ -145,10 +145,12 @@ using ExitGames.Client.Photon;
                 gameProperties[GamePropertyKey.CleanupCacheOnLeave] = true;  			// this is only informational for the clients which join
             }
 
+            // in PUN v1.88 and PUN 2, CheckUserOnJoin is set by default:
+            flags = flags | (int)RoomOptionBit.CheckUserOnJoin;
+            op[ParameterCode.CheckUserOnJoin] = true;
+
             if (roomOptions.PlayerTtl > 0 || roomOptions.PlayerTtl == -1)
             {
-                flags = flags | (int)RoomOptionBit.CheckUserOnJoin;
-                op[ParameterCode.CheckUserOnJoin] = true;               // this affects rejoining a room. requires a userId to be used. added in v1.67
                 op[ParameterCode.PlayerTTL] = roomOptions.PlayerTtl;    // TURNBASED
             }
 
@@ -352,12 +354,13 @@ using ExitGames.Client.Photon;
         /// <returns>If the opteration can be send currently.</returns>
         public virtual bool OpLeaveRoom(bool becomeInactive)
         {
-            Dictionary<byte, object> opParameters = new Dictionary<byte, object>();
+            Dictionary<byte, object> parameters = null;
             if (becomeInactive)
             {
-                opParameters[ParameterCode.IsInactive] = becomeInactive;
+                parameters = new Dictionary<byte, object>();
+                parameters[ParameterCode.IsInactive] = becomeInactive;
             }
-            return this.OpCustom(OperationCode.Leave, opParameters, true);
+            return this.OpCustom(OperationCode.Leave, parameters, true);
         }
 
         /// <summary>Gets a list of games matching a SQL-like where clause.</summary>
@@ -366,7 +369,7 @@ using ExitGames.Client.Photon;
         /// This is an async request which triggers a OnOperationResponse() call.
         /// Returned game list is stored in RoomInfoList.
         /// </remarks>
-        /// <see cref="http://doc.photonengine.com/en-us/pun/current/manuals-and-demos/matchmaking-and-lobby#sql_lobby_type"/>
+        /// <see cref="https://doc.photonengine.com/en-us/pun/current/lobby-and-matchmaking/matchmaking-and-lobby#sql_lobby_type"/>
         /// <param name="lobby">The lobby to query. Has to be of type SqlLobby.</param>
         /// <param name="queryData">The sql query statement.</param>
         /// <returns>If the operation could be sent (has to be connected).</returns>
@@ -476,7 +479,7 @@ using ExitGames.Client.Photon;
         }
 
 
-        protected void OpSetPropertyOfRoom(byte propCode, object value)
+        protected internal void OpSetPropertyOfRoom(byte propCode, object value)
         {
             Hashtable properties = new Hashtable();
             properties[propCode] = value;
@@ -777,6 +780,64 @@ using ExitGames.Client.Photon;
         }
 
 
+        #if PHOTON_LIB_MIN_4_1_2
+        /// <summary>
+        /// Send an event with custom code/type and any content to the other players in the same room.
+        /// </summary>
+        /// <remarks>This override explicitly uses another parameter order to not mix it up with the implementation for Hashtable only.</remarks>
+        /// <param name="eventCode">Identifies this type of event (and the content). Your game's event codes can start with 0.</param>
+        /// <param name="customEventContent">Any serializable datatype (including Hashtable like the other OpRaiseEvent overloads).</param>
+        /// <param name="raiseEventOptions">Contains (slightly) less often used options. If you pass null, the default options will be used.</param>
+        /// <param name="sendOptions">Send options wrap up reliability, sequencing and channel.</param>
+        /// <returns>If operation could be enqueued for sending. Sent when calling: Service or SendOutgoingCommands.</returns>
+        public virtual bool OpRaiseEvent(byte eventCode, object customEventContent, RaiseEventOptions raiseEventOptions, SendOptions sendOptions)
+        {
+            this.opParameters.Clear(); // re-used private variable to avoid many new Dictionary() calls (garbage collection)
+            this.opParameters[(byte)ParameterCode.Code] = (byte)eventCode;
+            if (customEventContent != null)
+            {
+                this.opParameters[(byte)ParameterCode.Data] = customEventContent;
+            }
+
+            if (raiseEventOptions == null)
+            {
+                raiseEventOptions = RaiseEventOptions.Default;
+            }
+            else
+            {
+                if (sendOptions.Channel != raiseEventOptions.SequenceChannel || sendOptions.Encrypt != raiseEventOptions.Encrypt)
+                {
+                    // TODO: This should be a one-time warning. 
+                    // NOTE: Later on, it will be impossible to mix up SendOptions and RaiseEventOptions, as they won't have overlapping settings.
+                    this.Listener.DebugReturn(DebugLevel.WARNING, "You are using RaiseEventOptions and SendOptions with conflicting settings. Please check channel and encryption value.");
+                }
+
+                if (raiseEventOptions.CachingOption != EventCaching.DoNotCache)
+                {
+                    this.opParameters[(byte)ParameterCode.Cache] = (byte)raiseEventOptions.CachingOption;
+                }
+                if (raiseEventOptions.Receivers != ReceiverGroup.Others)
+                {
+                    this.opParameters[(byte)ParameterCode.ReceiverGroup] = (byte)raiseEventOptions.Receivers;
+                }
+                if (raiseEventOptions.InterestGroup != 0)
+                {
+                    this.opParameters[(byte)ParameterCode.Group] = (byte)raiseEventOptions.InterestGroup;
+                }
+                if (raiseEventOptions.TargetActors != null)
+                {
+                    this.opParameters[(byte)ParameterCode.ActorList] = raiseEventOptions.TargetActors;
+                }
+                //if (raiseEventOptions.Flags.HttpForward)
+                //{
+                //    this.opParameters[(byte)ParameterCode.EventForward] = raiseEventOptions.Flags.WebhookFlags; //TURNBASED
+                //}
+            }
+
+            return this.SendOperation(OperationCode.RaiseEvent, this.opParameters, sendOptions);
+        }
+        #endif
+
         /// <summary>
         /// Internally used operation to set some "per server" settings. This is for the Master Server.
         /// </summary>
@@ -1045,7 +1106,13 @@ using ExitGames.Client.Photon;
 
         /// <summary>(247) Code for ExpectedUsers in a room. Matchmaking keeps a slot open for the players with these userIDs.</summary>
         public const byte ExpectedUsers = (byte)247;
-    }
+
+        /// <summary>(246) Player Time To Live. How long any player can be inactive (due to disconnect or leave) before the user gets removed from the playerlist (freeing a slot).</summary>
+        public const byte PlayerTtl = (byte)246;
+
+        /// <summary>(245) Room Time To Live. How long a room stays available (and in server-memory), after the last player becomes inactive. After this time, the room gets persisted or destroyed.</summary>
+        public const byte EmptyRoomTtl = (byte)245;
+}
 
 
     /// <summary>
@@ -1089,11 +1156,11 @@ using ExitGames.Client.Photon;
         [Obsolete("Use PropertiesChanged now.")]
         public const byte SetProperties = (byte)253;
 
-        /// <summary>(252) When player left game unexpected and the room has a playerTtl > 0, this event is fired to let everyone know about the timeout.</summary>
+        /// <summary>(252) When player left game unexpected and the room has a playerTtl != 0, this event is fired to let everyone know about the timeout.</summary>
         /// Obsolete. Replaced by Leave. public const byte Disconnect = LiteEventCode.Disconnect;
 
         /// <summary>(251) Sent by Photon Cloud when a plugin-call or webhook-call failed. Usually, the execution on the server continues, despite the issue. Contains: ParameterCode.Info.</summary>
-        /// <seealso cref="https://doc.photonengine.com/en/realtime/current/reference/webhooks#options"/>
+        /// <seealso cref="https://doc.photonengine.com/en-us/pun/current/gameplay/web-extensions/webhooks#options"/>
         public const byte ErrorInfo = 251;
 
         /// <summary>(250) Sent by Photon whent he event cache slice was changed. Done by OpRaiseEvent.</summary>
@@ -1339,6 +1406,7 @@ using ExitGames.Client.Photon;
         public const byte ExchangeKeysForEncryption = 250;
 
         /// <summary>(255) Code for OpJoin, to get into a room.</summary>
+		[Obsolete]
         public const byte Join = 255;
 
         /// <summary>(231) Authenticates this peer and connects to a virtual application</summary>
@@ -1663,6 +1731,20 @@ using ExitGames.Client.Photon;
         /// <summary>Default options: CachingOption: DoNotCache, InterestGroup: 0, targetActors: null, receivers: Others, sequenceChannel: 0.</summary>
         public readonly static RaiseEventOptions Default = new RaiseEventOptions();
 
+		/// <summary>
+		/// Reset this instance. For better memory handling than instanciating a new one always,
+		/// </summary>
+		public void Reset()
+		{
+			this.CachingOption = Default.CachingOption;
+			this.InterestGroup = Default.InterestGroup;
+			this.TargetActors = Default.TargetActors;
+			this.Receivers = Default.Receivers;
+			this.SequenceChannel = Default.SequenceChannel;
+			this.ForwardToWebhook = Default.ForwardToWebhook;
+			this.Encrypt = Default.Encrypt;
+		}
+
         /// <summary>Defines if the server should simply send the event, put it in the cache or remove events that are like this one.</summary>
         /// <remarks>
         /// When using option: SliceSetIndex, SlicePurgeIndex or SlicePurgeUpToIndex, set a CacheSliceIndex. All other options except SequenceChannel get ignored.
@@ -1843,6 +1925,7 @@ using ExitGames.Client.Photon;
         }
 
         /// <summary>Sets the data to be passed-on to the auth service via POST.</summary>
+        /// <remarks>AuthPostData is just one value. Each SetAuthPostData replaces any previous value. It can be either a string, a byte[] or a dictionary. Each SetAuthPostData replaces any previous value.</remarks>
         /// <param name="stringData">String data to be used in the body of the POST request. Null or empty string will set AuthPostData to null.</param>
         public virtual void SetAuthPostData(string stringData)
         {
@@ -1850,10 +1933,19 @@ using ExitGames.Client.Photon;
         }
 
         /// <summary>Sets the data to be passed-on to the auth service via POST.</summary>
+        /// <remarks>AuthPostData is just one value. Each SetAuthPostData replaces any previous value. It can be either a string, a byte[] or a dictionary. Each SetAuthPostData replaces any previous value.</remarks>
         /// <param name="byteData">Binary token / auth-data to pass on.</param>
         public virtual void SetAuthPostData(byte[] byteData)
         {
             this.AuthPostData = byteData;
+        }
+
+        /// <summary>Sets data to be passed-on to the auth service as Json (Content-Type: "application/json") via Post.</summary>
+        /// <remarks>AuthPostData is just one value. Each SetAuthPostData replaces any previous value. It can be either a string, a byte[] or a dictionary. Each SetAuthPostData replaces any previous value.</remarks>
+        /// <param name="dictData">A authentication-data dictionary will be converted to Json and passed to the Auth webservice via HTTP Post.</param>
+        public virtual void SetAuthPostData(Dictionary<string, object> dictData)
+        {
+            this.AuthPostData = dictData;
         }
 
         /// <summary>Adds a key-value pair to the get-parameters used for Custom Auth.</summary>

@@ -1,6 +1,7 @@
-#if UNITY_WEBGL || UNITY_XBOXONE
+#if UNITY_WEBGL || WEBSOCKET
+
 // --------------------------------------------------------------------------------------------------------------------
-// <copyright file="SocketTcp.cs" company="Exit Games GmbH">
+// <copyright file="SocketWebTcp.cs" company="Exit Games GmbH">
 //   Copyright (c) Exit Games GmbH.  All rights reserved.
 // </copyright>
 // <summary>
@@ -17,7 +18,7 @@ using SupportClassPun = ExitGames.Client.Photon.SupportClass;
 
 namespace ExitGames.Client.Photon
 {
-    #if UNITY_5_3 || UNITY_5_3_OR_NEWER
+#if UNITY_5_3 || UNITY_5_3_OR_NEWER
     /// <summary>
     /// Yield Instruction to Wait for real seconds. Very important to keep connection working if Time.TimeScale is altered, we still want accurate network events
     /// </summary>
@@ -35,7 +36,7 @@ namespace ExitGames.Client.Photon
             _endTime = Time.realtimeSinceStartup + seconds;
         }
     }
-    #endif
+#endif
 
     /// <summary>
     /// Internal class to encapsulate the network i/o functionality for the realtime libary.
@@ -54,7 +55,7 @@ namespace ExitGames.Client.Photon
                 Listener.DebugReturn(DebugLevel.INFO, "new SocketWebTcp() for Unity. Server: " + ServerAddress);
             }
 
-            this.Protocol = ConnectionProtocol.WebSocket;
+            //this.Protocol = ConnectionProtocol.WebSocket;
             this.PollReceive = false;
         }
 
@@ -193,12 +194,12 @@ namespace ExitGames.Client.Photon
             {
                 while (this.sock != null && !this.sock.Connected && this.sock.Error == null)
                 {
-                    #if UNITY_5_3 || UNITY_5_3_OR_NEWER
+#if UNITY_5_3 || UNITY_5_3_OR_NEWER
                     yield return new WaitForRealSeconds(0.1f);
-                    #else
+#else
                     float waittime = Time.realtimeSinceStartup + 0.1f;
                     while (Time.realtimeSinceStartup < waittime) yield return 0;
-                    #endif
+#endif
                 }
 
                 if (this.sock != null)
@@ -232,12 +233,12 @@ namespace ExitGames.Client.Photon
                                     if (inBuff == null || inBuff.Length == 0)
                                     {
                                         // nothing received. wait a bit, try again
-                                        #if UNITY_5_3 || UNITY_5_3_OR_NEWER
+#if UNITY_5_3 || UNITY_5_3_OR_NEWER
                                         yield return new WaitForRealSeconds(0.02f);
-                                        #else
+#else
                                         float waittime = Time.realtimeSinceStartup + 0.02f;
                                         while (Time.realtimeSinceStartup < waittime) yield return 0;
-                                        #endif
+#endif
                                         continue;
                                     }
 

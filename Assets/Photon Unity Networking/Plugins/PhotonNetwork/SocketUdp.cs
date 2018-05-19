@@ -32,7 +32,7 @@ namespace ExitGames.Client.Photon
                 this.Listener.DebugReturn(DebugLevel.ALL, "CSharpSocket: UDP, Unity3d.");
             }
 
-            this.Protocol = ConnectionProtocol.Udp;
+            //this.Protocol = ConnectionProtocol.Udp;
             this.PollReceive = false;
         }
 

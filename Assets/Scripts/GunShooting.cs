@@ -62,7 +62,7 @@ public class GunShooting : Photon.MonoBehaviour {
             if (Physics.Raycast(shootRay, out shootHit, range, shootableMask)) {
                 switch (shootHit.transform.gameObject.tag) {
                 case "Player":
-                    shootHit.collider.GetComponent<PhotonView>().RPC("TakeDamage", PhotonTargets.All, damagePerShot, PhotonNetwork.player.name);
+                    shootHit.collider.GetComponent<PhotonView>().RPC("TakeDamage", PhotonTargets.All, damagePerShot, PhotonNetwork.player.NickName);
                     PhotonNetwork.Instantiate("impactFlesh", shootHit.point, Quaternion.Euler(shootHit.normal.x - 90, shootHit.normal.y, shootHit.normal.z), 0);
                     break;
                 case "Metal":

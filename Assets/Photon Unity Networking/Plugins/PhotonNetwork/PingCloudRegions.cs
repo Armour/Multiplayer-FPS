@@ -224,7 +224,7 @@ public class PhotonPingManager
 		}
         regionAddress = ResolveHost(regionAddress);
 
-
+        Debug.Log("Ping Debug - PhotonHandler.PingImplementation: " + PhotonHandler.PingImplementation + " ping.GetType():" + ping.GetType() + " regionAddress:" + regionAddress);
         for (int i = 0; i < Attempts; i++)
         {
             bool overtime = false;
@@ -303,7 +303,7 @@ public class PhotonPingManager
     /// <remarks>
     /// To be compatible with most platforms, the address family is checked like this:</br>
     /// if (ipAddress.AddressFamily.ToString().Contains("6")) // ipv6...
-    /// </reamrks>
+    /// </remarks>
     /// <param name="hostName">Hostname to resolve.</param>
     /// <returns>IP string or empty string if resolution fails</returns>
     public static string ResolveHost(string hostName)

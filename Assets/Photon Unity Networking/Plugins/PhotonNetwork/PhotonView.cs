@@ -332,7 +332,7 @@ public class PhotonView : Photon.MonoBehaviour
             bool wasInList = PhotonNetwork.networkingPeer.LocalCleanPhotonView(this);
             bool loading = false;
 
-            #if !UNITY_5 || UNITY_5_0 || UNITY_5_1
+			#if (!UNITY_5 || UNITY_5_0 || UNITY_5_1) && !UNITY_5_3_OR_NEWER
             loading = Application.isLoadingLevel;
             #endif
 

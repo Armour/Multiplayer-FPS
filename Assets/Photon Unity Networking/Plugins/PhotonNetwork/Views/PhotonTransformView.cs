@@ -28,17 +28,17 @@ public class PhotonTransformView : MonoBehaviour, IPunObservable
     //the object and calculating all the inter- and extrapolation
 
     [SerializeField]
-    PhotonTransformViewPositionModel m_PositionModel = new PhotonTransformViewPositionModel();
+	public  PhotonTransformViewPositionModel m_PositionModel = new PhotonTransformViewPositionModel();
 
     [SerializeField]
-    PhotonTransformViewRotationModel m_RotationModel = new PhotonTransformViewRotationModel();
+	public PhotonTransformViewRotationModel m_RotationModel = new PhotonTransformViewRotationModel();
 
     [SerializeField]
-    PhotonTransformViewScaleModel m_ScaleModel = new PhotonTransformViewScaleModel();
+	public PhotonTransformViewScaleModel m_ScaleModel = new PhotonTransformViewScaleModel();
 
-    PhotonTransformViewPositionControl m_PositionControl;
-    PhotonTransformViewRotationControl m_RotationControl;
-    PhotonTransformViewScaleControl m_ScaleControl;
+	PhotonTransformViewPositionControl m_PositionControl;
+	PhotonTransformViewRotationControl m_RotationControl;
+	PhotonTransformViewScaleControl m_ScaleControl;
 
     PhotonView m_PhotonView;
 

@@ -401,6 +401,10 @@
         <member name="P:ExitGames.Client.Photon.PhotonPeer.ClientVersion">
             <summary>Version of this library as string.</summary>
         </member>
+        <member name="P:ExitGames.Client.Photon.PhotonPeer.SerializationProtocolType">
+            <summary>Enables selection of a (Photon-)serialization protocol. Used in Connect methods.</summary>
+            <remarks>Defaults to SerializationProtocol.GpBinaryV16;</remarks>
+        </member>
         <member name="F:ExitGames.Client.Photon.PhotonPeer.SocketImplementationConfig">
              <summary>Defines which IPhotonSocket class to use per ConnectionProtocol.</summary>
              <remarks>
@@ -678,8 +682,7 @@
         </member>
         <member name="F:ExitGames.Client.Photon.PhotonPeer.DisconnectTimeout">
              <summary>
-             Milliseconds after which a reliable UDP command triggers a timeout disconnect, unless acknowledged by server.
-             This value currently only affects UDP connections.
+             Milliseconds before an individual command must be ACKed by server - after this a timeout-disconnect is triggered.
              DisconnectTimeout is not an exact value for a timeout. The exact timing of the timeout depends on the frequency
              of Service() calls and commands that are sent with long roundtrip-times and variance are checked less often for
              re-sending!
@@ -767,14 +770,7 @@
             Changes of the roundtriptime as variance value. Gives a hint about how much the time is changing.
             </summary>
         </member>
-        <member name="P:ExitGames.Client.Photon.PhotonPeer.TimestampOfLastSocketReceive">
-            <summary>
-            Stores timestamp of the last time anything (!) was received from the server (including
-            low level Ping and ACKs but also events and operation-returns). This is not the time when
-            something was dispatched.
-            If you enable NetworkSimulation, this value is affected as well.
-            </summary>
-        </member>
+        <!-- Ungültiger XML-Kommentar wurde für den Member "P:ExitGames.Client.Photon.PhotonPeer.TimestampOfLastSocketReceive" ignoriert -->
         <member name="P:ExitGames.Client.Photon.PhotonPeer.ServerAddress">
             <summary>
             The server address which was used in PhotonPeer.Connect() or null (before Connect() was called).
@@ -787,9 +783,9 @@
             <summary>The protocol this peer is currently connected/connecting with (or 0).</summary>
         </member>
         <member name="P:ExitGames.Client.Photon.PhotonPeer.TransportProtocol">
-            <summary>This is the protocol to be used for next connect (see remarks).</summary>
-            <remarks>The TransportProtocol can be changed anytime but it will not change the protocol
-            of currently active connections. Instead, TransportProtocol will be applied on next Connect.
+            <summary>This is the transport protocol to be used for next connect (see remarks).</summary>
+            <remarks>The TransportProtocol can be changed anytime but it will not change the
+            currently active connection. Instead, TransportProtocol will be applied on next Connect.
             </remarks>
         </member>
         <member name="P:ExitGames.Client.Photon.PhotonPeer.IsSimulationEnabled">
@@ -845,14 +841,16 @@
         </member>
         <member name="M:ExitGames.Client.Photon.PhotonPeer.#ctor(ExitGames.Client.Photon.IPhotonPeerListener,ExitGames.Client.Photon.ConnectionProtocol)">
             <summary>
-            Creates a new PhotonPeer instance to communicate with Photon and selects either UDP or TCP as
-            protocol. We recommend UDP.
+            Creates a new PhotonPeer instance to communicate with Photon and selects the transport protocol. We recommend UDP.
             </summary>
             <param name="listener">a IPhotonPeerListener implementation</param>
             <param name="protocolType">Protocol to use to connect to Photon.</param>
         </member>
         <member name="M:ExitGames.Client.Photon.PhotonPeer.Connect(System.String,System.String)">
              <summary>
+             Connects to a Photon server. This wraps up DNS name resolution, sending the AppId and establishing encryption.
+             </summary>
+             <remarks>
              This method does a DNS lookup (if necessary) and connects to the given serverAddress.
             
              The return value gives you feedback if the address has the correct format. If so, this
@@ -867,7 +865,7 @@
             
              By default, the applicationName is "LoadBalancing" but there is also the "MmoDemo".
              You can setup your own application and name it any way you like.
-             </summary>
+             </remarks>
              <param name="serverAddress">
              Address of the Photon server. Format: ip:port (e.g. 127.0.0.1:5055) or hostname:port (e.g. localhost:5055)
              </param>
@@ -880,39 +878,42 @@
              </returns>
         </member>
         <member name="M:ExitGames.Client.Photon.PhotonPeer.Connect(System.String,System.String,System.Object)">
-              <summary>
-              This method does a DNS lookup (if necessary) and connects to the given serverAddress.
+             <summary>
+             Connects to a Photon server. This wraps up DNS name resolution, sending the AppId and establishing encryption.
+             </summary>
+             <remarks>
+             This method does a DNS lookup (if necessary) and connects to the given serverAddress.
             
-              The return value gives you feedback if the address has the correct format. If so, this
-              starts the process to establish the connection itself, which might take a few seconds.
+             The return value gives you feedback if the address has the correct format. If so, this
+             starts the process to establish the connection itself, which might take a few seconds.
             
-              When the connection is established, a callback to IPhotonPeerListener.OnStatusChanged
-              will be done. If the connection can't be established, despite having a valid address,
-              the OnStatusChanged is called with an error-value.
+             When the connection is established, a callback to IPhotonPeerListener.OnStatusChanged
+             will be done. If the connection can't be established, despite having a valid address,
+             the OnStatusChanged is called with an error-value.
             
-              The applicationName defines the application logic to use server-side and it should match the name of
-              one of the apps in your server's config.
+             The applicationName defines the application logic to use server-side and it should match the name of
+             one of the apps in your server's config.
             
-              By default, the applicationName is "LoadBalancing" but there is also the "MmoDemo".
-              You can setup your own application and name it any way you like.
-              </summary>
-              <param name="serverAddress">
-              Address of the Photon server. Format: ip:port (e.g. 127.0.0.1:5055) or hostname:port (e.g. localhost:5055)
-              </param>
-              <param name="applicationName">
-              The name of the application to use within Photon or the appId of PhotonCloud.
-              Should match a "Name" for an application, as setup in your PhotonServer.config.
-              </param>
-              <param name="custom">
-              Allows you to send some data, which may be used by server during peer creation
-              (e.g. as additional authentication info).
-              You can use any serializable data type of Photon.
-              Helpful for self-hosted solutions. Server will read this info on peer creation stage,
-              and may reject client without creating of peer if auth info is invalid.
-              </param>
-              <returns>
-              true if IP is available (DNS name is resolved) and server is being connected. false on error.
-              </returns>
+             By default, the applicationName is "LoadBalancing" but there is also the "MmoDemo".
+             You can setup your own application and name it any way you like.
+             </remarks>
+             <param name="serverAddress">
+             Address of the Photon server. Format: ip:port (e.g. 127.0.0.1:5055) or hostname:port (e.g. localhost:5055)
+             </param>
+             <param name="applicationName">
+             The name of the application to use within Photon or the appId of PhotonCloud.
+             Should match a "Name" for an application, as setup in your PhotonServer.config.
+             </param>
+             <param name="custom">
+             Allows you to send some data, which may be used by server during peer creation
+             (e.g. as additional authentication info).
+             You can use any serializable data type of Photon.
+             Helpful for self-hosted solutions. Server will read this info on peer creation stage,
+             and may reject client without creating of peer if auth info is invalid.
+             </param>
+             <returns>
+             true if IP is available (DNS name is resolved) and server is being connected. false on error.
+             </returns>
         </member>
         <member name="M:ExitGames.Client.Photon.PhotonPeer.Disconnect">
              <summary>
@@ -943,13 +944,14 @@
         <member name="M:ExitGames.Client.Photon.PhotonPeer.FetchServerTimestamp">
              <summary>
              This will fetch the server's timestamp and update the approximation for property ServerTimeInMilliseconds.
-            
+             </summary>
+             <remarks>
              The server time approximation will NOT become more accurate by repeated calls. Accuracy currently depends
              on a single roundtrip which is done as fast as possible.
             
              The command used for this is immediately acknowledged by the server. This makes sure the roundtrip time is
              low and the timestamp + rountriptime / 2 is close to the original value.
-             </summary>
+             </remarks>
         </member>
         <member name="M:ExitGames.Client.Photon.PhotonPeer.EstablishEncryption">
              <summary>
@@ -1003,9 +1005,7 @@
         </member>
         <member name="M:ExitGames.Client.Photon.PhotonPeer.SendOutgoingCommands">
              <summary>
-             This method creates a UDP/TCP package for outgoing commands (operations and acknowledgements)
-             and sends them to the server.
-             This method is also called by Service().
+             Creates and sends a UDP/TCP package with outgoing commands (operations and acknowledgements). Also called by Service().
              </summary>
              <remarks>
              As the Photon library does not create any UDP/TCP packages by itself. Instead, the application
@@ -1031,13 +1031,14 @@
         </member>
         <member name="M:ExitGames.Client.Photon.PhotonPeer.DispatchIncomingCommands">
              <summary>
-             This method directly causes the callbacks for events, responses and state changes
-             within a IPhotonPeerListener. DispatchIncomingCommands only executes a single received
-             command per call. If a command was dispatched, the return value is true and the method
-             should be called again.
-             This method is called by Service() until currently available commands are dispatched.
+             Dispatching received messages (commands), causes callbacks for events, responses and state changes within a IPhotonPeerListener.
              </summary>
              <remarks>
+             DispatchIncomingCommands only executes a single received
+             command per call. If a command was dispatched, the return value is true and the method
+             should be called again.
+            
+             This method is called by Service() until currently available commands are dispatched.
              In general, this method should be called until it returns false. In a few cases, it might
              make sense to pause dispatching (if a certain state is reached and the app needs to load
              data, before it should handle new events).
@@ -1151,6 +1152,10 @@
         </member>
         <member name="F:ExitGames.Client.Photon.PhotonCodes.Ok">
             <summary>Result code for any (internal) operation.</summary>
+        </member>
+        <member name="P:ExitGames.Client.Photon.PeerBase.ServerAddress">
+            <summary>The server's address, as set by a Connect() call, including any protocol, ports and or path.</summary>
+            <remarks>If rHTTP is used, this can be set directly.</remarks>
         </member>
         <member name="F:ExitGames.Client.Photon.PeerBase.ByteCountLastOperation">
             <summary>Byte count of last sent operation (set during serialization).</summary>
@@ -1451,6 +1456,27 @@
         </member>
         <member name="M:ExitGames.Client.Photon.TPeer.ReceiveIncomingCommands(System.Byte[],System.Int32)">
             <summary>reads incoming tcp-packages to create and queue incoming commands*</summary>
+        </member>
+        <member name="M:ExitGames.Client.Photon.IProtocol.Serialize(System.Object)">
+            <summary>
+            Serialize creates a byte-array from the given object and returns it.
+            </summary>
+            <param name="obj">The object to serialize</param>
+            <returns>The serialized byte-array</returns>
+        </member>
+        <member name="M:ExitGames.Client.Photon.IProtocol.Deserialize(ExitGames.Client.Photon.StreamBuffer)">
+            <summary>
+            Deserialize returns an object reassembled from the given StreamBuffer.
+            </summary>
+            <param name="stream">The buffer to be Deserialized</param>
+            <returns>The Deserialized object</returns>
+        </member>
+        <member name="M:ExitGames.Client.Photon.IProtocol.Deserialize(System.Byte[])">
+            <summary>
+            Deserialize returns an object reassembled from the given byte-array.
+            </summary>
+            <param name="serializedData">The byte-array to be Deserialized</param>
+            <returns>The Deserialized object</returns>
         </member>
         <member name="T:ExitGames.Client.Photon.OperationRequest">
             <summary>
@@ -1773,6 +1799,21 @@
             <param name="ip">Address in IPv4 or IPv6 format. An address containing a '.' will be interpretet as IPv4.</param>
             <returns>True if the Photon Ping could be sent.</returns>
         </member>
+        <member name="F:ExitGames.Client.Photon.IPhotonSocket.Protocol">
+            <summary>The protocol for this socket, defined in constructor.</summary>
+        </member>
+        <member name="P:ExitGames.Client.Photon.IPhotonSocket.ConnectAddress">
+            <summary>Address, as defined via a Connect() call. Including protocol, port and or path.</summary>
+        </member>
+        <member name="P:ExitGames.Client.Photon.IPhotonSocket.ServerAddress">
+            <summary>Contains only the server's hostname (stripped protocol, port and or path). Set in IphotonSocket.Connect().</summary>
+        </member>
+        <member name="P:ExitGames.Client.Photon.IPhotonSocket.ServerPort">
+            <summary>Contains only the server's port address (as string).  Set in IphotonSocket.Connect().</summary>
+        </member>
+        <member name="P:ExitGames.Client.Photon.IPhotonSocket.AddressResolvedAsIpv6">
+            <summary>Where available, this exposes if the server's address was resolved into an IPv6 address or not.</summary>
+        </member>
         <member name="M:ExitGames.Client.Photon.IPhotonSocket.TryParseAddress(System.String,System.String@,System.UInt16@,System.String@,System.String@)">
              <summary>
              Separates the given address into address (host name or IP) and port. Port must be included after colon!
@@ -1833,7 +1874,7 @@
         <member name="F:ExitGames.Client.Photon.SimulationItem.TimeToExecute">
             <summary>Timestamp after which this item must be executed.</summary>
         </member>
-        <member name="F:ExitGames.Client.Photon.SimulationItem.ActionToExecute">
+        <member name="F:ExitGames.Client.Photon.SimulationItem.DelayedData">
             <summary>Action to execute when the lag-time passed.</summary>
         </member>
         <member name="M:ExitGames.Client.Photon.SimulationItem.#ctor">
@@ -2017,27 +2058,6 @@
         </member>
         <member name="P:ExitGames.Client.Photon.TrafficStats.TimestampOfLastReliableCommand">
             <summary>Timestamp of last incoming reliable command (every second we expect a PING).</summary>
-        </member>
-        <member name="M:ExitGames.Client.IProtocol.Serialize(System.Object)">
-            <summary>
-            Serialize creates a byte-array from the given object and returns it.
-            </summary>
-            <param name="obj">The object to serialize</param>
-            <returns>The serialized byte-array</returns>
-        </member>
-        <member name="M:ExitGames.Client.IProtocol.Deserialize(ExitGames.Client.Photon.StreamBuffer)">
-            <summary>
-            Deserialize returns an object reassembled from the given StreamBuffer.
-            </summary>
-            <param name="stream">The buffer to be Deserialized</param>
-            <returns>The Deserialized object</returns>
-        </member>
-        <member name="M:ExitGames.Client.IProtocol.Deserialize(System.Byte[])">
-            <summary>
-            Deserialize returns an object reassembled from the given byte-array.
-            </summary>
-            <param name="serializedData">The byte-array to be Deserialized</param>
-            <returns>The Deserialized object</returns>
         </member>
         <member name="T:Photon.SocketServer.Security.OakleyGroups">
             <summary>

@@ -170,6 +170,46 @@ public class Room : RoomInfo
         get { return this.expectedUsersField; }
     }
 
+    /// <summary>Player Time To Live. How long any player can be inactive (due to disconnect or leave) before the user gets removed from the playerlist (freeing a slot).</summary>
+    public int PlayerTtl
+    {
+        get { return this.playerTtlField; }
+        set
+        {
+            if (!this.Equals(PhotonNetwork.room))
+            {
+                UnityEngine.Debug.LogWarning("Can't set PlayerTtl when not in a room.");
+            }
+
+            if (value != this.playerTtlField && !PhotonNetwork.offlineMode)
+            {
+                PhotonNetwork.networkingPeer.OpSetPropertyOfRoom(GamePropertyKey.PlayerTtl, value);
+            }
+
+            this.playerTtlField = value;
+        }
+    }
+
+    /// <summary>Room Time To Live. How long a room stays available (and in server-memory), after the last player becomes inactive. After this time, the room gets persisted or destroyed.</summary>
+    public int EmptyRoomTtl
+    {
+        get { return this.emptyRoomTtlField; }
+        set
+        {
+            if (!this.Equals(PhotonNetwork.room))
+            {
+                UnityEngine.Debug.LogWarning("Can't set EmptyRoomTtl when not in a room.");
+            }
+
+            if (value != this.emptyRoomTtlField && !PhotonNetwork.offlineMode)
+            {
+                PhotonNetwork.networkingPeer.OpSetPropertyOfRoom(GamePropertyKey.EmptyRoomTtl, value);
+            }
+
+            this.emptyRoomTtlField = value;
+        }
+    }
+
     /// <summary>The ID (actorNumber) of the current Master Client of this room.</summary>
     /// <remarks>See also: PhotonNetwork.masterClient.</remarks>
     protected internal int MasterClientId
@@ -312,6 +352,28 @@ public class Room : RoomInfo
     {
         Hashtable props = new Hashtable();
         props[GamePropertyKey.ExpectedUsers] = new string[0];
+        Hashtable expected = new Hashtable();
+        expected[GamePropertyKey.ExpectedUsers] = this.ExpectedUsers;
+        PhotonNetwork.networkingPeer.OpSetPropertiesOfRoom(props, expected, webForward: false);
+    }
+
+    /// <summary>
+    /// Attempts to set the current expected users list.
+    /// </summary>
+    /// <remarks>
+    /// Note that this operation can conflict with new/other users joining. They might be
+    /// adding users to the list of expected users before or after this client called SetExpectedUsers.
+    /// If the list changes before this operation arrives, the server will not modify the list and
+    /// SetExpectedUsers() fails.
+    ///
+    /// This room's expectedUsers value will be sent by the server.
+    ///
+    /// Internals: This methods wraps up setting the ExpectedUsers property of a room.
+    /// </remarks>
+    public void SetExpectedUsers(string[] expectedUsers)
+    {
+        Hashtable props = new Hashtable();
+        props[GamePropertyKey.ExpectedUsers] = expectedUsers;
         Hashtable expected = new Hashtable();
         expected[GamePropertyKey.ExpectedUsers] = this.ExpectedUsers;
         PhotonNetwork.networkingPeer.OpSetPropertiesOfRoom(props, expected, webForward: false);

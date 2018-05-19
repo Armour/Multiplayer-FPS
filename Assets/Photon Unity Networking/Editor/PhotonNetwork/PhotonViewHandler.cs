@@ -1,4 +1,4 @@
-#if UNITY_5 && !UNITY_5_0 && !UNITY_5_1 && !UNITY_5_2
+#if UNITY_5 && !UNITY_5_0 && !UNITY_5_1 && !UNITY_5_2 || UNITY_5_4_OR_NEWER
 #define UNITY_MIN_5_3
 #endif
 
@@ -20,7 +20,11 @@ public class PhotonViewHandler : EditorWindow
     {
         // hierarchyWindowChanged is called on hierarchy changed and on save. It's even called when hierarchy-window is closed and if a prefab with instances is changed.
         // this is not called when you edit a instance's value but: on save
-        EditorApplication.hierarchyWindowChanged += HierarchyChange;
+		#if UNITY_2018
+		EditorApplication.hierarchyChanged += HierarchyChange;
+		#else
+		EditorApplication.hierarchyWindowChanged += HierarchyChange;
+		#endif
     }
 
     // this method corrects the IDs for photonviews in the scene and in prefabs

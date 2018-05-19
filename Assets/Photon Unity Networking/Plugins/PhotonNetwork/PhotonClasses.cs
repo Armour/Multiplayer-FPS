@@ -20,7 +20,7 @@
 /// \brief Useful GUI elements for PUN.
 #pragma warning restore 1587
 
-#if UNITY_5 && !UNITY_5_0 && !UNITY_5_1 && !UNITY_5_2
+#if UNITY_5 && !UNITY_5_0 && !UNITY_5_1 && !UNITY_5_2 || UNITY_5_4_OR_NEWER
 #define UNITY_MIN_5_3
 #endif
 
@@ -205,7 +205,8 @@ public interface IPunCallbacks
     void OnPhotonInstantiate(PhotonMessageInfo info);
 
     /// <summary>
-    /// Called for any update of the room-listing while in a lobby (PhotonNetwork.insideLobby) on the Master Server.
+    /// Called for any update of the room-listing while in a lobby (PhotonNetwork.insideLobby) on the Master Server
+    /// or when a response is received for PhotonNetwork.GetCustomRoomList().
     /// </summary>
     /// <remarks>
     /// PUN provides the list of rooms by PhotonNetwork.GetRoomList().<br/>
@@ -347,7 +348,7 @@ public interface IPunCallbacks
     ///
     /// Example: void OnCustomAuthenticationResponse(Dictionary&lt;string, object&gt; data) { ... }
     /// </remarks>
-    /// <see cref="https://doc.photonengine.com/en/realtime/current/reference/custom-authentication"/>
+    /// <see cref="https://doc.photonengine.com/en-us/pun/current/connection-and-authentication/custom-authentication"/>
     void OnCustomAuthenticationResponse(Dictionary<string, object> data);
 
     /// <summary>
@@ -680,7 +681,8 @@ namespace Photon
         }
 
         /// <summary>
-        /// Called for any update of the room-listing while in a lobby (PhotonNetwork.insideLobby) on the Master Server.
+        /// Called for any update of the room-listing while in a lobby (PhotonNetwork.insideLobby) on the Master Server
+        /// or when a response is received for PhotonNetwork.GetCustomRoomList().
         /// </summary>
         /// <remarks>
         /// PUN provides the list of rooms by PhotonNetwork.GetRoomList().<br/>
@@ -844,7 +846,7 @@ namespace Photon
         ///
         /// Example: void OnCustomAuthenticationResponse(Dictionary&lt;string, object&gt; data) { ... }
         /// </remarks>
-        /// <see cref="https://doc.photonengine.com/en/realtime/current/reference/custom-authentication"/>
+        /// <see cref="https://doc.photonengine.com/en-us/pun/current/connection-and-authentication/custom-authentication"/>
         public virtual void OnCustomAuthenticationResponse(Dictionary<string, object> data)
         {
         }
@@ -938,6 +940,7 @@ namespace Photon
 public struct PhotonMessageInfo
 {
     private readonly int timeInt;
+    /// <summary>The sender of a message / event. May be null.</summary>
     public readonly PhotonPlayer sender;
     public readonly PhotonView photonView;
 
@@ -1292,7 +1295,7 @@ public class PhotonStream
 }
 
 
-#if UNITY_5_0 || !UNITY_5
+#if UNITY_5_0 || !UNITY_5 && !UNITY_5_3_OR_NEWER
 /// <summary>Empty implementation of the upcoming HelpURL of Unity 5.1. This one is only for compatibility of attributes.</summary>
 /// <remarks>http://feedback.unity3d.com/suggestions/override-component-documentation-slash-help-link</remarks>
 public class HelpURL : Attribute
@@ -1304,7 +1307,7 @@ public class HelpURL : Attribute
 #endif
 
 
-#if !UNITY_MIN_5_3  && ! UNITY_2017
+#if !UNITY_MIN_5_3
 // in Unity 5.3 and up, we have to use a SceneManager. This section re-implements it for older Unity versions
 
 #if UNITY_EDITOR
@@ -1338,6 +1341,12 @@ namespace UnityEditor.SceneManagement
 
 namespace UnityEngine.SceneManagement
 {
+	public enum LoadSceneMode
+	{
+		Single,
+		Additive
+	}
+
     /// <summary>Minimal implementation of the SceneManager for older Unity, up to v5.2.</summary>
     public class SceneManager
     {
@@ -1350,6 +1359,25 @@ namespace UnityEngine.SceneManagement
         {
             Application.LoadLevel(buildIndex);
         }
+
+		public static AsyncOperation LoadSceneAsync(string name,LoadSceneMode mode =  LoadSceneMode.Single)
+		{
+			if (mode == UnityEngine.SceneManagement.LoadSceneMode.Single) {
+				return Application.LoadLevelAsync (name);
+			} else {
+				return Application.LoadLevelAdditiveAsync(name);
+			}
+		}
+
+		public static AsyncOperation LoadSceneAsync(int buildIndex,LoadSceneMode mode =  LoadSceneMode.Single)
+		{
+			if (mode == UnityEngine.SceneManagement.LoadSceneMode.Single) {
+				return Application.LoadLevelAsync (buildIndex);
+			} else {
+				return Application.LoadLevelAdditiveAsync(buildIndex);
+			}
+		}
+
     }
 }
 

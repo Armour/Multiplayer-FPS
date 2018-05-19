@@ -11,6 +11,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.IO;
 using UnityEditor;
 
 
@@ -66,5 +67,33 @@ namespace ExitGames.Client.Photon
 			}
 		}
 
+
+		/// <summary>
+		/// Gets the parent directory of a path. Recursive Function, will return null if parentName not found
+		/// </summary>
+		/// <returns>The parent directory</returns>
+		/// <param name="path">Path.</param>
+		/// <param name="parentName">Parent name.</param>
+		public static string GetParent(string path, string parentName)
+		{
+			var dir = new DirectoryInfo(path);
+			
+			if (dir.Parent == null)
+			{
+				return null;
+			}
+			
+			if (string.IsNullOrEmpty(parentName))
+			{
+				return  dir.Parent.FullName;
+			}
+			
+			if (dir.Parent.Name == parentName)
+			{
+				return dir.Parent.FullName;
+			}
+			
+			return GetParent(dir.Parent.FullName, parentName);
+		}
 	}
 }

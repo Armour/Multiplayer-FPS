@@ -37,6 +37,11 @@ public class NetworkManager : Photon.MonoBehaviour {
         }
     }
 
+    // Callback function on connected to master
+    void OnConnectedToMaster() {
+        PhotonNetwork.JoinLobby();
+    }
+
     // Callback function on joined lobby
     void OnJoinedLobby() {
         serverWindow.SetActive(true);
@@ -47,7 +52,7 @@ public class NetworkManager : Photon.MonoBehaviour {
         roomList.text = "";
         RoomInfo[] rooms = PhotonNetwork.GetRoomList();
         foreach (RoomInfo room in rooms)
-            roomList.text += room.name + "\n";
+            roomList.text += room.Name + "\n";
     }
 
     // Callback function on joined room
@@ -60,8 +65,8 @@ public class NetworkManager : Photon.MonoBehaviour {
     // The button click callback function for join room
     public void JoinRoom() {
         serverWindow.SetActive(false);
-        PhotonNetwork.player.name = username.text;
-        RoomOptions roomOptions = new RoomOptions() {isVisible = true, maxPlayers = 12};
+        PhotonNetwork.player.NickName = username.text;
+        RoomOptions roomOptions = new RoomOptions() {IsVisible = true, MaxPlayers = 12};
         PhotonNetwork.JoinOrCreateRoom(roomName.text, roomOptions, TypedLobby.Default);
     }
 
@@ -88,9 +93,9 @@ public class NetworkManager : Photon.MonoBehaviour {
         sceneCamera.enabled = false;
 
         if (spawnTime == 0.0f)
-            AddMessage("Player " + PhotonNetwork.player.name + " Joined Game.");
+            AddMessage("Player " + PhotonNetwork.player.NickName + " Joined Game.");
         else
-            AddMessage("Player " + PhotonNetwork.player.name + " Respawned.");
+            AddMessage("Player " + PhotonNetwork.player.NickName + " Respawned.");
     }
 
     // Add message to message panel
@@ -113,7 +118,7 @@ public class NetworkManager : Photon.MonoBehaviour {
     // Callback function when player disconnected
     void OnPhotonPlayerDisconnected(PhotonPlayer other) {
         if (photonView.isMine)
-            AddMessage("Player " + other.name + " Left Game.");
+            AddMessage("Player " + other.NickName + " Left Game.");
     }
 
     // Synchronize data on the network
