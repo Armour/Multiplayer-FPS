@@ -71,7 +71,7 @@ inline void ComputeScreenAndGrabPassPos (float4 pos, out float4 screenPos, out f
 		float scale = 1.0f;
 	#endif
 	
-	screenPos = ComputeScreenPos(pos); 
+	screenPos = ComputeNonStereoScreenPos(pos); 
 	grabPassPos.xy = ( float2( pos.x, pos.y*scale ) + pos.w ) * 0.5;
 	grabPassPos.zw = pos.zw;
 }

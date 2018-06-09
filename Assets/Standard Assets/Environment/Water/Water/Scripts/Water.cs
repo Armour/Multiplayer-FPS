@@ -99,10 +99,13 @@ namespace UnityStandardAssets.Water
                 Vector4 clipPlane = CameraSpacePlane(reflectionCamera, pos, normal, 1.0f);
                 reflectionCamera.projectionMatrix = cam.CalculateObliqueMatrix(clipPlane);
 
-                reflectionCamera.cullingMask = ~(1 << 4) & reflectLayers.value; // never render water layer
+				// Set custom culling matrix from the current camera
+				reflectionCamera.cullingMatrix = cam.projectionMatrix * cam.worldToCameraMatrix;
+
+				reflectionCamera.cullingMask = ~(1 << 4) & reflectLayers.value; // never render water layer
                 reflectionCamera.targetTexture = m_ReflectionTexture;
                 bool oldCulling = GL.invertCulling;
-				GL.invertCulling = !oldCulling;
+                GL.invertCulling = !oldCulling;
                 reflectionCamera.transform.position = newpos;
                 Vector3 euler = cam.transform.eulerAngles;
                 reflectionCamera.transform.eulerAngles = new Vector3(-euler.x, euler.y, euler.z);
@@ -122,7 +125,10 @@ namespace UnityStandardAssets.Water
                 Vector4 clipPlane = CameraSpacePlane(refractionCamera, pos, normal, -1.0f);
                 refractionCamera.projectionMatrix = cam.CalculateObliqueMatrix(clipPlane);
 
-                refractionCamera.cullingMask = ~(1 << 4) & refractLayers.value; // never render water layer
+				// Set custom culling matrix from the current camera
+				refractionCamera.cullingMatrix = cam.projectionMatrix * cam.worldToCameraMatrix;
+
+				refractionCamera.cullingMask = ~(1 << 4) & refractLayers.value; // never render water layer
                 refractionCamera.targetTexture = m_RefractionTexture;
                 refractionCamera.transform.position = cam.transform.position;
                 refractionCamera.transform.rotation = cam.transform.rotation;
@@ -336,7 +342,7 @@ namespace UnityStandardAssets.Water
 
         WaterMode FindHardwareWaterSupport()
         {
-            if (!SystemInfo.supportsRenderTextures || !GetComponent<Renderer>())
+            if (!GetComponent<Renderer>())
             {
                 return WaterMode.Simple;
             }
