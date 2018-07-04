@@ -7,7 +7,7 @@ using UnityStandardAssets.Characters.FirstPerson;
 public class PlayerHealth : Photon.MonoBehaviour {
 
     public delegate void Respawn(float time);
-    public delegate void SendMessage(string Message);
+    public new delegate void SendMessage(string Message);
     public event Respawn RespawnMe;
     public event SendMessage SendNetworkMessage;
 
@@ -104,7 +104,7 @@ public class PlayerHealth : Photon.MonoBehaviour {
         if (photonView.isMine) {
 
             if (SendNetworkMessage != null) {
-                SendNetworkMessage(PhotonNetwork.player.name + " was killed by " + enemyName + "!");
+                SendNetworkMessage(PhotonNetwork.player.NickName + " was killed by " + enemyName + "!");
             }
 
             if (RespawnMe != null) {
