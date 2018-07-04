@@ -1,0 +1,25 @@
+# http://editorconfig.org
+
+# top-most EditorConfig file
+root = true
+
+# Unix-style newlines with a newline ending every file
+[*]
+charset = utf-8
+end_of_line = lf
+insert_final_newline = true
+trim_trailing_whitespace = true
+
+# Indentation override for c# files
+[*.cs]
+indent_size = 4
+indent_style = space
+
+# Trailing space override for markdown file
+[*.md]
+trim_trailing_whitespace = false
+
+# Indentation override for config files
+[*.{json,yml}]
+indent_size = 2
+indent_style = space

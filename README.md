@@ -1,5 +1,9 @@
 # Multiplayer-FPS
 
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat)](http://makeapullrequest.com)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
+[![Template from jarvis](https://img.shields.io/badge/Hi-Jarvis-ff69b4.svg)](https://github.com/Armour/Jarvis)
+
 A multiplayer first-person shooter game based on Unity3D. To improve game experience, different types of input devices have been added such as Kinect, Xbox controller, Leap motion and VR Glasses. (All in different branches)
 
 ## Game logic and function
@@ -152,6 +156,10 @@ A multiplayer first-person shooter game based on Unity3D. To improve game experi
 
 * <img src="Images/skeleton_overview.png" style="width:110px"> </img><img src="Images/shooting.png" style="width:134px"></img> <img src="Images/jumping.png" style="width:122px"> </img><img src="Images/rotation.png" style="width:156px"></img>
 
+## Contributing
+
+See [CONTRIBUTING.md](https://github.com/Armour/Multiplayer-FPS/blob/master/.github/CONTRIBUTING.md)
+
 ## License
 
-MIT License
+[MIT License](https://github.com/Armour/Multiplayer-FPS/blob/master/LICENSE)

@@ -1,0 +1,200 @@
+# Details per file setting:
+#   text    These files should be normalized (i.e. convert CRLF to LF).
+#   binary  These files are binary and should be left untouched.
+
+# Auto detect text files and perform LF normalization
+* text=auto
+# The above will handle all files NOT found below
+
+# SOURCE CODE
+*.bat      text eol=crlf
+*.c        text
+*.cc       text
+*.coffee   text
+*.cpp      text
+*.css      text
+*.go       text
+*.h        text
+*.hh       text
+*.hpp      text
+*.html     text
+*.inc      text
+*.ini      text
+*.java     text
+*.js       text
+*.jsx      text
+*.less     text
+*.php      text
+*.proto    text
+*.py       text
+*.rb       text
+*.sass     text
+*.sass     text
+*.scss     text
+*.sh       text eol=lf
+*.sql      text
+*.styl     text
+*.ts       text
+*.tsx      text
+*.vue      text
+*.xml      text
+*.xhtml    text
+
+# DOCKER
+*.dockerignore    text
+Dockerfile        text
+
+# DOCUMENTATION
+*.markdown   text
+*.md         text
+*.mdwn       text
+*.mdown      text
+*.mkd        text
+*.mkdn       text
+*.mdtxt      text
+*.mdtext     text
+*.txt        text
+AUTHORS      text
+CHANGELOG    text
+CHANGES      text
+CONTRIBUTING text
+COPYING      text
+copyright    text
+*COPYRIGHT*  text
+INSTALL      text
+license      text
+LICENSE      text
+NEWS         text
+readme       text
+*README*     text
+TODO         text
+
+# TEMPLATES
+*.ejs        text
+*.haml       text
+*.jade       text
+*.tmpl       text
+*.twig       text
+
+# CONFIGS
+*.babelrc      text
+*.bowerrc      text
+*.cnf          text
+*.conf         text
+*.config       text
+.editorconfig  text
+.gitattributes text
+.gitconfig     text
+.gitignore     text
+.htaccess      text
+*.json         text
+*.lock         text
+Procfile       text
+*.yaml         text
+*.yml          text
+Makefile       text
+makefile       text
+
+# LINTERS
+.csslintrc    text
+.eslintrc     text
+.eslintignore text
+.htmlhintrc   text
+.jscsrc       text
+.jshintrc     text
+.jshintignore text
+.stylelintrc  text
+.stylelignore text
+
+# GRAPHICS
+*.ai   binary
+*.bmp  binary
+*.eps  binary
+*.gif  binary
+*.ico  binary
+*.jng  binary
+*.jp2  binary
+*.jpg  binary
+*.jpeg binary
+*.jpx  binary
+*.jxr  binary
+*.pdf  binary
+*.png  binary
+*.psb  binary
+*.psd  binary
+*.svg  text
+*.svgz binary
+*.tif  binary
+*.tiff binary
+*.wbmp binary
+*.webp binary
+
+# AUDIO
+*.kar  binary
+*.m4a  binary
+*.mid  binary
+*.midi binary
+*.mp3  binary
+*.ogg  binary
+*.ra   binary
+
+# VIDEO
+*.3gpp binary
+*.3gp  binary
+*.as   binary
+*.asf  binary
+*.asx  binary
+*.fla  binary
+*.flv  binary
+*.m4v  binary
+*.mng  binary
+*.mov  binary
+*.mp4  binary
+*.mpeg binary
+*.mpg  binary
+*.ogv  binary
+*.swc  binary
+*.swf  binary
+*.webm binary
+
+# ARCHIVES
+*.7z  binary
+*.gz  binary
+*.jar binary
+*.rar binary
+*.tar binary
+*.zip binary
+
+# FONTS
+*.ttf   binary
+*.eot   binary
+*.otf   binary
+*.woff  binary
+*.woff2 binary
+
+# Compiled Object files
+*.slo binary
+*.lo  binary
+*.o   binary
+*.obj binary
+
+# Precompiled Headers
+*.gch binary
+*.pch binary
+
+# Compiled Dynamic libraries
+*.so    binary
+*.dylib binary
+*.dll   binary
+
+# Compiled Static libraries
+*.lai binary
+*.la  binary
+*.a   binary
+*.lib binary
+
+# EXECUTABLES
+*.exe binary
+*.pyc binary
+*.out binary
+
