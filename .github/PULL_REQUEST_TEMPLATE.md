@@ -24,7 +24,7 @@ If yes, please describe the impact and migration path for existing applications:
 
 **The PR fulfills these requirements:**
 
-- [ ] When resolving a specific issue, it's referenced in the PR's title (e.g. `Fixes/Closes #xxx[,#xxx]`, where "xxx" is the issue number)
+- [ ] When resolving a specific issue, it's referenced in the PR's title (e.g. `Closes #xxx[,#xxx]`, where "xxx" is the issue number)
 
 If adding a **new feature**, the PR's description includes:
 

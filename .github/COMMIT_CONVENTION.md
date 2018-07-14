@@ -7,7 +7,7 @@
 Messages must be matched by the following regex:
 
 ``` js
-/^(Revert: )?(Feature|Fix|Docs|Improvement|Config|Examples|Security|Style|Refactor|Performance|Test|Build|CI|Types)(\(.+\))?: .{1,80}/
+/^(Revert: )?(Feature|Fix|Docs|Improve|Config|Example|Refactor|Style|Test|Build|CI)(\(.+\))?: .{1,80}/
 ```
 
 ## Commit Message Format
@@ -89,29 +89,19 @@ If the commit reverts a previous commit, it should begin with `Revert: `, follow
 
 Must be one of the following:
 
-* **Build**: Changes that affect the build system or external dependencies (example scopes: gulp, broccoli, npm, yarn)
-* **CI**: Changes to our CI configuration files and scripts (example scopes: Travis, Circle, BrowserStack, SauceLabs)
-* **Config**: Configuration changes
-* **Docs**: Documentation only changes
-* **Examples**: Changes for example code
+* **Build**: Changes that affect the build system or external dependencies (example scopes: gulp, npm, yarn)
+* **CI**: Changes to CI related configuration files and scripts (example scopes: travis, circle, browserstack)
+* **Config**: Changes to other configuration files (example scopes: webpack, babel, docker)
+* **Docs**: Documentation only changes (example scopes: readme, changelog)
+* **Example**: Changes for example code
 * **Feature**: A new feature
 * **Fix**: A bug fix
-* **Improvement**: Backwards-compatible enhancement changes
-* **Performance**: A code change that improves performance
+* **Improve**: Backwards-compatible enhancement changes
 * **Refactor**: A code change that neither fixes a bug nor adds a feature
-* **Security**: A security issue fix
 * **Style**: Changes that do not affect the meaning of the code (white-space, formatting, missing semi-colons, etc)
-* **Test**: Adding missing tests or correcting existing tests
-* **Types**: Typescript related changes
+* **Test**: Changes for testing code
 
-If the prefix is in the below types, it will appear in the changelog. However if there is any [BREAKING CHANGE](#footer), the commit will always appear in the changelog.
-
-* `Examples`
-* `Feature`
-* `Fix`
-* `Performance`
-* `Improvement`
-* `Security`
+If the prefix is `Feature` or `Fix`, it will appear in the changelog. However if there is any [BREAKING CHANGE](#footer), the commit will always appear in the changelog.
 
 ### Scope
 

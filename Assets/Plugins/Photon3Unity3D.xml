@@ -1056,6 +1056,26 @@
             <param name="all">If true, Incoming and Outgoing low-level stats are included in the string.</param>
             <returns>Stats as string.</returns>
         </member>
+        <member name="M:ExitGames.Client.Photon.PhotonPeer.SendOperation(System.Byte,System.Collections.Generic.Dictionary{System.Byte,System.Object},ExitGames.Client.Photon.SendOptions)">
+             <summary>
+             Prepares your operation (code and parameters) to be sent to the Photon Server with specified SendOptions.
+             </summary>
+             <remarks>
+             This method serializes and enqueues the operation right away while the actual sending happens later.
+             To be able to aggregate operations/messages, the Photon client sends packages only when you call SendOutgoingCommands().
+            
+             The sendOptions specify how the operation gets sent exactly.
+             Keep in mind that some transport protocols don't support unreliable or unsequenced transport.
+             In that case, the sendOptions might be ignored.
+            
+             The operationCode must be known by the server's logic or won't be processed.
+             In almost all cases, sending an operation will result in a OperationResponse (see: IPhotonPeerListener.OnOperationResponse).
+             </remarks>
+             <param name="operationCode">Operations are handled by their byte\-typed code. The codes of the &quot;LoadBalancing&quot; application are in the class <see cref="!:ExitGames.Client.Photon.LoadBalancing.OperationCode" />.</param>
+             <param name="operationParameters">Containing parameters as key\-value pair. The key is byte\-typed, while the value is any serializable datatype.</param>
+             <param name="sendOptions">Wraps up DeliveryMode (reliability), Encryption and Channel values for sending.</param>
+             <returns>If operation could be enqueued for sending.</returns>
+        </member>
         <member name="M:ExitGames.Client.Photon.PhotonPeer.OpCustom(System.Byte,System.Collections.Generic.Dictionary{System.Byte,System.Object},System.Boolean)">
             <summary>
             Channel-less wrapper for OpCustom().
@@ -1843,6 +1863,33 @@
             <remarks>Only returns IPv4 or IPv6 adresses, no others.</remarks>
             <param name="address">The string address of a server (hostname or IP).</param>
             <returns>IPAddress for the string address or null, if the address is neither IPv4, IPv6 or some hostname that could be resolved.</returns>
+        </member>
+        <member name="T:ExitGames.Client.Photon.DeliveryMode">
+            <summary>Enum of the three options for reliability and sequencing in Photon's reliable-UDP.</summary>
+        </member>
+        <member name="F:ExitGames.Client.Photon.DeliveryMode.Unreliable">
+            <summary>The operation/message gets sent just once without acknowledgement or repeat. The sequence (order) of messages is guaranteed.</summary>
+        </member>
+        <member name="F:ExitGames.Client.Photon.DeliveryMode.Reliable">
+            <summary>The operation/message asks for an acknowledgment. It's resent until an ACK arrived. The sequence (order) of messages is guaranteed.</summary>
+        </member>
+        <member name="T:ExitGames.Client.Photon.SendOptions">
+            <summary>Wraps up DeliveryMode, Encryption and Channel values for sending operations and messages.</summary>
+        </member>
+        <member name="F:ExitGames.Client.Photon.SendOptions.DeliveryMode">
+            <summary>Chose the DeliveryMode for this operation/message. Defaults to Unreliable.</summary>
+        </member>
+        <member name="F:ExitGames.Client.Photon.SendOptions.Encrypt">
+            <summary>If true the operation/message gets encrypted before it's sent. Defaults to false.</summary>
+            <remarks>Before encryption can be used, it must be established. Check PhotonPeer.IsEncryptionAvailable is true.</remarks>
+        </member>
+        <member name="F:ExitGames.Client.Photon.SendOptions.Channel">
+            <summary>The Enet channel to send in. Defaults to 0.</summary>
+            <remarks>Channels in Photon relate to "message channels". Each channel is a sequence of messages.</remarks>
+        </member>
+        <member name="P:ExitGames.Client.Photon.SendOptions.Reliability">
+            <summary>Sets the DeliveryMode either to true: Reliable or false: Unreliable, overriding any current value.</summary>
+            <remarks>Use this to conveniently select reliable/unreliable delivery.</remarks>
         </member>
         <member name="T:ExitGames.Client.Photon.SocketUdp">
             <summary> Internal class to encapsulate the network i/o functionality for the realtime libary.</summary>

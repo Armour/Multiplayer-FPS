@@ -26,7 +26,7 @@ ISSUES MISSING IMPORTANT INFORMATION MAY BE CLOSED WITHOUT INVESTIGATION.
 ## Minimal reproduction of the problem with instructions
 
 <!--
-For bug reports please provide the *STEPS TO REPRODUCE* and if possible a *MINIMAL DEMO* of the problem via https://stackblitz.com, github repo or similar.
+For bug reports please provide the *STEPS TO REPRODUCE* and if possible a *MINIMAL DEMO* of the problem via github repo or similar tools.
 -->
 
 ## What is the motivation / use case for changing the behavior?

@@ -64,11 +64,11 @@ Server
 PUN+ and Networking Guide Subscriptions
     Follow these steps when you bought an asset that includes an upgrade for a Photon Cloud subscription:
         • Use an existing Photon Cloud Account or register.     https://www.photonengine.com/Account/SignUp
-        • Sign in and open the Dashboard.                       https://www.photonengine.com/dashboard/Realtime/
+        • Sign in and open the Dashboard.                       https://dashboard.photonengine.com
         • Select the Subscription to upgrade and click "Apply Unity Purchase".
         • Enter your Unity Invoice Number and App ID.
         
-        • You find the App ID on: https://www.photonengine.com/dashboard/Realtime/
+        • You find the App ID on: https://dashboard.photonengine.com
         • You find your Unity Invoice Number in the Unity AssetStore: 
             https://www.assetstore.unity3d.com/en/#!/account/transactions
             Or while logged in to the Asset Store, click on your name on the top right. 

@@ -28,7 +28,7 @@ using System.IO;
 public static class PhotonNetwork
 {
     /// <summary>Version number of PUN. Also used in GameVersion to separate client version from each other.</summary>
-    public const string versionPUN = "1.90";
+    public const string versionPUN = "1.91";
 
     /// <summary>Version string for your this build. Can be used to separate incompatible clients. Sent during connect.</summary>
     /// <remarks>This is only sent when you connect so that is also the place you set it usually (e.g. in ConnectUsingSettings).</remarks>
@@ -1081,7 +1081,7 @@ public static class PhotonNetwork
     /// <summary>Register your RaiseEvent handling methods here by using "+=".</summary>
     /// <remarks>Any eventCode &lt; 200 will be forwarded to your delegate(s).</remarks>
     /// <see cref="RaiseEvent"/>
-    public static EventCallback OnEventCall;
+	public static event EventCallback OnEventCall;
 
 
     internal static int lastUsedViewSubId = 0;  // each player only needs to remember it's own (!) last used subId to speed up assignment
@@ -2155,6 +2155,7 @@ public static class PhotonNetwork
         if (offlineMode)
         {
             offlineModeRoom = null;
+            networkingPeer.State = ClientState.PeerCreated;
             NetworkingPeer.SendMonoMessage(PhotonNetworkingMessage.OnLeftRoom);
         }
         else
@@ -3358,6 +3359,17 @@ public static class PhotonNetwork
     {
         return networkingPeer.WebRpc(name, parameters);
     }
+
+	public static bool CallEvent(byte eventCode, object content, int senderId)
+	{
+		if (PhotonNetwork.OnEventCall != null)
+		{
+			PhotonNetwork.OnEventCall(eventCode, content, senderId);
+			return true;
+		}
+
+		return false;
+	}
 
 
 #if UNITY_EDITOR

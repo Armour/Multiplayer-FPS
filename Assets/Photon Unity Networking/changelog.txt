@@ -1,10 +1,15 @@
+v1.91 (6. July 2018)
+	Fixed: PhotonNetwork.OnEvenCall is now an event to prevent wrong usage and registrations. PunTurnManager and InRoomRaiseEvent EventCall Registration now add themselves to the event properly.
+	Fixed: Bug which prevents from enabling the Offline Mode for a second time after a room has been joined in Offline Mode and the Offline Mode has been disabled afterwards.
+    Removed: [RPC] attribute support no longer available, Unity 2018.2 removed this attribute entirely.
+    Added: NetworkingPeer.cs: Clean up Level Async Loading process watcher if we leave the room, close connection. Also better handle loading process when already joined.
+
 v1.90 (10. April 2018)
 	Added: PhotonNetwork.LoadLevelAsync() with LoadSceneMode.single mode support only ( LoadSceneMode.additive async loading requires keeping track of all loadings)
 	Fixed: A WebGL build warning about unused code (minimal change).
 	Fixed: Compile conditions for console-related code. Some of the code will not work in the editor.
 	Updated: To Photon3Unity3d.dll v4.1.1.19, which contains a few important fixes. Mainly WSS and console related. See plugins\release_history.txt.
 
-	
 v1.89 (26. February 2018)
 	Changed: Best Region connection routine now takes in consideration the regions whitelist and correctly handle the saved best region pref, ignoring it if not in the whiteList anymore.
 	Updated: Unity 2018 compatibility update to fix errors and obsolete warnings

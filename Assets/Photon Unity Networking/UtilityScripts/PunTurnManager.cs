@@ -124,7 +124,7 @@ public class PunTurnManager : PunBehaviour
 	/// </summary>
     void Start()
     {
-        PhotonNetwork.OnEventCall = OnEvent;
+        PhotonNetwork.OnEventCall += OnEvent;
     }
 
 	void Update()

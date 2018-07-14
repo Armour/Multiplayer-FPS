@@ -8,152 +8,80 @@
 
 # SOURCE CODE
 *.bat      text eol=crlf
-*.c        text
-*.cc       text
-*.coffee   text
-*.cpp      text
-*.css      text
-*.go       text
-*.h        text
-*.hh       text
-*.hpp      text
-*.html     text
-*.inc      text
-*.ini      text
-*.java     text
-*.js       text
-*.jsx      text
-*.less     text
-*.php      text
-*.proto    text
-*.py       text
-*.rb       text
-*.sass     text
-*.sass     text
-*.scss     text
 *.sh       text eol=lf
-*.sql      text
-*.styl     text
-*.ts       text
-*.tsx      text
-*.vue      text
-*.xml      text
-*.xhtml    text
+*.cs       text
 
-# DOCKER
-*.dockerignore    text
-Dockerfile        text
+# COMPILED FILES
+*.dll      binary
+*.dylib    binary
+*.exe      binary
+*.so       binary
 
 # DOCUMENTATION
-*.markdown   text
 *.md         text
-*.mdwn       text
-*.mdown      text
-*.mkd        text
-*.mkdn       text
-*.mdtxt      text
-*.mdtext     text
 *.txt        text
-AUTHORS      text
-CHANGELOG    text
-CHANGES      text
-CONTRIBUTING text
-COPYING      text
-copyright    text
-*COPYRIGHT*  text
-INSTALL      text
-license      text
 LICENSE      text
-NEWS         text
-readme       text
-*README*     text
-TODO         text
-
-# TEMPLATES
-*.ejs        text
-*.haml       text
-*.jade       text
-*.tmpl       text
-*.twig       text
 
 # CONFIGS
-*.babelrc      text
-*.bowerrc      text
-*.cnf          text
-*.conf         text
-*.config       text
 .editorconfig  text
 .gitattributes text
-.gitconfig     text
 .gitignore     text
-.htaccess      text
+*.conf         text
+*.config       text
 *.json         text
 *.lock         text
-Procfile       text
+*.toml         text
 *.yaml         text
 *.yml          text
-Makefile       text
-makefile       text
-
-# LINTERS
-.csslintrc    text
-.eslintrc     text
-.eslintignore text
-.htmlhintrc   text
-.jscsrc       text
-.jshintrc     text
-.jshintignore text
-.stylelintrc  text
-.stylelignore text
 
 # GRAPHICS
 *.ai   binary
 *.bmp  binary
 *.eps  binary
 *.gif  binary
+*.heic binary
 *.ico  binary
-*.jng  binary
-*.jp2  binary
-*.jpg  binary
 *.jpeg binary
-*.jpx  binary
-*.jxr  binary
+*.jpg  binary
 *.pdf  binary
 *.png  binary
 *.psb  binary
 *.psd  binary
 *.svg  text
-*.svgz binary
 *.tif  binary
 *.tiff binary
 *.wbmp binary
 *.webp binary
 
 # AUDIO
-*.kar  binary
+*.aac  binary
+*.flac binary
 *.m4a  binary
 *.mid  binary
 *.midi binary
 *.mp3  binary
+*.mp4a binary
+*.mpga binary
+*.oga  binary
 *.ogg  binary
-*.ra   binary
+*.wav  binary
+*.weba binary
 
 # VIDEO
-*.3gpp binary
+*.3g2  binary
 *.3gp  binary
-*.as   binary
 *.asf  binary
-*.asx  binary
+*.avi  binary
+*.f4v  binary
 *.fla  binary
 *.flv  binary
 *.m4v  binary
-*.mng  binary
 *.mov  binary
 *.mp4  binary
 *.mpeg binary
 *.mpg  binary
 *.ogv  binary
-*.swc  binary
+*.qt   binary
 *.swf  binary
 *.webm binary
 
@@ -166,35 +94,8 @@ makefile       text
 *.zip binary
 
 # FONTS
-*.ttf   binary
 *.eot   binary
 *.otf   binary
+*.ttf   binary
 *.woff  binary
 *.woff2 binary
-
-# Compiled Object files
-*.slo binary
-*.lo  binary
-*.o   binary
-*.obj binary
-
-# Precompiled Headers
-*.gch binary
-*.pch binary
-
-# Compiled Dynamic libraries
-*.so    binary
-*.dylib binary
-*.dll   binary
-
-# Compiled Static libraries
-*.lai binary
-*.la  binary
-*.a   binary
-*.lib binary
-
-# EXECUTABLES
-*.exe binary
-*.pyc binary
-*.out binary
-

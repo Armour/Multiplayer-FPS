@@ -1,6 +1,6 @@
 * release_history.txt
 * Release history for the DotNet Photon Client Library (DotNet / Unity / Windows Store 8.1 and 10)
-(C) 2016 Exit Games GmbH, http://www.photonengine.com
+(C) 2018 Exit Games GmbH, http://www.photonengine.com
 
 Questions? Visit:
 https://www.photonengine.com
@@ -8,9 +8,13 @@ https://doc.photonengine.com
 http://forum.photonengine.com
 
 
+
+*** Version 4.1.1.20 (2018 - rev4701)
+	Added: SendOperation() with SendOptions to v4.1.1.x library. This minimizes the gap between this library branch and the new trunk.
+
+
 *** Version 4.1.1.19 (9. April 2018 - rev4590)
 	Fixed: WSS now sends an operation "ping" in SendAcksOnly() (and SendOutgoingCommands()) to avoid getting timed out. This happens right away, while other commands/operations stay in queue.
-
 
 *** Version 4.1.1.18 (19. December 2017 - rev4540)
 	Fixed: Exception in QueueOutgoingAcknowledgement() with a lock(). This avoids threading issues between Send- and Receive-thread. This was an issue mostly seen in Photon Voice, which uses the library multi-threaded.
