@@ -4,30 +4,25 @@ https://github.com/Armour/Multiplayer-FPS/blob/master/.github/CONTRIBUTING.md#su
 -->
 
 <!-- PULL REQUEST TEMPLATE -->
-<!-- (Update "[ ]" to "[x]" to check a box) -->
 
-**What kind of change does this PR introduce?** (check at least one)
+**Make sure the PR fulfills these requirements:**
 
-- [ ] Bugfix
-- [ ] Feature
-- [ ] Code style update
-- [ ] Refactor
-- [ ] Build-related changes
-- [ ] Other, please describe:
+- When resolving a specific issue, make sure it's referenced in the PR's title (e.g. `Closes #xxx[,#xxx]`, where "xxx" is the issue number)
 
-**Does this PR introduce a breaking change?** (check one)
+- If adding a **new feature**, the PR's description includes: A convincing reason for adding this feature (to avoid wasting your time, it's best to open a suggestion issue first and wait for approval before working on it)
 
-- [ ] Yes
-- [ ] No
+- If this PR introduce a **breaking change**, please describe the impact and migration path for existing applications
 
-If yes, please describe the impact and migration path for existing applications:
+**What kind of change does this PR introduce?**
 
-**The PR fulfills these requirements:**
+<!--
+E.g.
+    bugfix,
+    feature,
+    code style update,
+    refactor,
+    build-related changes,
+    or others... (please describe)
+-->
 
-- [ ] When resolving a specific issue, it's referenced in the PR's title (e.g. `Closes #xxx[,#xxx]`, where "xxx" is the issue number)
-
-If adding a **new feature**, the PR's description includes:
-
-- [ ] A convincing reason for adding this feature (to avoid wasting your time, it's best to open a suggestion issue first and wait for approval before working on it)
-
-**Other information:**
+**More information:**

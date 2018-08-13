@@ -4,16 +4,19 @@ PLEASE HELP US PROCESS GITHUB ISSUES FASTER BY PROVIDING THE FOLLOWING INFORMATI
 ISSUES MISSING IMPORTANT INFORMATION MAY BE CLOSED WITHOUT INVESTIGATION.
 -->
 
+<!-- Please search GitHub for a similar issue or PR before submitting -->
+
 # I'm submitting a
 
-<!-- Check one of the following options with "x" -->
-
-[ ] Bug report  <!-- Please search GitHub for a similar issue or PR before submitting -->
-[ ] Feature request
-[ ] Performance issue
-[ ] Regression (a behavior that used to work and stopped working in a new release)
-[ ] Documentation issue or request
-[ ] Other... Please describe:
+<!-- 
+E.g.
+    bug report,
+    feature request,
+    performance issue,
+    regression (a behavior that used to work and stopped working in a new release),
+    documentation issue or request,
+    or others... (please describe)
+-->
 
 ## Current behavior
 
@@ -29,7 +32,7 @@ ISSUES MISSING IMPORTANT INFORMATION MAY BE CLOSED WITHOUT INVESTIGATION.
 For bug reports please provide the *STEPS TO REPRODUCE* and if possible a *MINIMAL DEMO* of the problem via github repo or similar tools.
 -->
 
-## What is the motivation / use case for changing the behavior?
+## What is the motivation / use case for changing the behavior
 
 <!-- Describe the motivation or the concrete use case. -->
 
