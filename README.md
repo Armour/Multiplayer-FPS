@@ -4,13 +4,13 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 [![Template from jarvis](https://img.shields.io/badge/Hi-Jarvis-ff69b4.svg)](https://github.com/Armour/Jarvis)
 
-A multiplayer first-person shooter game based on Unity3D. To improve game experience, different types of input devices have been added such as Kinect, Xbox controller, Leap motion and VR Glasses. (All in different branches)
+A multiplayer first-person shooter game based on Unity3D. Different types of input devices are supported to improve game experience, including Kinect, Xbox controllers, Leap motion, and VR Glasses. (Each contained in a different branch)
 
-## Game logic and function
+## Game logic and functionality
 
 * Login panel
-  * Input your **player name** and the **room name** you want to join in
-  * Click **'join or create room'** button to join the room or create a new room
+  * Input your **player name** and the **room name** you want to join
+  * Click **'join or create room'** button to join a room or create a new room
   * The network connection state shows on the bottom left corner
     ![img](Images/2.jpg)
 
@@ -32,7 +32,7 @@ A multiplayer first-person shooter game based on Unity3D. To improve game experi
     * **Walk** towards four different directions
     * **Run** towards four different directions
     * **Jump** without affecting upper part body (**achieved by unity3d body mask**)
-    * **Shooting** without affecting lower part body (**achieved by unity3d body mask**)
+    * **Shoot** without affecting lower part body (**achieved by unity3d body mask**)
     * All the original models and their animations can be found from **[Mixamo](https://www.mixamo.com/)**, which is a pretty good game model website run by Adobe
     * **Unity Blend Tree**
       * This is used to make the player walk or run more naturally. It uses interpolation function to map different combinations of user input to different animations.
@@ -66,7 +66,7 @@ A multiplayer first-person shooter game based on Unity3D. To improve game experi
   * This game uses **Photon Unity Networking**, which is a good network model from Unity Assets Store
 
 * Bullet effects
-  * Bullets will cause different effects when they hit different materials
+  * Bullets hitting different materials will cause different effects
     * Wood
     <img src="Images/13.jpg" style="width:510px"></img>
     * Ground
@@ -79,7 +79,7 @@ A multiplayer first-person shooter game based on Unity3D. To improve game experi
     <img src="Images/17.jpg" style="width:510px"></img>
 
 * Door animation
-  * Door will automatically open when there is someone near it, and close when no one around
+  * Doors will automatically open when there is someone nearby and close when no one is around
   * Before opening
   <img src="Images/18.jpg" style="width:550px"></img>
   * After opening
@@ -88,29 +88,29 @@ A multiplayer first-person shooter game based on Unity3D. To improve game experi
 ## Script files
 
 * **CameraRotation.cs**
-  * Used to rotate the scene camera in every updated frame
+  * Rotates the scene camera in every updated frame
 * **DoorAnimtion.cs**
-  * Used to control the door animation and detect if the player enter or exit the door trigger area
+  * Controls the door animation and detect if the player enters or exits the door triggering area
 * **GunFirstPersonView.cs**
-  * Used to control the first person view of gun shooting animation
+  * Controls the first person view of the gun shooting animation
 * **GunShooting.cs**
-  * Used to control the gun shooting action on the network domain. It will sends shooting function to evert client if necessary.
+  * Controls the gun shooting action on the network domain. The shooting function will evert the client if necessary
 * **IKControl.cs**
-  * Used to make sure the model holding the gun on their hands no matter how they move or rotate
+  * Ensures the model is holding a gun regardless of movements or rotations
 * **ImpactLifeCycle.cs**
-  * Used to destroy the bullet after several seconds to save CPU time and memory
+  * Destroys the bullet object after several seconds to save CPU time and memory
 * **NameTag.cs**
-  * Used to set other players' names above their heads on local game
+  * Displays other players' names above their heads in a local game
 * **NetworkManager.cs**
-  * Used to control the whole network connection
+  * Controls the whole network connection
 * **PlayerHealth.cs**
-  * Used to calculate and update each player's health points
+  * Calculates and updates health points of each player
 * **PlayerNetworkMover.cs**
-  * Used to synchronize player's position with different clients
+  * Synchronizes the position of the player among different clients
 * **ShowName.cs**
-  * Used to show the players' name above their heads
+  * Displays the players' names above their heads
 * **WeaponPos.cs**
-  * Used to move the gun to the place near the player's hands
+  * Positions the gun towards the player's hands
 
 ### Input Devices
 
@@ -125,11 +125,11 @@ A multiplayer first-person shooter game based on Unity3D. To improve game experi
   * Most Xbox games use this way to play
 * Leap Motion
   * User hand gesture to control game
-  * More advanced, maybe it will be more popular in the future
+  * A more advanced interaction that might become popular in the future
 * VR glasses
-  * More vivid and close to reality
+  * More vivid and closer to reality
   * Recently very popular but devices are most likely expensive
-  * Player can't move now due to the limitation of my device
+  * Players cannot move now due to the limitation of my device
 
 ### Kinect Details
 
@@ -140,23 +140,23 @@ A multiplayer first-person shooter game based on Unity3D. To improve game experi
   * Visual Studio
 
 * Recognition Method:
-  * Use Kinect for Windows SKD (BodySourceManager) to get the positions of skeleton of the player, then use those positions to distinguish the actions of moving, jumping, shooting and view rotation as game’s input.
+  * Use Kinect for Windows SKD (BodySourceManager) to get the positions of the player's skeleton. Determine the actions of moving, jumping, shooting based on these positions and regard rotation as an input of the game.
 
 * **Shooting**：
-  * Use the action of lifting right arm to shoot in the game. The game will calculate the distance between the nodes of skeleton of right hand and right shoulder. If it reaches a critical value, then the action will be marked as shooting.
+  * Users lifting their right arm will trigger shooting in the game. The game calculates the distance between the user's right hand and right shoulder based on skeleton nodes. Shooting will be triggered if the calculated distance reaches a threshold.
 
 * **Moving**:
-  * Use the action of stepping front, back, left and right to move in the game. The game recognizes moving actions by the offset of right foot’s skeleton node on x-z plane. If the offset reaches a critical value, the action will be recognized as moving.
+  * Move in the game by stepping forward, backward, leftward, and rightward. The game recognizes moving actions by the offset of right foot’s skeleton node on x-z plane. A movement will be triggered if the offset reaches a threshold.
 
 * **Jumping**:
-  * Use the action of jumping to jump in the game. The game uses offset of right foot’s skeleton node on the z-axis to recognize jumping. If the offset reaches a critical value, the action will be considered as jumping.
+  * Users can jump in the game. The game calculates offset of right foot’s skeleton node on the z-axis to register a jumping action. Jumping will be triggered if the calculated offset reaches a threshold.
 
 * **View Rotation**:
-  * Use right hand as a virtual mouse to control the camera rotation. The game records the initial position of left hand as the initial position of the mouse, then recognizes the camera rotation by left hand’s offset.
+  * Use your right hand as a virtual mouse to control the camera rotation. The game records the initial position of the left hand as the initial position of the mouse, then calculates the camera rotation by the left hand’s offset.
 
 * <img src="Images/skeleton_overview.png" style="width:110px"> </img><img src="Images/shooting.png" style="width:134px"></img> <img src="Images/jumping.png" style="width:122px"> </img><img src="Images/rotation.png" style="width:156px"></img>
 
-## Contributing
+## Contribution
 
 See [CONTRIBUTING.md](https://github.com/Armour/Multiplayer-FPS/blob/master/.github/CONTRIBUTING.md)
 
