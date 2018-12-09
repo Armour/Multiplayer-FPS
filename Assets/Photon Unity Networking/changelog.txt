@@ -1,3 +1,11 @@
+v1.92 (26. October 2018)
+	Updated: Removed "UsePreciseTimer" option and made it the only way to maintain time.
+	Fixed: Issue with TextField in GUIFriendFinding, which wasn't used correctly.
+	Fixed: RoomOptions.CleanupCacheOnLeave not synchronizing properly, if a PUN Client joins a room, which has been created by another SDK Client (i.e. DotNet SDK). This resulted in objects not getting removed properly, after the client has left the room.
+	Added: Reloading a level is not taken into consideration when PhotonNetowrk.automaticallySyncScene is turned on and will trigger a level reload on all client
+	Updated: To Photon3Unity3d.dll v4.1.1.21, which contains a fix for the Runtime 4.x Mono. See plugins\release_history.txt.
+	
+	
 v1.91 (6. July 2018)
 	Fixed: PhotonNetwork.OnEvenCall is now an event to prevent wrong usage and registrations. PunTurnManager and InRoomRaiseEvent EventCall Registration now add themselves to the event properly.
 	Fixed: Bug which prevents from enabling the Offline Mode for a second time after a room has been joined in Offline Mode and the Offline Mode has been disabled afterwards.

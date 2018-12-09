@@ -110,7 +110,7 @@ public class PhotonEditor : EditorWindow
 
     protected static string UrlAccountPage = "https://dashboard.photonengine.com/Account/SignIn?email="; // opened in browser
 
-    protected static string UrlCloudDashboard = "https://dashboard.photonengine.com/dashboard?email=";
+    protected static string UrlCloudDashboard = "https://dashboard.photonengine.com?email=";
 
 
     private enum PhotonSetupStates

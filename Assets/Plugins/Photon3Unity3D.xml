@@ -969,12 +969,13 @@
         <member name="F:ExitGames.Client.Photon.PhotonPeer.PayloadEncryptionSecret">
             <summary>PayloadEncryption Secret. Message payloads get encrypted with it individually and on demand.</summary>
         </member>
-        <member name="M:ExitGames.Client.Photon.PhotonPeer.InitDatagramEncryption(System.Byte[],System.Byte[])">
+        <member name="M:ExitGames.Client.Photon.PhotonPeer.InitDatagramEncryption(System.Byte[],System.Byte[],System.Boolean)">
             <summary>
             Initializes Datagram Encryption.
             </summary>
             <param name="encryptionSecret">secret used to chipher udp packets</param>
             <param name="hmacSecret">secret used for authentication of udp packets</param>
+            <param name="randomizedSequenceNumbers">This value is not used. It's present to make this API "upwards compatible" with releases from a newer branch.</param>
         </member>
         <member name="M:ExitGames.Client.Photon.PhotonPeer.Service">
              <summary>
@@ -1347,6 +1348,33 @@
             Called by a timer in intervals.
             </summary>
         </member>
+        <member name="T:ExitGames.Client.Photon.DeliveryMode">
+            <summary>Enum of the three options for reliability and sequencing in Photon's reliable-UDP.</summary>
+        </member>
+        <member name="F:ExitGames.Client.Photon.DeliveryMode.Unreliable">
+            <summary>The operation/message gets sent just once without acknowledgement or repeat. The sequence (order) of messages is guaranteed.</summary>
+        </member>
+        <member name="F:ExitGames.Client.Photon.DeliveryMode.Reliable">
+            <summary>The operation/message asks for an acknowledgment. It's resent until an ACK arrived. The sequence (order) of messages is guaranteed.</summary>
+        </member>
+        <member name="T:ExitGames.Client.Photon.SendOptions">
+            <summary>Wraps up DeliveryMode, Encryption and Channel values for sending operations and messages.</summary>
+        </member>
+        <member name="F:ExitGames.Client.Photon.SendOptions.DeliveryMode">
+            <summary>Chose the DeliveryMode for this operation/message. Defaults to Unreliable.</summary>
+        </member>
+        <member name="F:ExitGames.Client.Photon.SendOptions.Encrypt">
+            <summary>If true the operation/message gets encrypted before it's sent. Defaults to false.</summary>
+            <remarks>Before encryption can be used, it must be established. Check PhotonPeer.IsEncryptionAvailable is true.</remarks>
+        </member>
+        <member name="F:ExitGames.Client.Photon.SendOptions.Channel">
+            <summary>The Enet channel to send in. Defaults to 0.</summary>
+            <remarks>Channels in Photon relate to "message channels". Each channel is a sequence of messages.</remarks>
+        </member>
+        <member name="P:ExitGames.Client.Photon.SendOptions.Reliability">
+            <summary>Sets the DeliveryMode either to true: Reliable or false: Unreliable, overriding any current value.</summary>
+            <remarks>Use this to conveniently select reliable/unreliable delivery.</remarks>
+        </member>
         <member name="F:ExitGames.Client.Photon.EnetPeer.sentReliableCommands">
             <summary>One list for all channels keeps sent commands (for re-sending).</summary>
         </member>
@@ -1562,14 +1590,15 @@
             <returns>To be used in debug situations only, as it returns a string for each value.</returns>
         </member>
         <member name="T:ExitGames.Client.Photon.EventData">
-             <summary>
-             Contains all components of a Photon Event.
-             Event Parameters, like OperationRequests and OperationResults, consist of a Dictionary with byte-typed keys per value.
-             </summary>
+             <summary>A Photon Event consists of a Code value and a Parameter Dictionary. In many cases, an Event also has a Sender (key: (byte)254).</summary>
              <remarks>
-             The indexer of this class provides access to the Parameters Dictionary.
+             An event's code should define what it means and what content (Parameters) it has.
+             To simplify matters, the Sender (key: (byte)254) can be accessed via a property which caches the value.
             
-             The operation RaiseEvent allows you to provide custom event content. Defined in LoadBalancing, this
+             The indexer of this class provides access to the Parameters Dictionary. Most common are the events defined
+             by the LoadBalancing api for Photon (the default logic for the Photon Cloud).
+            
+             The operation RaiseEvent allows you to provide custom event content. Defined in the LoadBalancing api, this
              CustomContent will be made the value of key ParameterCode.CustomEventContent.
              </remarks>
         </member>
@@ -1578,6 +1607,23 @@
         </member>
         <member name="F:ExitGames.Client.Photon.EventData.Parameters">
             <summary>The Parameters of an event is a Dictionary&lt;byte, object&gt;.</summary>
+        </member>
+        <member name="F:ExitGames.Client.Photon.EventData.SenderKey">
+            <summary>Defined in the "Realtime" layer but made available in EventData for convenience.</summary>
+        </member>
+        <member name="F:ExitGames.Client.Photon.EventData.sender">
+            <summary>Backing field Sender.</summary>
+        </member>
+        <member name="P:ExitGames.Client.Photon.EventData.Sender">
+            <summary>Accessor to the sender's actorNumber (key (byte)254). This fetches and caches Parameters[SenderKey] as int.</summary>
+            <remarks>Defined in the uppper layer ("Realtime") but made available in EventData for convenience. Default to 0, even if the key is not present.</remarks>
+        </member>
+        <member name="F:ExitGames.Client.Photon.EventData.CustomDataKey">
+            <summary>Defined in the "Realtime" layer but made available in EventData for convenience.</summary>
+        </member>
+        <member name="P:ExitGames.Client.Photon.EventData.CustomData">
+            <summary>Accessor to the sent custom event content (key (byte)245).</summary>
+            <remarks>Defined in the uppper layer ("Realtime") but made available in EventData for convenience. Null if the key is not present.</remarks>
         </member>
         <member name="P:ExitGames.Client.Photon.EventData.Item(System.Byte)">
             <summary>
@@ -1864,33 +1910,6 @@
             <param name="address">The string address of a server (hostname or IP).</param>
             <returns>IPAddress for the string address or null, if the address is neither IPv4, IPv6 or some hostname that could be resolved.</returns>
         </member>
-        <member name="T:ExitGames.Client.Photon.DeliveryMode">
-            <summary>Enum of the three options for reliability and sequencing in Photon's reliable-UDP.</summary>
-        </member>
-        <member name="F:ExitGames.Client.Photon.DeliveryMode.Unreliable">
-            <summary>The operation/message gets sent just once without acknowledgement or repeat. The sequence (order) of messages is guaranteed.</summary>
-        </member>
-        <member name="F:ExitGames.Client.Photon.DeliveryMode.Reliable">
-            <summary>The operation/message asks for an acknowledgment. It's resent until an ACK arrived. The sequence (order) of messages is guaranteed.</summary>
-        </member>
-        <member name="T:ExitGames.Client.Photon.SendOptions">
-            <summary>Wraps up DeliveryMode, Encryption and Channel values for sending operations and messages.</summary>
-        </member>
-        <member name="F:ExitGames.Client.Photon.SendOptions.DeliveryMode">
-            <summary>Chose the DeliveryMode for this operation/message. Defaults to Unreliable.</summary>
-        </member>
-        <member name="F:ExitGames.Client.Photon.SendOptions.Encrypt">
-            <summary>If true the operation/message gets encrypted before it's sent. Defaults to false.</summary>
-            <remarks>Before encryption can be used, it must be established. Check PhotonPeer.IsEncryptionAvailable is true.</remarks>
-        </member>
-        <member name="F:ExitGames.Client.Photon.SendOptions.Channel">
-            <summary>The Enet channel to send in. Defaults to 0.</summary>
-            <remarks>Channels in Photon relate to "message channels". Each channel is a sequence of messages.</remarks>
-        </member>
-        <member name="P:ExitGames.Client.Photon.SendOptions.Reliability">
-            <summary>Sets the DeliveryMode either to true: Reliable or false: Unreliable, overriding any current value.</summary>
-            <remarks>Use this to conveniently select reliable/unreliable delivery.</remarks>
-        </member>
         <member name="T:ExitGames.Client.Photon.SocketUdp">
             <summary> Internal class to encapsulate the network i/o functionality for the realtime libary.</summary>
         </member>
@@ -1900,12 +1919,28 @@
         <member name="M:ExitGames.Client.Photon.SocketUdp.ReceiveLoop">
             <summary>Endless loop, run in Receive Thread.</summary>
         </member>
+        <member name="T:ExitGames.Client.Photon.SocketUdpAsync">
+            <summary> Internal class to encapsulate the network i/o functionality for the realtime libary.</summary>
+        </member>
+        <member name="M:ExitGames.Client.Photon.SocketUdpAsync.Send(System.Byte[],System.Int32)">
+            <summary>used by PhotonPeer*</summary>
+        </member>
         <member name="T:ExitGames.Client.Photon.SocketTcp">
             <summary>
             Internal class to encapsulate the network i/o functionality for the realtime libary.
             </summary>
         </member>
         <member name="M:ExitGames.Client.Photon.SocketTcp.Send(System.Byte[],System.Int32)">
+            <summary>
+            used by TPeer*
+            </summary>
+        </member>
+        <member name="T:ExitGames.Client.Photon.SocketTcpAsync">
+            <summary>
+            Internal class to encapsulate the network i/o functionality for the realtime libary.
+            </summary>
+        </member>
+        <member name="M:ExitGames.Client.Photon.SocketTcpAsync.Send(System.Byte[],System.Int32)">
             <summary>
             used by TPeer*
             </summary>

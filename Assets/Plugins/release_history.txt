@@ -9,51 +9,66 @@ http://forum.photonengine.com
 
 
 
-*** Version 4.1.1.20 (2018 - rev4701)
-	Added: SendOperation() with SendOptions to v4.1.1.x library. This minimizes the gap between this library branch and the new trunk.
+*** Version 4.1.1.21 (26. October 2018 - rev4874)
+    Changed: SocketUdpAsync is now the same as in trunk. Send blocking, receiving via BeginReceive and EndReceive.
+    Adde: SocketTcpAsync.
+    Note: Both async Socket classes are a workaround for Unity with C# 4.x in Mono, which makes Socket.Receive() block.
+    Changed: TPeer.ReceiveIncomingCommands() will now use dataLength as indicator how much was received.
+    Changed: TPeer.ReceiveIncomingCommands() currently copies dataLength-bytes of the in-buffer to a message "enqueued" buffer. To be replaced with pooled buffers.
+    Changed: EnetPeer.SendOutgoingCommands() will EnqueueStatusCallback(StatusCode.TimeoutDisconnect) for timeouts. This keeps the sequence of events correct.
+	Changed: CalculateCrc() now uses a cached lookup table, which gives it much better performance (mostly for longer datagrams).
+	Changed: EventData (in Protocol .cs) now has a Sender and a CustomData property. Same as in trunk.
+	Added: List<object> support for Protocol16. Same as in the trunk.
+	Added: Special case to deserialize byte[] and int[], which should be more effective than before. Same as in trunk.
+	Changed: Arranged this. for some cases in IPhotonSocket.
+	Changed: Enet execution of a read Disconnect command. As in trunk, the state change is enqueued and Disconnect gets called right away.
+	Changed: The TPeer resets the last receive time in more cases: InitPeerBase() and OnConnect(). Same as in trunk.
 
+
+*** Version 4.1.1.20 (19. September 2018 - rev4808)
+    Added: SendOperation() with SendOptions to v4.1.1.x library. This minimizes the gap between this library branch and the new trunk.
+    Added: Third parameter to PhotonPeer.InitDatagramEncryption() which is not used but only present to make this API compatible with released from another branch. This feature requires v4.1.2.0 and up.
 
 *** Version 4.1.1.19 (9. April 2018 - rev4590)
-	Fixed: WSS now sends an operation "ping" in SendAcksOnly() (and SendOutgoingCommands()) to avoid getting timed out. This happens right away, while other commands/operations stay in queue.
+    Fixed: WSS now sends an operation "ping" in SendAcksOnly() (and SendOutgoingCommands()) to avoid getting timed out. This happens right away, while other commands/operations stay in queue.
 
 *** Version 4.1.1.18 (19. December 2017 - rev4540)
-	Fixed: Exception in QueueOutgoingAcknowledgement() with a lock(). This avoids threading issues between Send- and Receive-thread. This was an issue mostly seen in Photon Voice, which uses the library multi-threaded.
-	Changed: Network Simulation now only stores the actual data of messages, instead of storing an action/delegate.
-	Note: The delegate IL code for Network Simulation was instantiating a "display class" instance and caused GC garbage, even if no simulation was running.
+    Fixed: Exception in QueueOutgoingAcknowledgement() with a lock(). This avoids threading issues between Send- and Receive-thread. This was an issue mostly seen in Photon Voice, which uses the library multi-threaded.
+    Changed: Network Simulation now only stores the actual data of messages, instead of storing an action/delegate.
+    Note: The delegate IL code for Network Simulation was instantiating a "display class" instance and caused GC garbage, even if no simulation was running.
 LoadBalancing:
-	Changed: FriendInfo.Name is now "UserId", which is up to date with it's usage.
-	Changed: CheckUserOnJoin is now set by default. The RoomOptions.CheckUserOnJoin got removed.
-
+    Changed: FriendInfo.Name is now "UserId", which is up to date with it's usage.
+    Changed: CheckUserOnJoin is now set by default. The RoomOptions.CheckUserOnJoin got removed.
 
 *** Version 4.1.1.17 (11. October 2017 - rev4465)
-	Fixed: Fetching the server timestamp now works for the "No C# Sockets"-library build for WebSockets. This affected libraries used for XB1 and as a result, the serve time was not synced. E.g. PhotonNetwork.time was locked at 0.
-	Changed: XML doc of PhotonPeer.DisconnectTimeout. This is no longer a UDP exclusive setting and clearly states that the unit is milliseconds.
-	Updated: Several documentation comments for the PhotonPeer. Using shorter summaries and remarks for the details.
+    Fixed: Fetching the server timestamp now works for the "No C# Sockets"-library build for WebSockets. This affected libraries used for XB1 and as a result, the serve time was not synced. E.g. PhotonNetwork.time was locked at 0.
+    Changed: XML doc of PhotonPeer.DisconnectTimeout. This is no longer a UDP exclusive setting and clearly states that the unit is milliseconds.
+    Updated: Several documentation comments for the PhotonPeer. Using shorter summaries and remarks for the details.
 LoadBalancing:
-	Changed: OperationCode const byte Join = 255 is now marked obsolete. We use "JoinGame" instead.
-	Added: DisconnectCause.AuthenticationTicketExpired.
-	Fixed: DebugReturn call in Unity WebGL.
+    Changed: OperationCode const byte Join = 255 is now marked obsolete. We use "JoinGame" instead.
+    Added: DisconnectCause.AuthenticationTicketExpired.
+    Fixed: DebugReturn call in Unity WebGL.
 Chat:
-	Fixed: Unity "6" compile define is now UNITY_2017.
+    Fixed: Unity "6" compile define is now UNITY_2017.
 
 *** Version 4.1.1.16 (1. September 2017 - rev4349)
-	Fixed: The native implementations for "PhotonPing", which are used for PUN's "Best Region" selection in the "No Sockets" dlls (Android and iOS for Unity 4.x). Disposing the "dynamic" version was causing an exception (due to an attempted fix of a less-obvious memory leak). This caused the Best Region selection to stall.
+    Fixed: The native implementations for "PhotonPing", which are used for PUN's "Best Region" selection in the "No Sockets" dlls (Android and iOS for Unity 4.x). Disposing the "dynamic" version was causing an exception (due to an attempted fix of a less-obvious memory leak). This caused the Best Region selection to stall.
 
 *** Version 4.1.1.15 (17. July 2017 - rev4232)
 WebSocket:
-	Changed: WebSockets are now treated like "addons", as their implementations are complex and potentially not running on some platforms (be it UWP or some Unity export). The Readme-Photon-WebSocket.txt tells you how to add them to your project and set them up.
-	Added: Folder "PhotonWebSocket" with SocketWebTcpCoroutine and SocketWebTcpThread classes, to support platforms with and without Thread API.
-	Added: PingHttp.cs for Unity WebGL exports, to support "Best Region" selection in PUN.
+    Changed: WebSockets are now treated like "addons", as their implementations are complex and potentially not running on some platforms (be it UWP or some Unity export). The Readme-Photon-WebSocket.txt tells you how to add them to your project and set them up.
+    Added: Folder "PhotonWebSocket" with SocketWebTcpCoroutine and SocketWebTcpThread classes, to support platforms with and without Thread API.
+    Added: PingHttp.cs for Unity WebGL exports, to support "Best Region" selection in PUN.
 LoadBalancing:
-	Added: LoadBalancingClient.TransportProtocol as shortcut to the use PhotonPeer's TransportProtocol value. This enables setting the protocol easily while not connected.
-	Added: LoadBalancingClient.SocketImplementationConfig as shortcut to modify PhotonPeer's SocketImplementationConfig. This enables you to setup which IPhotonSocket implementation to use for which network protocol.
-	Changed: LoadBalancingPeer.ConfigUnitySockets() to try to find our websocket implementations in the assembly, making the SocketWebTcpCoroutine and SocketWebTcpThread classes optional.
-	Removed: Class "SocketWebTcp" is no longer found by ConfigUnitySockets().
+    Added: LoadBalancingClient.TransportProtocol as shortcut to the use PhotonPeer's TransportProtocol value. This enables setting the protocol easily while not connected.
+    Added: LoadBalancingClient.SocketImplementationConfig as shortcut to modify PhotonPeer's SocketImplementationConfig. This enables you to setup which IPhotonSocket implementation to use for which network protocol.
+    Changed: LoadBalancingPeer.ConfigUnitySockets() to try to find our websocket implementations in the assembly, making the SocketWebTcpCoroutine and SocketWebTcpThread classes optional.
+    Removed: Class "SocketWebTcp" is no longer found by ConfigUnitySockets().
 Chat:
-	Added: ChatClient.TransportProtocol as shortcut to the use PhotonPeer's TransportProtocol value. This enables setting the protocol easily while not connected.
-	Added: ChatClient.SocketImplementationConfig as shortcut to modify PhotonPeer's SocketImplementationConfig. This enables you to setup which IPhotonSocket implementation to use for which network protocol.
-	Changed: ChatPeer.ConfigUnitySockets() to try to find our websocket implementations in the assembly, making the SocketWebTcpCoroutine and SocketWebTcpThread classes optional.
-	Removed: Class "SocketWebTcp" is no longer found by ConfigUnitySockets().
+    Added: ChatClient.TransportProtocol as shortcut to the use PhotonPeer's TransportProtocol value. This enables setting the protocol easily while not connected.
+    Added: ChatClient.SocketImplementationConfig as shortcut to modify PhotonPeer's SocketImplementationConfig. This enables you to setup which IPhotonSocket implementation to use for which network protocol.
+    Changed: ChatPeer.ConfigUnitySockets() to try to find our websocket implementations in the assembly, making the SocketWebTcpCoroutine and SocketWebTcpThread classes optional.
+    Removed: Class "SocketWebTcp" is no longer found by ConfigUnitySockets().
 
 *** Version 4.1.1.14 (5. July 2017 - rev4191)
     Changed: SupportClass StartBackgroundCalls method now assigns an ID to each thread/task and enables you to cancel it explicitly via StopBackgroundCalls. CallInBackground is now obsolete due to renaming.

@@ -984,6 +984,7 @@ internal class PunEvent
     public const byte OwnershipRequest = 209;
     public const byte OwnershipTransfer = 210;
     public const byte VacantViewIds = 211;
+	public const byte levelReload = 212;
 }
 
 /// <summary>

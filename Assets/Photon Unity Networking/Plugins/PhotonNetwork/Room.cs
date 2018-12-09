@@ -235,7 +235,7 @@ public class Room : RoomInfo
         this.visibleField = options.IsVisible;
         this.openField = options.IsOpen;
         this.maxPlayersField = (byte)options.MaxPlayers;
-        this.autoCleanUpField = false;  // defaults to false, unless set to true when room gets created.
+        this.autoCleanUpField = options.CleanupCacheOnLeave;
 
         this.InternalCacheProperties(options.CustomRoomProperties);
         this.PropertiesListedInLobby = options.CustomRoomPropertiesForLobby;
