@@ -1,7 +1,7 @@
 fileFormatVersion: 2
 guid: 4c97c317ad5104f239b688bc0c51b9fc
 ModelImporter:
-  serializedVersion: 22
+  serializedVersion: 23
   fileIDToRecycleName:
     100000: Beta_Joints
     100002: Beta_Surface
@@ -166,7 +166,7 @@ ModelImporter:
     importMaterials: 1
     materialName: 0
     materialSearch: 1
-    materialLocation: 0
+    materialLocation: 1
   animations:
     legacyGenerateAnimations: 4
     bakeSimulation: 0
@@ -176,12 +176,12 @@ ModelImporter:
     rigImportErrors: 
     rigImportWarnings: "Copied Avatar Rig Configuration mis-match. Bone length in
       copied configuration does not match position in animation file:\n\t'mixamorig:LeftUpLeg'
-      : position error = 15.146961 mm\n\t'mixamorig:LeftLeg' : position error = 39.754639
-      mm\n\t'mixamorig:LeftFoot' : position error = 25.569315 mm\n\t'mixamorig:LeftToeBase'
-      : position error = 24.457651 mm\n\t'mixamorig:RightUpLeg' : position error =
-      15.146422 mm\n\t'mixamorig:RightLeg' : position error = 39.747086 mm\n\t'mixamorig:RightFoot'
-      : position error = 25.568808 mm\n\t'mixamorig:RightToeBase' : position error
-      = 24.457714 mm\n"
+      : position error = 15.320953 mm\n\t'mixamorig:LeftLeg' : position error = 40.211296
+      mm\n\t'mixamorig:LeftFoot' : position error = 25.863026 mm\n\t'mixamorig:LeftToeBase'
+      : position error = 24.738590 mm\n\t'mixamorig:RightUpLeg' : position error =
+      15.320407 mm\n\t'mixamorig:RightLeg' : position error = 40.203651 mm\n\t'mixamorig:RightFoot'
+      : position error = 25.862513 mm\n\t'mixamorig:RightToeBase' : position error
+      = 24.738657 mm\n"
     animationImportErrors: 
     animationImportWarnings: 
     animationRetargetingWarnings: 
@@ -195,13 +195,70 @@ ModelImporter:
     animationWrapMode: 0
     extraExposedTransformPaths: []
     extraUserProperties: []
-    clipAnimations: []
+    clipAnimations:
+    - serializedVersion: 16
+      name: Take 001
+      takeName: Take 001
+      firstFrame: 1
+      lastFrame: 30
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      hasAdditiveReferencePose: 0
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 0
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 1
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask: []
+      maskType: 3
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0
+    - serializedVersion: 16
+      name: mixamo.com
+      takeName: mixamo.com
+      firstFrame: 0
+      lastFrame: 1
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      hasAdditiveReferencePose: 0
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask: []
+      maskType: 3
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0
     isReadable: 1
   meshes:
     lODScreenPercentages: []
     globalScale: 1
     meshCompression: 0
-    addColliders: 0
+    addColliders: 1
+    useSRGBMaterialColor: 1
     importVisibility: 0
     importBlendShapes: 1
     importCameras: 0
@@ -213,17 +270,22 @@ ModelImporter:
     keepQuads: 0
     weldVertices: 1
     preserveHierarchy: 0
-    indexFormat: 1
+    indexFormat: 0
     secondaryUVAngleDistortion: 8
     secondaryUVAreaDistortion: 15.000001
     secondaryUVHardAngle: 88
     secondaryUVPackMargin: 4
     useFileScale: 1
+    previousCalculatedGlobalScale: 0.01
+    hasPreviousCalculatedGlobalScale: 1
   tangentSpace:
     normalSmoothAngle: 60
     normalImportMode: 0
     tangentImportMode: 3
-    normalCalculationMode: 0
+    normalCalculationMode: 4
+    legacyComputeAllNormalsFromSmoothingGroupsWhenMeshHasBlendShapes: 0
+    blendShapeNormalImportMode: 1
+    normalSmoothingSource: 0
   importAnimation: 1
   copyAvatar: 1
   humanDescription:
@@ -240,416 +302,424 @@ ModelImporter:
     - boneName: mixamorig:LeftUpLeg
       humanName: LeftUpperLeg
       limit:
-        min: {x: 0, y: 0, z: 0}
-        max: {x: 0, y: 0, z: 0}
+        min: {x: -60, y: -60, z: -90}
+        max: {x: 60, y: 60, z: 50}
         value: {x: 0, y: 0, z: 0}
         length: 0
         modified: 0
     - boneName: mixamorig:RightUpLeg
       humanName: RightUpperLeg
       limit:
-        min: {x: 0, y: 0, z: 0}
-        max: {x: 0, y: 0, z: 0}
+        min: {x: -60, y: -60, z: -90}
+        max: {x: 60, y: 60, z: 50}
         value: {x: 0, y: 0, z: 0}
         length: 0
         modified: 0
     - boneName: mixamorig:LeftLeg
       humanName: LeftLowerLeg
       limit:
-        min: {x: 0, y: 0, z: 0}
-        max: {x: 0, y: 0, z: 0}
+        min: {x: -90, y: 0, z: -80}
+        max: {x: 90, y: 0, z: 80}
         value: {x: 0, y: 0, z: 0}
         length: 0
         modified: 0
     - boneName: mixamorig:RightLeg
       humanName: RightLowerLeg
       limit:
-        min: {x: 0, y: 0, z: 0}
-        max: {x: 0, y: 0, z: 0}
+        min: {x: -90, y: 0, z: -80}
+        max: {x: 90, y: 0, z: 80}
         value: {x: 0, y: 0, z: 0}
         length: 0
         modified: 0
     - boneName: mixamorig:LeftFoot
       humanName: LeftFoot
       limit:
-        min: {x: 0, y: 0, z: 0}
-        max: {x: 0, y: 0, z: 0}
+        min: {x: 0, y: -30, z: -50}
+        max: {x: 0, y: 30, z: 50}
         value: {x: 0, y: 0, z: 0}
         length: 0
         modified: 0
     - boneName: mixamorig:RightFoot
       humanName: RightFoot
       limit:
-        min: {x: 0, y: 0, z: 0}
-        max: {x: 0, y: 0, z: 0}
+        min: {x: 0, y: -30, z: -50}
+        max: {x: 0, y: 30, z: 50}
         value: {x: 0, y: 0, z: 0}
         length: 0
         modified: 0
     - boneName: mixamorig:Spine
       humanName: Spine
       limit:
-        min: {x: 0, y: 0, z: 0}
-        max: {x: 0, y: 0, z: 0}
+        min: {x: -40, y: -40, z: -40}
+        max: {x: 40, y: 40, z: 40}
         value: {x: 0, y: 0, z: 0}
         length: 0
         modified: 0
     - boneName: mixamorig:Spine1
       humanName: Chest
       limit:
-        min: {x: 0, y: 0, z: 0}
-        max: {x: 0, y: 0, z: 0}
+        min: {x: -40, y: -40, z: -40}
+        max: {x: 40, y: 40, z: 40}
         value: {x: 0, y: 0, z: 0}
         length: 0
         modified: 0
     - boneName: mixamorig:Neck
       humanName: Neck
       limit:
-        min: {x: 0, y: 0, z: 0}
-        max: {x: 0, y: 0, z: 0}
+        min: {x: -40, y: -40, z: -40}
+        max: {x: 40, y: 40, z: 40}
         value: {x: 0, y: 0, z: 0}
         length: 0
         modified: 0
     - boneName: mixamorig:Head
       humanName: Head
       limit:
-        min: {x: 0, y: 0, z: 0}
-        max: {x: 0, y: 0, z: 0}
+        min: {x: -40, y: -40, z: -40}
+        max: {x: 40, y: 40, z: 40}
         value: {x: 0, y: 0, z: 0}
         length: 0
         modified: 0
     - boneName: mixamorig:LeftShoulder
       humanName: LeftShoulder
       limit:
-        min: {x: 0, y: 0, z: 0}
-        max: {x: 0, y: 0, z: 0}
+        min: {x: 0, y: -15, z: -15}
+        max: {x: 0, y: 15, z: 30}
         value: {x: 0, y: 0, z: 0}
         length: 0
         modified: 0
     - boneName: mixamorig:RightShoulder
       humanName: RightShoulder
       limit:
-        min: {x: 0, y: 0, z: 0}
-        max: {x: 0, y: 0, z: 0}
+        min: {x: 0, y: -15, z: -15}
+        max: {x: 0, y: 15, z: 30}
         value: {x: 0, y: 0, z: 0}
         length: 0
         modified: 0
     - boneName: mixamorig:LeftArm
       humanName: LeftUpperArm
       limit:
-        min: {x: 0, y: 0, z: 0}
-        max: {x: 0, y: 0, z: 0}
+        min: {x: -90, y: -100, z: -60}
+        max: {x: 90, y: 100, z: 100}
         value: {x: 0, y: 0, z: 0}
         length: 0
         modified: 0
     - boneName: mixamorig:RightArm
       humanName: RightUpperArm
       limit:
-        min: {x: 0, y: 0, z: 0}
-        max: {x: 0, y: 0, z: 0}
+        min: {x: -90, y: -100, z: -60}
+        max: {x: 90, y: 100, z: 100}
         value: {x: 0, y: 0, z: 0}
         length: 0
         modified: 0
     - boneName: mixamorig:LeftForeArm
       humanName: LeftLowerArm
       limit:
-        min: {x: 0, y: 0, z: 0}
-        max: {x: 0, y: 0, z: 0}
+        min: {x: -90, y: 0, z: -80}
+        max: {x: 90, y: 0, z: 80}
         value: {x: 0, y: 0, z: 0}
         length: 0
         modified: 0
     - boneName: mixamorig:RightForeArm
       humanName: RightLowerArm
       limit:
-        min: {x: 0, y: 0, z: 0}
-        max: {x: 0, y: 0, z: 0}
+        min: {x: -90, y: 0, z: -80}
+        max: {x: 90, y: 0, z: 80}
         value: {x: 0, y: 0, z: 0}
         length: 0
         modified: 0
     - boneName: mixamorig:LeftHand
       humanName: LeftHand
       limit:
-        min: {x: 0, y: 0, z: 0}
-        max: {x: 0, y: 0, z: 0}
+        min: {x: 0, y: -40, z: -80}
+        max: {x: 0, y: 40, z: 80}
         value: {x: 0, y: 0, z: 0}
         length: 0
         modified: 0
     - boneName: mixamorig:RightHand
       humanName: RightHand
       limit:
-        min: {x: 0, y: 0, z: 0}
-        max: {x: 0, y: 0, z: 0}
+        min: {x: 0, y: -40, z: -80}
+        max: {x: 0, y: 40, z: 80}
         value: {x: 0, y: 0, z: 0}
         length: 0
         modified: 0
     - boneName: mixamorig:LeftToeBase
       humanName: LeftToes
       limit:
-        min: {x: 0, y: 0, z: 0}
-        max: {x: 0, y: 0, z: 0}
+        min: {x: 0, y: 0, z: -50}
+        max: {x: 0, y: 0, z: 50}
         value: {x: 0, y: 0, z: 0}
         length: 0
         modified: 0
     - boneName: mixamorig:RightToeBase
       humanName: RightToes
       limit:
-        min: {x: 0, y: 0, z: 0}
-        max: {x: 0, y: 0, z: 0}
+        min: {x: 0, y: 0, z: -50}
+        max: {x: 0, y: 0, z: 50}
         value: {x: 0, y: 0, z: 0}
         length: 0
         modified: 0
     - boneName: mixamorig:LeftEye
       humanName: LeftEye
       limit:
-        min: {x: 0, y: 0, z: 0}
-        max: {x: 0, y: 0, z: 0}
+        min: {x: 0, y: -20, z: -10}
+        max: {x: 0, y: 20, z: 15}
         value: {x: 0, y: 0, z: 0}
         length: 0
         modified: 0
     - boneName: mixamorig:RightEye
       humanName: RightEye
       limit:
-        min: {x: 0, y: 0, z: 0}
-        max: {x: 0, y: 0, z: 0}
+        min: {x: 0, y: -20, z: -10}
+        max: {x: 0, y: 20, z: 15}
         value: {x: 0, y: 0, z: 0}
         length: 0
         modified: 0
     - boneName: mixamorig:LeftHandThumb1
       humanName: Left Thumb Proximal
       limit:
-        min: {x: 0, y: 0, z: 0}
-        max: {x: 0, y: 0, z: 0}
+        min: {x: 0, y: -25, z: -20}
+        max: {x: 0, y: 25, z: 20}
         value: {x: 0, y: 0, z: 0}
         length: 0
         modified: 0
     - boneName: mixamorig:LeftHandThumb2
       humanName: Left Thumb Intermediate
       limit:
-        min: {x: 0, y: 0, z: 0}
-        max: {x: 0, y: 0, z: 0}
+        min: {x: 0, y: 0, z: -40}
+        max: {x: 0, y: 0, z: 35}
         value: {x: 0, y: 0, z: 0}
         length: 0
         modified: 0
     - boneName: mixamorig:LeftHandThumb3
       humanName: Left Thumb Distal
       limit:
-        min: {x: 0, y: 0, z: 0}
-        max: {x: 0, y: 0, z: 0}
+        min: {x: 0, y: 0, z: -40}
+        max: {x: 0, y: 0, z: 35}
         value: {x: 0, y: 0, z: 0}
         length: 0
         modified: 0
     - boneName: mixamorig:LeftHandIndex1
       humanName: Left Index Proximal
       limit:
-        min: {x: 0, y: 0, z: 0}
-        max: {x: 0, y: 0, z: 0}
+        min: {x: 0, y: -20, z: -50}
+        max: {x: 0, y: 20, z: 50}
         value: {x: 0, y: 0, z: 0}
         length: 0
         modified: 0
     - boneName: mixamorig:LeftHandIndex2
       humanName: Left Index Intermediate
       limit:
-        min: {x: 0, y: 0, z: 0}
-        max: {x: 0, y: 0, z: 0}
+        min: {x: 0, y: 0, z: -45}
+        max: {x: 0, y: 0, z: 45}
         value: {x: 0, y: 0, z: 0}
         length: 0
         modified: 0
     - boneName: mixamorig:LeftHandIndex3
       humanName: Left Index Distal
       limit:
-        min: {x: 0, y: 0, z: 0}
-        max: {x: 0, y: 0, z: 0}
+        min: {x: 0, y: 0, z: -45}
+        max: {x: 0, y: 0, z: 45}
         value: {x: 0, y: 0, z: 0}
         length: 0
         modified: 0
     - boneName: mixamorig:LeftHandMiddle1
       humanName: Left Middle Proximal
       limit:
-        min: {x: 0, y: 0, z: 0}
-        max: {x: 0, y: 0, z: 0}
+        min: {x: 0, y: -7.5, z: -50}
+        max: {x: 0, y: 7.5, z: 50}
         value: {x: 0, y: 0, z: 0}
         length: 0
         modified: 0
     - boneName: mixamorig:LeftHandMiddle2
       humanName: Left Middle Intermediate
       limit:
-        min: {x: 0, y: 0, z: 0}
-        max: {x: 0, y: 0, z: 0}
+        min: {x: 0, y: 0, z: -45}
+        max: {x: 0, y: 0, z: 45}
         value: {x: 0, y: 0, z: 0}
         length: 0
         modified: 0
     - boneName: mixamorig:LeftHandMiddle3
       humanName: Left Middle Distal
       limit:
-        min: {x: 0, y: 0, z: 0}
-        max: {x: 0, y: 0, z: 0}
+        min: {x: 0, y: 0, z: -45}
+        max: {x: 0, y: 0, z: 45}
         value: {x: 0, y: 0, z: 0}
         length: 0
         modified: 0
     - boneName: mixamorig:LeftHandRing1
       humanName: Left Ring Proximal
       limit:
-        min: {x: 0, y: 0, z: 0}
-        max: {x: 0, y: 0, z: 0}
+        min: {x: 0, y: -7.5, z: -50}
+        max: {x: 0, y: 7.5, z: 50}
         value: {x: 0, y: 0, z: 0}
         length: 0
         modified: 0
     - boneName: mixamorig:LeftHandRing2
       humanName: Left Ring Intermediate
       limit:
-        min: {x: 0, y: 0, z: 0}
-        max: {x: 0, y: 0, z: 0}
+        min: {x: 0, y: 0, z: -45}
+        max: {x: 0, y: 0, z: 45}
         value: {x: 0, y: 0, z: 0}
         length: 0
         modified: 0
     - boneName: mixamorig:LeftHandRing3
       humanName: Left Ring Distal
       limit:
-        min: {x: 0, y: 0, z: 0}
-        max: {x: 0, y: 0, z: 0}
+        min: {x: 0, y: 0, z: -45}
+        max: {x: 0, y: 0, z: 45}
         value: {x: 0, y: 0, z: 0}
         length: 0
         modified: 0
     - boneName: mixamorig:LeftHandPinky1
       humanName: Left Little Proximal
       limit:
-        min: {x: 0, y: 0, z: 0}
-        max: {x: 0, y: 0, z: 0}
+        min: {x: 0, y: -20, z: -50}
+        max: {x: 0, y: 20, z: 50}
         value: {x: 0, y: 0, z: 0}
         length: 0
         modified: 0
     - boneName: mixamorig:LeftHandPinky2
       humanName: Left Little Intermediate
       limit:
-        min: {x: 0, y: 0, z: 0}
-        max: {x: 0, y: 0, z: 0}
+        min: {x: 0, y: 0, z: -45}
+        max: {x: 0, y: 0, z: 45}
         value: {x: 0, y: 0, z: 0}
         length: 0
         modified: 0
     - boneName: mixamorig:LeftHandPinky3
       humanName: Left Little Distal
       limit:
-        min: {x: 0, y: 0, z: 0}
-        max: {x: 0, y: 0, z: 0}
+        min: {x: 0, y: 0, z: -45}
+        max: {x: 0, y: 0, z: 45}
         value: {x: 0, y: 0, z: 0}
         length: 0
         modified: 0
     - boneName: mixamorig:RightHandThumb1
       humanName: Right Thumb Proximal
       limit:
-        min: {x: 0, y: 0, z: 0}
-        max: {x: 0, y: 0, z: 0}
+        min: {x: 0, y: -25, z: -20}
+        max: {x: 0, y: 25, z: 20}
         value: {x: 0, y: 0, z: 0}
         length: 0
         modified: 0
     - boneName: mixamorig:RightHandThumb2
       humanName: Right Thumb Intermediate
       limit:
-        min: {x: 0, y: 0, z: 0}
-        max: {x: 0, y: 0, z: 0}
+        min: {x: 0, y: 0, z: -40}
+        max: {x: 0, y: 0, z: 35}
         value: {x: 0, y: 0, z: 0}
         length: 0
         modified: 0
     - boneName: mixamorig:RightHandThumb3
       humanName: Right Thumb Distal
       limit:
-        min: {x: 0, y: 0, z: 0}
-        max: {x: 0, y: 0, z: 0}
+        min: {x: 0, y: 0, z: -40}
+        max: {x: 0, y: 0, z: 35}
         value: {x: 0, y: 0, z: 0}
         length: 0
         modified: 0
     - boneName: mixamorig:RightHandIndex1
       humanName: Right Index Proximal
       limit:
-        min: {x: 0, y: 0, z: 0}
-        max: {x: 0, y: 0, z: 0}
+        min: {x: 0, y: -20, z: -50}
+        max: {x: 0, y: 20, z: 50}
         value: {x: 0, y: 0, z: 0}
         length: 0
         modified: 0
     - boneName: mixamorig:RightHandIndex2
       humanName: Right Index Intermediate
       limit:
-        min: {x: 0, y: 0, z: 0}
-        max: {x: 0, y: 0, z: 0}
+        min: {x: 0, y: 0, z: -45}
+        max: {x: 0, y: 0, z: 45}
         value: {x: 0, y: 0, z: 0}
         length: 0
         modified: 0
     - boneName: mixamorig:RightHandIndex3
       humanName: Right Index Distal
       limit:
-        min: {x: 0, y: 0, z: 0}
-        max: {x: 0, y: 0, z: 0}
+        min: {x: 0, y: 0, z: -45}
+        max: {x: 0, y: 0, z: 45}
         value: {x: 0, y: 0, z: 0}
         length: 0
         modified: 0
     - boneName: mixamorig:RightHandMiddle1
       humanName: Right Middle Proximal
       limit:
-        min: {x: 0, y: 0, z: 0}
-        max: {x: 0, y: 0, z: 0}
+        min: {x: 0, y: -7.5, z: -50}
+        max: {x: 0, y: 7.5, z: 50}
         value: {x: 0, y: 0, z: 0}
         length: 0
         modified: 0
     - boneName: mixamorig:RightHandMiddle2
       humanName: Right Middle Intermediate
       limit:
-        min: {x: 0, y: 0, z: 0}
-        max: {x: 0, y: 0, z: 0}
+        min: {x: 0, y: 0, z: -45}
+        max: {x: 0, y: 0, z: 45}
         value: {x: 0, y: 0, z: 0}
         length: 0
         modified: 0
     - boneName: mixamorig:RightHandMiddle3
       humanName: Right Middle Distal
       limit:
-        min: {x: 0, y: 0, z: 0}
-        max: {x: 0, y: 0, z: 0}
+        min: {x: 0, y: 0, z: -45}
+        max: {x: 0, y: 0, z: 45}
         value: {x: 0, y: 0, z: 0}
         length: 0
         modified: 0
     - boneName: mixamorig:RightHandRing1
       humanName: Right Ring Proximal
       limit:
-        min: {x: 0, y: 0, z: 0}
-        max: {x: 0, y: 0, z: 0}
+        min: {x: 0, y: -7.5, z: -50}
+        max: {x: 0, y: 7.5, z: 50}
         value: {x: 0, y: 0, z: 0}
         length: 0
         modified: 0
     - boneName: mixamorig:RightHandRing2
       humanName: Right Ring Intermediate
       limit:
-        min: {x: 0, y: 0, z: 0}
-        max: {x: 0, y: 0, z: 0}
+        min: {x: 0, y: 0, z: -45}
+        max: {x: 0, y: 0, z: 45}
         value: {x: 0, y: 0, z: 0}
         length: 0
         modified: 0
     - boneName: mixamorig:RightHandRing3
       humanName: Right Ring Distal
       limit:
-        min: {x: 0, y: 0, z: 0}
-        max: {x: 0, y: 0, z: 0}
+        min: {x: 0, y: 0, z: -45}
+        max: {x: 0, y: 0, z: 45}
         value: {x: 0, y: 0, z: 0}
         length: 0
         modified: 0
     - boneName: mixamorig:RightHandPinky1
       humanName: Right Little Proximal
       limit:
-        min: {x: 0, y: 0, z: 0}
-        max: {x: 0, y: 0, z: 0}
+        min: {x: 0, y: -20, z: -50}
+        max: {x: 0, y: 20, z: 50}
         value: {x: 0, y: 0, z: 0}
         length: 0
         modified: 0
     - boneName: mixamorig:RightHandPinky2
       humanName: Right Little Intermediate
       limit:
-        min: {x: 0, y: 0, z: 0}
-        max: {x: 0, y: 0, z: 0}
+        min: {x: 0, y: 0, z: -45}
+        max: {x: 0, y: 0, z: 45}
         value: {x: 0, y: 0, z: 0}
         length: 0
         modified: 0
     - boneName: mixamorig:RightHandPinky3
       humanName: Right Little Distal
       limit:
-        min: {x: 0, y: 0, z: 0}
-        max: {x: 0, y: 0, z: 0}
+        min: {x: 0, y: 0, z: -45}
+        max: {x: 0, y: 0, z: 45}
+        value: {x: 0, y: 0, z: 0}
+        length: 0
+        modified: 0
+    - boneName: mixamorig:Spine2
+      humanName: UpperChest
+      limit:
+        min: {x: -20, y: -20, z: -20}
+        max: {x: 20, y: 20, z: 20}
         value: {x: 0, y: 0, z: 0}
         length: 0
         modified: 0
@@ -1047,7 +1117,6 @@ ModelImporter:
     legStretch: 0.05
     feetSpacing: 0
     rootMotionBoneName: 
-    rootMotionBoneRotation: {x: 0, y: 0, z: 0, w: 1}
     hasTranslationDoF: 1
     hasExtraRoot: 0
     skeletonHasParents: 0

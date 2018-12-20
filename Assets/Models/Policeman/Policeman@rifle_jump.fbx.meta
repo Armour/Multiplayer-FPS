@@ -147,7 +147,7 @@ ModelImporter:
     importMaterials: 1
     materialName: 0
     materialSearch: 1
-    materialLocation: 0
+    materialLocation: 1
   animations:
     legacyGenerateAnimations: 4
     bakeSimulation: 0
@@ -190,15 +190,15 @@ ModelImporter:
       loopBlendPositionY: 1
       loopBlendPositionXZ: 1
       keepOriginalOrientation: 0
-      keepOriginalPositionY: 1
+      keepOriginalPositionY: 0
       keepOriginalPositionXZ: 0
-      heightFromFeet: 0
+      heightFromFeet: 1
       mirror: 0
-      bodyMask: 01000000000000000000000001000000010000000000000000000000000000000000000001000000010000000000000000000000
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
       curves: []
       events: []
       transformMask: []
-      maskType: 1
+      maskType: 3
       maskSource: {fileID: 101100000, guid: c45276963e2e148389b8805fc5cf91dd, type: 2}
       additiveReferencePoseFrame: 0
     isReadable: 1
@@ -207,6 +207,7 @@ ModelImporter:
     globalScale: 1
     meshCompression: 0
     addColliders: 0
+    useSRGBMaterialColor: 1
     importVisibility: 0
     importBlendShapes: 1
     importCameras: 0
@@ -218,7 +219,7 @@ ModelImporter:
     keepQuads: 0
     weldVertices: 1
     preserveHierarchy: 0
-    indexFormat: 1
+    indexFormat: 0
     secondaryUVAngleDistortion: 8
     secondaryUVAreaDistortion: 15.000001
     secondaryUVHardAngle: 88
@@ -230,7 +231,10 @@ ModelImporter:
     normalSmoothAngle: 60
     normalImportMode: 0
     tangentImportMode: 3
-    normalCalculationMode: 0
+    normalCalculationMode: 4
+    legacyComputeAllNormalsFromSmoothingGroupsWhenMeshHasBlendShapes: 0
+    blendShapeNormalImportMode: 1
+    normalSmoothingSource: 0
   importAnimation: 1
   copyAvatar: 1
   humanDescription:
@@ -874,7 +878,7 @@ ModelImporter:
     - name: mixamorig:LeftHandThumb1
       parentName: 
       position: {x: 0.033079706, y: 0.03521171, z: 0.021237599}
-      rotation: {x: 0.07133661, y: 0.0047924807, z: -0.3518133, w: 0.93333566}
+      rotation: {x: 0.07133662, y: 0.004792481, z: -0.35181332, w: 0.9333357}
       scale: {x: 1, y: 1, z: 1}
     - name: mixamorig:LeftHandThumb2
       parentName: 
