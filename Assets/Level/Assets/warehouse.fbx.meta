@@ -1,0 +1,416 @@
+fileFormatVersion: 2
+guid: dc75fa5e796d67743b5d62bb0e81e5bb
+ModelImporter:
+  serializedVersion: 23
+  fileIDToRecycleName:
+    100000: ad
+    100002: Camera
+    100004: Lamp
+    100006: Mesh11 Group2 Model
+    100008: Mesh15 Group3 Model
+    100010: Mesh18 Group4 Model
+    100012: Mesh19 Group4 Model
+    100014: Mesh20 Group4 Model
+    100016: Mesh21 Group4 Model
+    100018: Mesh23 Group4 Model
+    100020: Mesh29 Group4 Model
+    100022: Mesh31 Group5 Model
+    100024: Mesh37 Group7 Model
+    100026: Mesh40 Group8 Model
+    100028: Mesh41 Group8 Model
+    100030: Mesh42 Group8 Model
+    100032: Mesh43 Group8 Model
+    100034: Mesh44 Group8 Model
+    100036: Mesh45 Group8 Model
+    100038: Mesh46 Group8 Model
+    100040: Mesh47 Group9 Model
+    100042: Mesh48 Group9 Model
+    100044: Mesh49 Group10 Model
+    100046: Mesh5 Group1 Model
+    100048: Mesh54 Group12 Model
+    100050: Mesh55 Model
+    100052: Mesh56 Model
+    100054: Mesh57 Model
+    100056: Mesh58 Model
+    100058: Mesh59 Model
+    100060: Mesh60 Model
+    100062: Mesh61 Model
+    100064: Mesh62 Model
+    100066: Mesh63 Model
+    100068: Mesh64 Model
+    100070: Mesh65 Model
+    100072: Mesh66 Model
+    100074: Mesh67 Model
+    100076: Mesh68 Model
+    100078: Mesh9 Group1 Model
+    100080: //RootNode
+    100082: WARNING LINE
+    400000: ad
+    400002: Camera
+    400004: Lamp
+    400006: Mesh11 Group2 Model
+    400008: Mesh15 Group3 Model
+    400010: Mesh18 Group4 Model
+    400012: Mesh19 Group4 Model
+    400014: Mesh20 Group4 Model
+    400016: Mesh21 Group4 Model
+    400018: Mesh23 Group4 Model
+    400020: Mesh29 Group4 Model
+    400022: Mesh31 Group5 Model
+    400024: Mesh37 Group7 Model
+    400026: Mesh40 Group8 Model
+    400028: Mesh41 Group8 Model
+    400030: Mesh42 Group8 Model
+    400032: Mesh43 Group8 Model
+    400034: Mesh44 Group8 Model
+    400036: Mesh45 Group8 Model
+    400038: Mesh46 Group8 Model
+    400040: Mesh47 Group9 Model
+    400042: Mesh48 Group9 Model
+    400044: Mesh49 Group10 Model
+    400046: Mesh5 Group1 Model
+    400048: Mesh54 Group12 Model
+    400050: Mesh55 Model
+    400052: Mesh56 Model
+    400054: Mesh57 Model
+    400056: Mesh58 Model
+    400058: Mesh59 Model
+    400060: Mesh60 Model
+    400062: Mesh61 Model
+    400064: Mesh62 Model
+    400066: Mesh63 Model
+    400068: Mesh64 Model
+    400070: Mesh65 Model
+    400072: Mesh66 Model
+    400074: Mesh67 Model
+    400076: Mesh68 Model
+    400078: Mesh9 Group1 Model
+    400080: //RootNode
+    400082: WARNING LINE
+    2000000: Camera
+    2100000: FrontColor
+    2100002: Blue
+    2100004: Beige
+    2100006: Cobalt
+    2100008: Material.002
+    2100010: Material.001
+    2100012: GROUND
+    2100014: pamatas
+    2100016: WARNING_LINE
+    2100018: outerior ground
+    2100020: Red
+    2100022: water canal
+    2100024: outerrior roof
+    2100026: outside metall
+    2100028: walls
+    2100030: Jade
+    2100032: doors frame
+    2300000: ad
+    2300002: Mesh11 Group2 Model
+    2300004: Mesh15 Group3 Model
+    2300006: Mesh18 Group4 Model
+    2300008: Mesh19 Group4 Model
+    2300010: Mesh20 Group4 Model
+    2300012: Mesh21 Group4 Model
+    2300014: Mesh23 Group4 Model
+    2300016: Mesh29 Group4 Model
+    2300018: Mesh31 Group5 Model
+    2300020: Mesh37 Group7 Model
+    2300022: Mesh40 Group8 Model
+    2300024: Mesh41 Group8 Model
+    2300026: Mesh42 Group8 Model
+    2300028: Mesh43 Group8 Model
+    2300030: Mesh44 Group8 Model
+    2300032: Mesh45 Group8 Model
+    2300034: Mesh46 Group8 Model
+    2300036: Mesh47 Group9 Model
+    2300038: Mesh48 Group9 Model
+    2300040: Mesh49 Group10 Model
+    2300042: Mesh5 Group1 Model
+    2300044: Mesh54 Group12 Model
+    2300046: Mesh55 Model
+    2300048: Mesh56 Model
+    2300050: Mesh57 Model
+    2300052: Mesh58 Model
+    2300054: Mesh59 Model
+    2300056: Mesh60 Model
+    2300058: Mesh61 Model
+    2300060: Mesh62 Model
+    2300062: Mesh63 Model
+    2300064: Mesh64 Model
+    2300066: Mesh65 Model
+    2300068: Mesh66 Model
+    2300070: Mesh67 Model
+    2300072: Mesh68 Model
+    2300074: Mesh9 Group1 Model
+    2300076: WARNING LINE
+    3300000: ad
+    3300002: Mesh11 Group2 Model
+    3300004: Mesh15 Group3 Model
+    3300006: Mesh18 Group4 Model
+    3300008: Mesh19 Group4 Model
+    3300010: Mesh20 Group4 Model
+    3300012: Mesh21 Group4 Model
+    3300014: Mesh23 Group4 Model
+    3300016: Mesh29 Group4 Model
+    3300018: Mesh31 Group5 Model
+    3300020: Mesh37 Group7 Model
+    3300022: Mesh40 Group8 Model
+    3300024: Mesh41 Group8 Model
+    3300026: Mesh42 Group8 Model
+    3300028: Mesh43 Group8 Model
+    3300030: Mesh44 Group8 Model
+    3300032: Mesh45 Group8 Model
+    3300034: Mesh46 Group8 Model
+    3300036: Mesh47 Group9 Model
+    3300038: Mesh48 Group9 Model
+    3300040: Mesh49 Group10 Model
+    3300042: Mesh5 Group1 Model
+    3300044: Mesh54 Group12 Model
+    3300046: Mesh55 Model
+    3300048: Mesh56 Model
+    3300050: Mesh57 Model
+    3300052: Mesh58 Model
+    3300054: Mesh59 Model
+    3300056: Mesh60 Model
+    3300058: Mesh61 Model
+    3300060: Mesh62 Model
+    3300062: Mesh63 Model
+    3300064: Mesh64 Model
+    3300066: Mesh65 Model
+    3300068: Mesh66 Model
+    3300070: Mesh67 Model
+    3300072: Mesh68 Model
+    3300074: Mesh9 Group1 Model
+    3300076: WARNING LINE
+    4300000: Mesh65 Model
+    4300002: Mesh29 Group4 Model
+    4300004: Mesh41 Group8 Model
+    4300006: Mesh60 Model
+    4300008: Mesh5 Group1 Model
+    4300010: Mesh23 Group4 Model
+    4300012: Mesh66 Model
+    4300014: Mesh37 Group7 Model
+    4300016: Mesh21 Group4 Model
+    4300018: Mesh44 Group8 Model
+    4300020: Mesh31 Group5 Model
+    4300022: Mesh68 Model
+    4300024: Mesh58 Model
+    4300026: Mesh43 Group8 Model
+    4300028: Mesh48 Group9 Model
+    4300030: Mesh55 Model
+    4300032: Mesh63 Model
+    4300034: Mesh20 Group4 Model
+    4300036: Mesh18 Group4 Model
+    4300038: Mesh64 Model
+    4300040: Mesh9 Group1 Model
+    4300042: Mesh42 Group8 Model
+    4300044: Mesh57 Model
+    4300046: WARNING LINE
+    4300048: Mesh45 Group8 Model
+    4300050: Mesh54 Group12 Model
+    4300052: Mesh67 Model
+    4300054: Mesh46 Group8 Model
+    4300056: Mesh47 Group9 Model
+    4300058: Mesh49 Group10 Model
+    4300060: Mesh62 Model
+    4300062: Mesh40 Group8 Model
+    4300064: Mesh56 Model
+    4300066: Mesh61 Model
+    4300068: Mesh19 Group4 Model
+    4300070: ad
+    4300072: Mesh59 Model
+    4300074: Mesh11 Group2 Model
+    4300076: Mesh15 Group3 Model
+    6400000: ad
+    6400002: Mesh11 Group2 Model
+    6400004: Mesh15 Group3 Model
+    6400006: Mesh18 Group4 Model
+    6400008: Mesh19 Group4 Model
+    6400010: Mesh20 Group4 Model
+    6400012: Mesh21 Group4 Model
+    6400014: Mesh23 Group4 Model
+    6400016: Mesh29 Group4 Model
+    6400018: Mesh31 Group5 Model
+    6400020: Mesh37 Group7 Model
+    6400022: Mesh40 Group8 Model
+    6400024: Mesh41 Group8 Model
+    6400026: Mesh42 Group8 Model
+    6400028: Mesh43 Group8 Model
+    6400030: Mesh44 Group8 Model
+    6400032: Mesh45 Group8 Model
+    6400034: Mesh46 Group8 Model
+    6400036: Mesh47 Group9 Model
+    6400038: Mesh48 Group9 Model
+    6400040: Mesh49 Group10 Model
+    6400042: Mesh5 Group1 Model
+    6400044: Mesh54 Group12 Model
+    6400046: Mesh55 Model
+    6400048: Mesh56 Model
+    6400050: Mesh57 Model
+    6400052: Mesh58 Model
+    6400054: Mesh59 Model
+    6400056: Mesh60 Model
+    6400058: Mesh61 Model
+    6400060: Mesh62 Model
+    6400062: Mesh63 Model
+    6400064: Mesh64 Model
+    6400066: Mesh65 Model
+    6400068: Mesh66 Model
+    6400070: Mesh67 Model
+    6400072: Mesh68 Model
+    6400074: Mesh9 Group1 Model
+    6400076: WARNING LINE
+    10800000: Lamp
+    2186277476908879412: ImportLogs
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: GROUND
+    second: {fileID: 2100000, guid: 588082173ed814023afcc188ccce43f2, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Jade
+    second: {fileID: 2100000, guid: 8f89e6ffdade840b691f918fc2c5bfa8, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Material.001
+    second: {fileID: 2100000, guid: ec0e3770ad0c7234aa69bbdd15abd31f, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Material.002
+    second: {fileID: 2100000, guid: ec0e3770ad0c7234aa69bbdd15abd31f, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Red
+    second: {fileID: 2100000, guid: 6bd736cd7d2ec474dbc9fe787b4f6f63, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: WARNING_LINE
+    second: {fileID: 2100000, guid: 795d31050e70e4021b0aced98f52b69b, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: doors frame
+    second: {fileID: 2100000, guid: e9d0a4b24c3106c4a91bb217cfe1016a, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: outerior ground
+    second: {fileID: 2100000, guid: c4db3022742be424692308e4faa15837, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: outerrior roof
+    second: {fileID: 2100000, guid: ec0e3770ad0c7234aa69bbdd15abd31f, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: outside metall
+    second: {fileID: 2100000, guid: 47f6eb9aca65d02429eb8414e042a330, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: pamatas
+    second: {fileID: 2100000, guid: 08f577c53a815d84f868769676ad1981, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: walls
+    second: {fileID: 2100000, guid: 852d43776a37fe04aab99ff01a6d90f0, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: water canal
+    second: {fileID: 2100000, guid: c0c3f1f3cca064c12adb6fd60c84402f, type: 2}
+  materials:
+    importMaterials: 1
+    materialName: 0
+    materialSearch: 1
+    materialLocation: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    resampleCurves: 1
+    optimizeGameObjects: 0
+    motionNodeName: 
+    rigImportErrors: 
+    rigImportWarnings: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
+    importAnimatedCustomProperties: 0
+    importConstraints: 0
+    animationCompression: 1
+    animationRotationError: 0.5
+    animationPositionError: 0.5
+    animationScaleError: 0.5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    extraUserProperties: []
+    clipAnimations: []
+    isReadable: 1
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 13
+    meshCompression: 0
+    addColliders: 1
+    useSRGBMaterialColor: 1
+    importVisibility: 0
+    importBlendShapes: 0
+    importCameras: 0
+    importLights: 0
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    optimizeMeshForGPU: 1
+    keepQuads: 1
+    weldVertices: 1
+    preserveHierarchy: 0
+    indexFormat: 0
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+    useFileScale: 1
+    previousCalculatedGlobalScale: 1
+    hasPreviousCalculatedGlobalScale: 0
+  tangentSpace:
+    normalSmoothAngle: 60
+    normalImportMode: 0
+    tangentImportMode: 3
+    normalCalculationMode: 4
+    legacyComputeAllNormalsFromSmoothingGroupsWhenMeshHasBlendShapes: 0
+    blendShapeNormalImportMode: 1
+    normalSmoothingSource: 0
+  importAnimation: 1
+  copyAvatar: 0
+  humanDescription:
+    serializedVersion: 2
+    human: []
+    skeleton: []
+    armTwist: 0.5
+    foreArmTwist: 0.5
+    upperLegTwist: 0.5
+    legTwist: 0.5
+    armStretch: 0.05
+    legStretch: 0.05
+    feetSpacing: 0
+    rootMotionBoneName: 
+    hasTranslationDoF: 0
+    hasExtraRoot: 0
+    skeletonHasParents: 1
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  animationType: 0
+  humanoidOversampling: 1
+  additionalBone: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

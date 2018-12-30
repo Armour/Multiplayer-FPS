@@ -16,7 +16,17 @@ ModelImporter:
     4300000: Mesh2 Group1 Model
     6400000: Mesh2 Group1 Model
     10800000: Lamp
-  externalObjects: {}
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: roof
+    second: {fileID: 2100000, guid: d8d6f1a8cae38ee47a518fb1bc6ddcb1, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: walls
+    second: {fileID: 2100000, guid: 81e2abf51b54f014c83b98598c0c23e4, type: 2}
   materials:
     importMaterials: 1
     materialName: 0
@@ -52,14 +62,14 @@ ModelImporter:
     addColliders: 1
     useSRGBMaterialColor: 1
     importVisibility: 0
-    importBlendShapes: 1
+    importBlendShapes: 0
     importCameras: 0
     importLights: 0
-    swapUVChannels: 1
-    generateSecondaryUV: 1
+    swapUVChannels: 0
+    generateSecondaryUV: 0
     useFileUnits: 1
     optimizeMeshForGPU: 1
-    keepQuads: 0
+    keepQuads: 1
     weldVertices: 1
     preserveHierarchy: 0
     indexFormat: 0

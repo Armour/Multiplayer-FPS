@@ -44,7 +44,17 @@ ModelImporter:
     6400006: Mesh4 Model.001
     6400008: Mesh5 Model
     10800000: Lamp
-  externalObjects: {}
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: p1
+    second: {fileID: 2100000, guid: 47f6eb9aca65d02429eb8414e042a330, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: p2
+    second: {fileID: 2100000, guid: b1967b02cf386e944bcf398a82f0d04e, type: 2}
   materials:
     importMaterials: 1
     materialName: 0
@@ -80,14 +90,14 @@ ModelImporter:
     addColliders: 1
     useSRGBMaterialColor: 1
     importVisibility: 0
-    importBlendShapes: 1
+    importBlendShapes: 0
     importCameras: 0
     importLights: 0
-    swapUVChannels: 1
-    generateSecondaryUV: 1
+    swapUVChannels: 0
+    generateSecondaryUV: 0
     useFileUnits: 1
     optimizeMeshForGPU: 1
-    keepQuads: 0
+    keepQuads: 1
     weldVertices: 1
     preserveHierarchy: 0
     indexFormat: 0

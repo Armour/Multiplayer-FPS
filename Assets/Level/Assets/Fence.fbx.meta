@@ -22,7 +22,17 @@ ModelImporter:
     6400000: Mesh1 Group1 Model.001
     6400002: Mesh2 Group2 Model
     10800000: Lamp
-  externalObjects: {}
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: bricks
+    second: {fileID: 2100000, guid: f7301a54f559d8445aa3669ff1685dd3, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: top
+    second: {fileID: 2100000, guid: e9d0a4b24c3106c4a91bb217cfe1016a, type: 2}
   materials:
     importMaterials: 1
     materialName: 0
@@ -58,14 +68,14 @@ ModelImporter:
     addColliders: 1
     useSRGBMaterialColor: 1
     importVisibility: 0
-    importBlendShapes: 1
+    importBlendShapes: 0
     importCameras: 0
     importLights: 0
-    swapUVChannels: 1
-    generateSecondaryUV: 1
+    swapUVChannels: 0
+    generateSecondaryUV: 0
     useFileUnits: 1
     optimizeMeshForGPU: 1
-    keepQuads: 0
+    keepQuads: 1
     weldVertices: 1
     preserveHierarchy: 0
     indexFormat: 0
