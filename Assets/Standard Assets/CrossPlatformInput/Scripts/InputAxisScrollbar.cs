@@ -1,17 +1,21 @@
-using System;
-using UnityEngine;
+﻿using UnityEngine.UI;
 
-namespace UnityStandardAssets.CrossPlatformInput
+namespace UnitySampleAssets.CrossPlatformInput
 {
-    public class InputAxisScrollbar : MonoBehaviour
+    public class InputAxisScrollbar : Scrollbar
     {
         public string axis;
 
-	    void Update() { }
-
-	    public void HandleInput(float value)
+        protected override void OnEnable()
         {
-            CrossPlatformInputManager.SetAxis(axis, (value*2f) - 1f);
+            base.OnEnable();
+            onValueChanged.AddListener(HandleInput);
+        }
+
+
+        private void HandleInput(float arg0)
+        {
+            CrossPlatformInputManager.SetAxis(axis, (value * 2f) - 1f);
         }
     }
 }

@@ -63,7 +63,7 @@ A multiplayer first-person shooter game based on Unity3D. Different types of inp
   ![img](Images/12.jpg)
 
 * Networking
-  * This game uses **Photon Unity Networking**, which is a good network model from Unity Assets Store
+  * This game uses **Photon Unity Networking 2**, which is a good network model from Unity Assets Store
 
 * Bullet effects
   * Bullets hitting different materials will cause different effects
@@ -91,26 +91,22 @@ A multiplayer first-person shooter game based on Unity3D. Different types of inp
   * Rotates the scene camera in every updated frame
 * **DoorAnimtion.cs**
   * Controls the door animation and detect if the player enters or exits the door triggering area
-* **GunFirstPersonView.cs**
-  * Controls the first person view of the gun shooting animation
-* **GunShooting.cs**
-  * Controls the gun shooting action on the network domain. The shooting function will evert the client if necessary
+* **FpsGun.cs**
+  * Controls the gun in first person view, mainly for shooting
+* **TpsGun.cs**
+  * Controls the gun in third person view (replicated on network), mainly transform and particle effects
 * **IKControl.cs**
   * Ensures the model is holding a gun regardless of movements or rotations
 * **ImpactLifeCycle.cs**
   * Destroys the bullet object after several seconds to save CPU time and memory
 * **NameTag.cs**
-  * Displays other players' names above their heads in a local game
+  * Displays other players' names above their heads
 * **NetworkManager.cs**
   * Controls the whole network connection
 * **PlayerHealth.cs**
   * Calculates and updates health points of each player
 * **PlayerNetworkMover.cs**
   * Synchronizes the position of the player among different clients
-* **ShowName.cs**
-  * Displays the players' names above their heads
-* **WeaponPos.cs**
-  * Positions the gun towards the player's hands
 
 ### Input Devices
 

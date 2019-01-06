@@ -1,7 +1,6 @@
-using System;
 using UnityEngine;
 
-namespace UnityStandardAssets.CrossPlatformInput.PlatformSpecific
+namespace UnitySampleAssets.CrossPlatformInput.PlatformSpecific
 {
     public class MobileInput : VirtualInput
     {
@@ -21,107 +20,99 @@ namespace UnityStandardAssets.CrossPlatformInput.PlatformSpecific
 
         public override float GetAxis(string name, bool raw)
         {
-            if (!m_VirtualAxes.ContainsKey(name))
-            {
-                AddAxes(name);
-            }
-            return m_VirtualAxes[name].GetValue;
+            return virtualAxes.ContainsKey(name) ? virtualAxes[name].GetValue : 0;
         }
 
 
         public override void SetButtonDown(string name)
         {
-            if (!m_VirtualButtons.ContainsKey(name))
+            if (!virtualButtons.ContainsKey(name))
             {
                 AddButton(name);
             }
-            m_VirtualButtons[name].Pressed();
+            virtualButtons[name].Pressed();
         }
 
 
         public override void SetButtonUp(string name)
         {
-            if (!m_VirtualButtons.ContainsKey(name))
-            {
-                AddButton(name);
-            }
-            m_VirtualButtons[name].Released();
+            virtualButtons[name].Released();
         }
 
 
         public override void SetAxisPositive(string name)
         {
-            if (!m_VirtualAxes.ContainsKey(name))
+            if (!virtualAxes.ContainsKey(name))
             {
                 AddAxes(name);
             }
-            m_VirtualAxes[name].Update(1f);
+            virtualAxes[name].Update(1f);
         }
 
 
         public override void SetAxisNegative(string name)
         {
-            if (!m_VirtualAxes.ContainsKey(name))
+            if (!virtualAxes.ContainsKey(name))
             {
                 AddAxes(name);
             }
-            m_VirtualAxes[name].Update(-1f);
+            virtualAxes[name].Update(-1f);
         }
 
 
         public override void SetAxisZero(string name)
         {
-            if (!m_VirtualAxes.ContainsKey(name))
+            if (!virtualAxes.ContainsKey(name))
             {
                 AddAxes(name);
             }
-            m_VirtualAxes[name].Update(0f);
+            virtualAxes[name].Update(0f);
         }
 
 
         public override void SetAxis(string name, float value)
         {
-            if (!m_VirtualAxes.ContainsKey(name))
+            if (!virtualAxes.ContainsKey(name))
             {
                 AddAxes(name);
             }
-            m_VirtualAxes[name].Update(value);
+            virtualAxes[name].Update(value);
         }
 
 
         public override bool GetButtonDown(string name)
         {
-            if (m_VirtualButtons.ContainsKey(name))
+            if (virtualButtons.ContainsKey(name))
             {
-                return m_VirtualButtons[name].GetButtonDown;
+                return virtualButtons[name].GetButtonDown;
             }
 
             AddButton(name);
-            return m_VirtualButtons[name].GetButtonDown;
+            return virtualButtons[name].GetButtonDown;
         }
 
 
         public override bool GetButtonUp(string name)
         {
-            if (m_VirtualButtons.ContainsKey(name))
+            if (virtualButtons.ContainsKey(name))
             {
-                return m_VirtualButtons[name].GetButtonUp;
+                return virtualButtons[name].GetButtonUp;
             }
 
             AddButton(name);
-            return m_VirtualButtons[name].GetButtonUp;
+            return virtualButtons[name].GetButtonUp;
         }
 
 
         public override bool GetButton(string name)
         {
-            if (m_VirtualButtons.ContainsKey(name))
+            if (virtualButtons.ContainsKey(name))
             {
-                return m_VirtualButtons[name].GetButton;
+                return virtualButtons[name].GetButton;
             }
 
             AddButton(name);
-            return m_VirtualButtons[name].GetButton;
+            return virtualButtons[name].GetButton;
         }
 
 

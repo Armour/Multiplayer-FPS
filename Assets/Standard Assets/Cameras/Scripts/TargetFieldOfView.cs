@@ -1,59 +1,60 @@
-using System;
-using UnityEngine;
+﻿using UnityEngine;
 
 
-namespace UnityStandardAssets.Cameras
+namespace UnitySampleAssets.Cameras
 {
+
     public class TargetFieldOfView : AbstractTargetFollower
     {
+
         // This script is primarily designed to be used with the "LookAtTarget" script to enable a
         // CCTV style camera looking at a target to also adjust its field of view (zoom) to fit the
         // target (so that it zooms in as the target becomes further away).
         // When used with a follow cam, it will automatically use the same target.
 
-        [SerializeField] private float m_FovAdjustTime = 1;             // the time taken to adjust the current FOV to the desired target FOV amount.
-        [SerializeField] private float m_ZoomAmountMultiplier = 2;      // a multiplier for the FOV amount. The default of 2 makes the field of view twice as wide as required to fit the target.
-        [SerializeField] private bool m_IncludeEffectsInSize = false;   // changing this only takes effect on startup, or when new target is assigned.
+        [SerializeField] private float fovAdjustTime = 1;// the time taken to adjust the current FOV to the desired target FOV amount.
+        [SerializeField] private float zoomAmountMultiplier = 2;// a multiplier for the FOV amount. The default of 2 makes the field of view twice as wide as required to fit the target.
+        [SerializeField] private bool includeEffectsInSize = false;// changing this only takes effect on startup, or when new target is assigned.
 
-        private float m_BoundSize;
-        private float m_FovAdjustVelocity;
-        private Camera m_Cam;
-        private Transform m_LastTarget;
+        private float boundSize;
+        private float fovAdjustVelocity;
+        private Camera cam;
+        private Transform lastTarget;
 
         // Use this for initialization
         protected override void Start()
         {
             base.Start();
-            m_BoundSize = MaxBoundsExtent(m_Target, m_IncludeEffectsInSize);
+
+            boundSize = MaxBoundsExtent(target, includeEffectsInSize);
 
             // get a reference to the actual camera component:
-            m_Cam = GetComponentInChildren<Camera>();
+            cam = GetComponentInChildren<Camera>();
         }
-
 
         protected override void FollowTarget(float deltaTime)
         {
+
             // calculate the correct field of view to fit the bounds size at the current distance
-            float dist = (m_Target.position - transform.position).magnitude;
-            float requiredFOV = Mathf.Atan2(m_BoundSize, dist)*Mathf.Rad2Deg*m_ZoomAmountMultiplier;
+            float dist = (target.position - transform.position).magnitude;
+            float requiredFOV = Mathf.Atan2(boundSize, dist)*Mathf.Rad2Deg*zoomAmountMultiplier;
 
-            m_Cam.fieldOfView = Mathf.SmoothDamp(m_Cam.fieldOfView, requiredFOV, ref m_FovAdjustVelocity, m_FovAdjustTime);
+            cam.fieldOfView = Mathf.SmoothDamp(cam.fieldOfView, requiredFOV, ref fovAdjustVelocity, fovAdjustTime);
         }
-
 
         public override void SetTarget(Transform newTransform)
         {
             base.SetTarget(newTransform);
-            m_BoundSize = MaxBoundsExtent(newTransform, m_IncludeEffectsInSize);
+            boundSize = MaxBoundsExtent(newTransform, includeEffectsInSize);
         }
-
 
         public static float MaxBoundsExtent(Transform obj, bool includeEffects)
         {
+
             // get the maximum bounds extent of object, including all child renderers,
             // but excluding particles and trails, for FOV zooming effect.
 
-            var renderers = obj.GetComponentsInChildren<Renderer>();
+            Renderer[] renderers = obj.GetComponentsInChildren<Renderer>();
 
             Bounds bounds = new Bounds();
             bool initBounds = false;
@@ -74,6 +75,7 @@ namespace UnityStandardAssets.Cameras
             }
             float max = Mathf.Max(bounds.extents.x, bounds.extents.y, bounds.extents.z);
             return max;
+
         }
     }
 }

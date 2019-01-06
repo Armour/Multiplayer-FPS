@@ -1,51 +1,41 @@
-using System;
 using System.Collections.Generic;
 using UnityEngine;
 
 
-namespace UnityStandardAssets.CrossPlatformInput
+namespace UnitySampleAssets.CrossPlatformInput
 {
     public abstract class VirtualInput
     {
-        public Vector3 virtualMousePosition { get; private set; }
-        
-        
-        protected Dictionary<string, CrossPlatformInputManager.VirtualAxis> m_VirtualAxes =
+        protected Dictionary<string, CrossPlatformInputManager.VirtualAxis> virtualAxes =
             new Dictionary<string, CrossPlatformInputManager.VirtualAxis>();
-            // Dictionary to store the name relating to the virtual axes
-        protected Dictionary<string, CrossPlatformInputManager.VirtualButton> m_VirtualButtons =
+
+        // Dictionary to store the name relating to the virtual axes
+
+        protected Dictionary<string, CrossPlatformInputManager.VirtualButton> virtualButtons =
             new Dictionary<string, CrossPlatformInputManager.VirtualButton>();
-        protected List<string> m_AlwaysUseVirtual = new List<string>();
-            // list of the axis and button names that have been flagged to always use a virtual axis or button
-        
 
-        public bool AxisExists(string name)
-        {
-            return m_VirtualAxes.ContainsKey(name);
-        }
+        protected List<string> alwaysUseVirtual = new List<string>();
+        // list of the axis and button names that have been flagged to always use a virtual axis or button
 
-        public bool ButtonExists(string name)
-        {
-            return m_VirtualButtons.ContainsKey(name);
-        }
+        public Vector3 virtualMousePosition { get; private set; }
 
 
         public void RegisterVirtualAxis(CrossPlatformInputManager.VirtualAxis axis)
         {
             // check if we already have an axis with that name and log and error if we do
-            if (m_VirtualAxes.ContainsKey(axis.name))
+            if (virtualAxes.ContainsKey(axis.name))
             {
                 Debug.LogError("There is already a virtual axis named " + axis.name + " registered.");
             }
             else
             {
                 // add any new axes
-                m_VirtualAxes.Add(axis.name, axis);
+                virtualAxes.Add(axis.name, axis);
 
                 // if we dont want to match with the input manager setting then revert to always using virtual
                 if (!axis.matchWithInputManager)
                 {
-                    m_AlwaysUseVirtual.Add(axis.name);
+                    alwaysUseVirtual.Add(axis.name);
                 }
             }
         }
@@ -54,19 +44,19 @@ namespace UnityStandardAssets.CrossPlatformInput
         public void RegisterVirtualButton(CrossPlatformInputManager.VirtualButton button)
         {
             // check if already have a buttin with that name and log an error if we do
-            if (m_VirtualButtons.ContainsKey(button.name))
+            if (virtualButtons.ContainsKey(button.name))
             {
                 Debug.LogError("There is already a virtual button named " + button.name + " registered.");
             }
             else
             {
                 // add any new buttons
-                m_VirtualButtons.Add(button.name, button);
+                virtualButtons.Add(button.name, button);
 
                 // if we dont want to match to the input manager then always use a virtual axis
                 if (!button.matchWithInputManager)
                 {
-                    m_AlwaysUseVirtual.Add(button.name);
+                    alwaysUseVirtual.Add(button.name);
                 }
             }
         }
@@ -75,9 +65,9 @@ namespace UnityStandardAssets.CrossPlatformInput
         public void UnRegisterVirtualAxis(string name)
         {
             // if we have an axis with that name then remove it from our dictionary of registered axes
-            if (m_VirtualAxes.ContainsKey(name))
+            if (virtualAxes.ContainsKey(name))
             {
-                m_VirtualAxes.Remove(name);
+                virtualAxes.Remove(name);
             }
         }
 
@@ -85,9 +75,9 @@ namespace UnityStandardAssets.CrossPlatformInput
         public void UnRegisterVirtualButton(string name)
         {
             // if we have a button with this name then remove it from our dictionary of registered buttons
-            if (m_VirtualButtons.ContainsKey(name))
+            if (virtualButtons.ContainsKey(name))
             {
-                m_VirtualButtons.Remove(name);
+                virtualButtons.Remove(name);
             }
         }
 
@@ -95,7 +85,7 @@ namespace UnityStandardAssets.CrossPlatformInput
         // returns a reference to a named virtual axis if it exists otherwise null
         public CrossPlatformInputManager.VirtualAxis VirtualAxisReference(string name)
         {
-            return m_VirtualAxes.ContainsKey(name) ? m_VirtualAxes[name] : null;
+            return virtualAxes.ContainsKey(name) ? virtualAxes[name] : null;
         }
 
 
@@ -118,7 +108,7 @@ namespace UnityStandardAssets.CrossPlatformInput
 
 
         public abstract float GetAxis(string name, bool raw);
-        
+
         public abstract bool GetButton(string name);
         public abstract bool GetButtonDown(string name);
         public abstract bool GetButtonUp(string name);

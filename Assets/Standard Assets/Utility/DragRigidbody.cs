@@ -1,28 +1,24 @@
-using System;
 using System.Collections;
 using UnityEngine;
 
-namespace UnityStandardAssets.Utility
+namespace UnitySampleAssets.Utility
 {
     public class DragRigidbody : MonoBehaviour
     {
-        const float k_Spring = 50.0f;
-        const float k_Damper = 5.0f;
-        const float k_Drag = 10.0f;
-        const float k_AngularDrag = 5.0f;
-        const float k_Distance = 0.2f;
-        const bool k_AttachToCenterOfMass = false;
+        private float spring = 50.0f;
+        private float damper = 5.0f;
+        private float drag = 10.0f;
+        private float angularDrag = 5.0f;
+        private float distance = 0.2f;
+        private bool attachToCenterOfMass = false;
 
-        private SpringJoint m_SpringJoint;
-
+        private SpringJoint springJoint;
 
         private void Update()
         {
             // Make sure the user pressed the mouse down
             if (!Input.GetMouseButtonDown(0))
-            {
                 return;
-            }
 
             var mainCamera = FindCamera();
 
@@ -32,65 +28,66 @@ namespace UnityStandardAssets.Utility
                 !Physics.Raycast(mainCamera.ScreenPointToRay(Input.mousePosition).origin,
                                  mainCamera.ScreenPointToRay(Input.mousePosition).direction, out hit, 100,
                                  Physics.DefaultRaycastLayers))
-            {
                 return;
-            }
             // We need to hit a rigidbody that is not kinematic
             if (!hit.rigidbody || hit.rigidbody.isKinematic)
-            {
                 return;
-            }
 
-            if (!m_SpringJoint)
+            if (!springJoint)
             {
                 var go = new GameObject("Rigidbody dragger");
-                Rigidbody body = go.AddComponent<Rigidbody>();
-                m_SpringJoint = go.AddComponent<SpringJoint>();
+                Rigidbody body = go.AddComponent<Rigidbody>() as Rigidbody;
+                springJoint = (SpringJoint) go.AddComponent<SpringJoint>();
                 body.isKinematic = true;
             }
 
-            m_SpringJoint.transform.position = hit.point;
-            m_SpringJoint.anchor = Vector3.zero;
+            springJoint.transform.position = hit.point;
+            if (attachToCenterOfMass)
+            {
+                var anchor = transform.TransformDirection(hit.rigidbody.centerOfMass) + hit.rigidbody.transform.position;
+                anchor = springJoint.transform.InverseTransformPoint(anchor);
+                springJoint.anchor = anchor;
+            }
+            else
+            {
+                springJoint.anchor = Vector3.zero;
+            }
 
-            m_SpringJoint.spring = k_Spring;
-            m_SpringJoint.damper = k_Damper;
-            m_SpringJoint.maxDistance = k_Distance;
-            m_SpringJoint.connectedBody = hit.rigidbody;
+            springJoint.spring = spring;
+            springJoint.damper = damper;
+            springJoint.maxDistance = distance;
+            springJoint.connectedBody = hit.rigidbody;
 
             StartCoroutine("DragObject", hit.distance);
         }
 
-
         private IEnumerator DragObject(float distance)
         {
-            var oldDrag = m_SpringJoint.connectedBody.drag;
-            var oldAngularDrag = m_SpringJoint.connectedBody.angularDrag;
-            m_SpringJoint.connectedBody.drag = k_Drag;
-            m_SpringJoint.connectedBody.angularDrag = k_AngularDrag;
+            var oldDrag = springJoint.connectedBody.drag;
+            var oldAngularDrag = springJoint.connectedBody.angularDrag;
+            springJoint.connectedBody.drag = drag;
+            springJoint.connectedBody.angularDrag = angularDrag;
             var mainCamera = FindCamera();
             while (Input.GetMouseButton(0))
             {
                 var ray = mainCamera.ScreenPointToRay(Input.mousePosition);
-                m_SpringJoint.transform.position = ray.GetPoint(distance);
+                springJoint.transform.position = ray.GetPoint(distance);
                 yield return null;
             }
-            if (m_SpringJoint.connectedBody)
+            if (springJoint.connectedBody)
             {
-                m_SpringJoint.connectedBody.drag = oldDrag;
-                m_SpringJoint.connectedBody.angularDrag = oldAngularDrag;
-                m_SpringJoint.connectedBody = null;
+                springJoint.connectedBody.drag = oldDrag;
+                springJoint.connectedBody.angularDrag = oldAngularDrag;
+                springJoint.connectedBody = null;
             }
         }
-
 
         private Camera FindCamera()
         {
             if (GetComponent<Camera>())
-            {
                 return GetComponent<Camera>();
-            }
-
-            return Camera.main;
+            
+                return Camera.main;
         }
     }
 }

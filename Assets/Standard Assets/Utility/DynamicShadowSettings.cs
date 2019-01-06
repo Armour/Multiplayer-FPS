@@ -1,10 +1,11 @@
-using System;
-using UnityEngine;
+﻿using UnityEngine;
 
-namespace UnityStandardAssets.Utility
+namespace UnitySampleAssets.Utility
 {
+
     public class DynamicShadowSettings : MonoBehaviour
     {
+
         public Light sunLight;
         public float minHeight = 10;
         public float minShadowDistance = 80;
@@ -14,20 +15,19 @@ namespace UnityStandardAssets.Utility
         public float maxShadowBias = 0.1f;
         public float adaptTime = 1;
 
-        private float m_SmoothHeight;
-        private float m_ChangeSpeed;
-        private float m_OriginalStrength = 1;
-
+        private float smoothHeight;
+        private float changeSpeed;
+        private float originalStrength = 1;
 
         private void Start()
         {
-            m_OriginalStrength = sunLight.shadowStrength;
+            originalStrength = sunLight.shadowStrength;
         }
-
 
         // Update is called once per frame
         private void Update()
         {
+
             Ray ray = new Ray(Camera.main.transform.position, -Vector3.up);
             RaycastHit hit;
             float height = transform.position.y;
@@ -36,16 +36,18 @@ namespace UnityStandardAssets.Utility
                 height = hit.distance;
             }
 
-            if (Mathf.Abs(height - m_SmoothHeight) > 1)
+            if (Mathf.Abs(height - smoothHeight) > 1)
             {
-                m_SmoothHeight = Mathf.SmoothDamp(m_SmoothHeight, height, ref m_ChangeSpeed, adaptTime);
+                smoothHeight = Mathf.SmoothDamp(smoothHeight, height, ref changeSpeed, adaptTime);
             }
 
-            float i = Mathf.InverseLerp(minHeight, maxHeight, m_SmoothHeight);
+
+            float i = Mathf.InverseLerp(minHeight, maxHeight, smoothHeight);
 
             QualitySettings.shadowDistance = Mathf.Lerp(minShadowDistance, maxShadowDistance, i);
             sunLight.shadowBias = Mathf.Lerp(minShadowBias, maxShadowBias, 1 - ((1 - i)*(1 - i)));
-            sunLight.shadowStrength = Mathf.Lerp(m_OriginalStrength, 0, i);
+            sunLight.shadowStrength = Mathf.Lerp(originalStrength, 0, i);
+
         }
     }
 }

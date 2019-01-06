@@ -3,20 +3,17 @@ using System.Collections;
 
 public class CameraRotation : MonoBehaviour {
 
-    public Transform point;
+    [SerializeField]
+    private Transform lookPoint;
+    [SerializeField]
+    private float rotateSpeed = 12f;
 
-    private Vector3 up;
-
-    // Use this for initialization
-    void Start() {
-        up = transform.up;
-        transform.LookAt(point, up);
-    }
-
-    // Update is called once per frame
+    /// <summary>
+    /// Update is called every frame, if the MonoBehaviour is enabled.
+    /// </summary>
     void Update() {
-        transform.RotateAround(point.position, Vector3.up, 12 * Time.deltaTime);
-        transform.LookAt(point, up);
+        transform.RotateAround(lookPoint.position, Vector3.up, rotateSpeed * Time.deltaTime);
+        transform.LookAt(lookPoint, Vector3.up);
     }
 
 }

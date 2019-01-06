@@ -1,39 +1,40 @@
 ﻿using UnityEngine;
 using System.Collections;
 
+// TODO: finish score system later, this script is not used now.
 public class PlayerScore : MonoBehaviour {
 
-    [HideInInspector] public int score = 0;
-    [HideInInspector] public int killed = 0;
-    [HideInInspector] public string notification;
+    private int score = 0;
+    private int killed = 0;
+    // private string notification;
 
-    public void addKilled() {
+    public void IncreaseKillCount() {
         killed++;
         switch (killed) {
         case 1:
             score += 10;
-            notification = null;
+            // notification = null;
             break;
         case 2:
             score += 15;
-            notification = "Double Kill";
+            // notification = "Double Kill";
             break;
         case 3:
             score += 25;
-            notification = "Triple Kill";
+            // notification = "Triple Kill";
             break;
         case 4:
             score += 40;
-            notification = "Killing Spring";
+            // notification = "Killing Spring";
             break;
         default:
             score += 60;
-            notification = "God Like";
+            // notification = "God Like";
             break;
         }
     }
 
-    public void addScore(int newScore) {
+    public void AddScore(int newScore) {
         score += newScore;
     }
 

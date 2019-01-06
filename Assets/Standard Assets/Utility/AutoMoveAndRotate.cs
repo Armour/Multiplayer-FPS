@@ -1,21 +1,20 @@
-using System;
-using UnityEngine;
+﻿using UnityEngine;
 
-namespace UnityStandardAssets.Utility
+namespace UnitySampleAssets.Utility
 {
+
     public class AutoMoveAndRotate : MonoBehaviour
     {
+
         public Vector3andSpace moveUnitsPerSecond;
         public Vector3andSpace rotateDegreesPerSecond;
         public bool ignoreTimescale;
-        private float m_LastRealTime;
-
+        private float lastRealTime;
 
         private void Start()
         {
-            m_LastRealTime = Time.realtimeSinceStartup;
+            lastRealTime = Time.realtimeSinceStartup;
         }
-
 
         // Update is called once per frame
         private void Update()
@@ -23,15 +22,14 @@ namespace UnityStandardAssets.Utility
             float deltaTime = Time.deltaTime;
             if (ignoreTimescale)
             {
-                deltaTime = (Time.realtimeSinceStartup - m_LastRealTime);
-                m_LastRealTime = Time.realtimeSinceStartup;
+                deltaTime = (Time.realtimeSinceStartup - lastRealTime);
+                lastRealTime = Time.realtimeSinceStartup;
             }
             transform.Translate(moveUnitsPerSecond.value*deltaTime, moveUnitsPerSecond.space);
             transform.Rotate(rotateDegreesPerSecond.value*deltaTime, moveUnitsPerSecond.space);
         }
 
-
-        [Serializable]
+        [System.Serializable]
         public class Vector3andSpace
         {
             public Vector3 value;

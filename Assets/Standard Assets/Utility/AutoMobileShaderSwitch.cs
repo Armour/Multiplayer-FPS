@@ -1,20 +1,21 @@
-using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
 
-namespace UnityStandardAssets.Utility
+namespace UnitySampleAssets.Utility
 {
+
     public class AutoMobileShaderSwitch : MonoBehaviour
     {
-        [SerializeField] private ReplacementList m_ReplacementList;
+
+        [SerializeField] private ReplacementList replacements;
 
         // Use this for initialization
         private void OnEnable()
         {
-#if UNITY_IPHONE || UNITY_ANDROID || UNITY_WP8 || UNITY_TIZEN
+#if UNITY_IPHONE || UNITY_ANDROID || UNITY_WP8 || UNITY_BLACKBERRY
 			var renderers = FindObjectsOfType<Renderer>();
 			Debug.Log (renderers.Length+" renderers");
 			var oldMaterials = new List<Material>();
@@ -23,7 +24,7 @@ namespace UnityStandardAssets.Utility
 			int materialsReplaced = 0;
 			int materialInstancesReplaced = 0;
 
-			foreach(ReplacementDefinition replacementDef in m_ReplacementList.items)
+			foreach(ReplacementDefinition replacementDef in replacements.items)
 			{
 				foreach(var r in renderers)
 				{
@@ -65,30 +66,31 @@ namespace UnityStandardAssets.Utility
 #endif
         }
 
-
-        [Serializable]
+        [System.Serializable]
         public class ReplacementDefinition
         {
             public Shader original = null;
             public Shader replacement = null;
         }
 
-        [Serializable]
+        [System.Serializable]
         public class ReplacementList
         {
             public ReplacementDefinition[] items = new ReplacementDefinition[0];
         }
+
     }
 }
 
-namespace UnityStandardAssets.Utility.Inspector
+namespace UnitySampleAssets.Utility.Inspector
 {
+
 #if UNITY_EDITOR
     [CustomPropertyDrawer(typeof (AutoMobileShaderSwitch.ReplacementList))]
     public class ReplacementListDrawer : PropertyDrawer
     {
-        const float k_LineHeight = 18;
-        const float k_Spacing = 4;
+        private float lineHeight = 18;
+        private float spacing = 4;
 
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
         {
@@ -103,15 +105,17 @@ namespace UnityStandardAssets.Utility.Inspector
             EditorGUI.indentLevel = 0;
 
             var items = property.FindPropertyRelative("items");
-            var titles = new string[] {"Original", "Replacement", ""};
-            var props = new string[] {"original", "replacement", "-"};
-            var widths = new float[] {.45f, .45f, .1f};
-            const float lineHeight = 18;
+            string[] titles = new string[] {"Original", "Replacement", ""};
+            string[] props = new string[] {"original", "replacement", "-"};
+            float[] widths = new float[] {.45f, .45f, .1f};
+            float lineHeight = 18;
             bool changedLength = false;
             if (items.arraySize > 0)
             {
+
                 for (int i = -1; i < items.arraySize; ++i)
                 {
+
                     var item = items.GetArrayElementAtIndex(i);
 
                     float rowX = x;
@@ -142,34 +146,33 @@ namespace UnityStandardAssets.Utility.Inspector
                                             changedLength = true;
                                             break;
                                         case "v":
-                                            if (i > 0)
-                                            {
-                                                items.MoveArrayElement(i, i + 1);
-                                            }
+                                            if (i > 0) items.MoveArrayElement(i, i + 1);
                                             break;
                                         case "^":
-                                            if (i < items.arraySize - 1)
-                                            {
-                                                items.MoveArrayElement(i, i - 1);
-                                            }
+                                            if (i < items.arraySize - 1) items.MoveArrayElement(i, i - 1);
                                             break;
                                     }
+
                                 }
+
                             }
                             else
                             {
+
                                 SerializedProperty prop = item.FindPropertyRelative(props[n]);
                                 EditorGUI.PropertyField(rect, prop, GUIContent.none);
+
                             }
                         }
                     }
 
-                    y += lineHeight + k_Spacing;
+                    y += lineHeight + spacing;
                     if (changedLength)
                     {
                         break;
                     }
                 }
+
             }
 
             // add button
@@ -180,20 +183,20 @@ namespace UnityStandardAssets.Utility.Inspector
                 items.InsertArrayElementAtIndex(items.arraySize);
             }
 
-            y += lineHeight + k_Spacing;
+            y += lineHeight + spacing;
 
             // Set indent back to what it was
             EditorGUI.indentLevel = indent;
             EditorGUI.EndProperty();
         }
 
-
         public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
         {
             SerializedProperty items = property.FindPropertyRelative("items");
-            float lineAndSpace = k_LineHeight + k_Spacing;
+            float lineAndSpace = lineHeight + spacing;
             return 40 + (items.arraySize*lineAndSpace) + lineAndSpace;
         }
+
     }
 #endif
 }

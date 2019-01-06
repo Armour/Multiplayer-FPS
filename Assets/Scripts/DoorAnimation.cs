@@ -1,38 +1,55 @@
 ﻿using UnityEngine;
 using System.Collections;
 
+[RequireComponent(typeof(Animator))]
+
 public class DoorAnimation : MonoBehaviour {
 
-    private Animator anim;
-    private float stx;
-    private float stz;
+    [SerializeField]
+    private float minPosY = 2.74f;
+    [SerializeField]
+    private float maxPosY = 5.9f;
 
-    // Called when script awake in editor
-    void Awake() {
-        stx = transform.position.x;
-        stz = transform.position.z;
-    }
+    private Animator animator;
+    private float posx;
+    private float posz;
 
-    // Called when game start
+    /// <summary>
+    /// Start is called on the frame when a script is enabled just before
+    /// any of the Update methods is called the first time.
+    /// </summary>
     void Start() {
-        anim = GetComponent<Animator>();
+        animator = GetComponent<Animator>();
+        posx = transform.position.x;
+        posz = transform.position.z;
     }
 
-    // Update is called once per frame
+    /// <summary>
+    /// Update is called every frame, if the MonoBehaviour is enabled.
+    /// </summary>
     void Update() {
-        transform.position = new Vector3(stx, Mathf.Clamp(transform.position.y, 2.74f, 5.9f), stz);
+        transform.position = new Vector3(posx, Mathf.Clamp(transform.position.y, minPosY, maxPosY), posz);
     }
 
-    // When player stay in the strigger area, let the door open
+    /// <summary>
+    /// OnTriggerStay is called once per frame for every Collider other
+    /// that is touching the trigger.
+    /// </summary>
+    /// <param name="other">The other Collider involved in this collision.</param>
     void OnTriggerStay(Collider other) {
-        if (other.gameObject.tag == "Player")
-            anim.SetBool("Trigger", true);
+        if (other.gameObject.tag == "Player") {
+            animator.SetBool("Trigger", true);
+        }
     }
 
-    // When player exit the strigger area, let the door close
+    /// <summary>
+    /// OnTriggerExit is called when the Collider other has stopped touching the trigger.
+    /// </summary>
+    /// <param name="other">The other Collider involved in this collision.</param>
     void OnTriggerExit(Collider other) {
-        if (other.gameObject.tag == "Player")
-            anim.SetBool("Trigger", false);
+        if (other.gameObject.tag == "Player") {
+            animator.SetBool("Trigger", false);
+        }
     }
 
 }

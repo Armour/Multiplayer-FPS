@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-namespace UnityStandardAssets.CrossPlatformInput.PlatformSpecific
+namespace UnitySampleAssets.CrossPlatformInput.PlatformSpecific
 {
     public class StandaloneInput : VirtualInput
     {

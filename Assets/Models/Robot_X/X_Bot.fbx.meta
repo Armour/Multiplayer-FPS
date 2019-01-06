@@ -171,17 +171,16 @@ ModelImporter:
     legacyGenerateAnimations: 4
     bakeSimulation: 0
     resampleCurves: 1
-    optimizeGameObjects: 0
+    optimizeGameObjects: 1
     motionNodeName: 
     rigImportErrors: 
-    rigImportWarnings: "Copied Avatar Rig Configuration mis-match. Bone length in
-      copied configuration does not match position in animation file:\n\t'mixamorig:LeftUpLeg'
-      : position error = 15.320953 mm\n\t'mixamorig:LeftLeg' : position error = 40.211296
-      mm\n\t'mixamorig:LeftFoot' : position error = 25.863026 mm\n\t'mixamorig:LeftToeBase'
-      : position error = 24.738590 mm\n\t'mixamorig:RightUpLeg' : position error =
-      15.320407 mm\n\t'mixamorig:RightLeg' : position error = 40.203651 mm\n\t'mixamorig:RightFoot'
-      : position error = 25.862513 mm\n\t'mixamorig:RightToeBase' : position error
-      = 24.738657 mm\n"
+    rigImportWarnings: "Avatar Rig Configuration mis-match. Bone length in configuration
+      does not match position in animation file:\n\t'mixamorig:LeftUpLeg' : position
+      error = 15.320953 mm\n\t'mixamorig:LeftLeg' : position error = 40.211296 mm\n\t'mixamorig:LeftFoot'
+      : position error = 25.863026 mm\n\t'mixamorig:LeftToeBase' : position error
+      = 24.738590 mm\n\t'mixamorig:RightUpLeg' : position error = 15.320407 mm\n\t'mixamorig:RightLeg'
+      : position error = 40.203651 mm\n\t'mixamorig:RightFoot' : position error =
+      25.862513 mm\n\t'mixamorig:RightToeBase' : position error = 24.738657 mm\n"
     animationImportErrors: 
     animationImportWarnings: 
     animationRetargetingWarnings: 
@@ -196,34 +195,6 @@ ModelImporter:
     extraExposedTransformPaths: []
     extraUserProperties: []
     clipAnimations:
-    - serializedVersion: 16
-      name: Take 001
-      takeName: Take 001
-      firstFrame: 1
-      lastFrame: 30
-      wrapMode: 0
-      orientationOffsetY: 0
-      level: 0
-      cycleOffset: 0
-      loop: 0
-      hasAdditiveReferencePose: 0
-      loopTime: 0
-      loopBlend: 0
-      loopBlendOrientation: 0
-      loopBlendPositionY: 0
-      loopBlendPositionXZ: 0
-      keepOriginalOrientation: 0
-      keepOriginalPositionY: 0
-      keepOriginalPositionXZ: 0
-      heightFromFeet: 1
-      mirror: 0
-      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
-      curves: []
-      events: []
-      transformMask: []
-      maskType: 3
-      maskSource: {instanceID: 0}
-      additiveReferencePoseFrame: 0
     - serializedVersion: 16
       name: mixamo.com
       takeName: mixamo.com
@@ -257,7 +228,7 @@ ModelImporter:
     lODScreenPercentages: []
     globalScale: 1
     meshCompression: 0
-    addColliders: 1
+    addColliders: 0
     useSRGBMaterialColor: 1
     importVisibility: 0
     importBlendShapes: 1
@@ -287,7 +258,7 @@ ModelImporter:
     blendShapeNormalImportMode: 1
     normalSmoothingSource: 0
   importAnimation: 1
-  copyAvatar: 1
+  copyAvatar: 0
   humanDescription:
     serializedVersion: 2
     human:
@@ -1118,10 +1089,9 @@ ModelImporter:
     feetSpacing: 0
     rootMotionBoneName: 
     hasTranslationDoF: 1
-    hasExtraRoot: 0
+    hasExtraRoot: 1
     skeletonHasParents: 0
-  lastHumanDescriptionAvatarSource: {fileID: 9000000, guid: c521a006fc9e048f8afb59ccc9110c5e,
-    type: 3}
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
   animationType: 3
   humanoidOversampling: 1
   additionalBone: 0

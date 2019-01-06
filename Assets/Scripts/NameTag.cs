@@ -1,37 +1,45 @@
-﻿using UnityEngine;
-using System.Collections;
+﻿using Photon.Pun;
+using Photon.Realtime;
+using UnityEngine;
 using UnityEngine.UI;
+using System.Collections;
 
-public class NameTag : Photon.MonoBehaviour {
+public class NameTag : MonoBehaviourPunCallbacks {
 
+    [HideInInspector]
     public Transform target = null;
 
-    // Called when game start
+    [SerializeField]
+    private Text nameText;
+
+    /// <summary>
+    /// Start is called on the frame when a script is enabled just before
+    /// any of the Update methods is called the first time.
+    /// </summary>
     void Start() {
-        if (photonView.isMine)
-            GetComponent<PhotonView>().RPC("SetName", PhotonTargets.All, PhotonNetwork.playerName);
+        if (photonView.IsMine) {
+            photonView.RPC("SetName", RpcTarget.All, PhotonNetwork.NickName);
+        } else {
+            SetName(photonView.Owner.NickName);
+        }
     }
 
-    // The RPC function to set the player name tag
-    [PunRPC]
-    void SetName(string name) {
-        GetComponentInChildren<Text>().text = name;
-    }
-
-    // Update is called once per frame
+    /// <summary>
+    /// Update is called every frame, if the MonoBehaviour is enabled.
+    /// </summary>
     void Update() {
         if (target != null) {
-            Vector3 v3 = transform.position + (transform.position - target.position);
-            transform.LookAt(v3, Vector3.up);
+            Vector3 lookAtVec = transform.position + (transform.position - target.position);
+            transform.LookAt(lookAtVec, Vector3.up);
         }
     }
 
-    // Synchronize data on the network
-    void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info) {
-        if (stream.isWriting) {
-            stream.SendNext(PhotonNetwork.playerName);
-        } else {
-            GetComponentInChildren<Text>().text = (string)stream.ReceiveNext();
-        }
+    /// <summary>
+    /// RPC function to set player name tag.
+    /// </summary>
+    [PunRPC]
+    void SetName(string name) {
+        nameText.text = name;
     }
+
 }
