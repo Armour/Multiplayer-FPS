@@ -19,8 +19,8 @@ public class TpsGun : MonoBehaviourPunCallbacks, IPunObservable {
     private Animator animator;
 
     private float timer;
-    private Vector3 position;
-    private Quaternion rotation;
+    private Vector3 localPosition;
+    private Quaternion localRotation;
     private float smoothing = 2.0f;
     private float defaultLocalPositionY;
 
@@ -32,8 +32,8 @@ public class TpsGun : MonoBehaviourPunCallbacks, IPunObservable {
         if (photonView.IsMine) {
             defaultLocalPositionY = transform.localPosition.y;
         } else {
-            position = transform.position;
-            rotation = transform.rotation;
+            localPosition = transform.localPosition;
+            localRotation = transform.localRotation;
         }
     }
 
@@ -43,9 +43,6 @@ public class TpsGun : MonoBehaviourPunCallbacks, IPunObservable {
     void Update() {
         if (photonView.IsMine) {
             transform.rotation = fpsGun.transform.rotation;
-        } else {
-            transform.position = Vector3.Lerp(transform.position, position, Time.deltaTime * smoothing);
-            transform.rotation = Quaternion.Lerp(transform.rotation, rotation, Time.deltaTime * smoothing);
         }
     }
 
@@ -66,6 +63,9 @@ public class TpsGun : MonoBehaviourPunCallbacks, IPunObservable {
                 defaultLocalPositionY + deltaEulerAngle * localPositionYScale,
                 transform.localPosition.z
             );
+        } else {
+            transform.localPosition = Vector3.Lerp(transform.localPosition, localPosition, Time.deltaTime * smoothing);
+            transform.localRotation = Quaternion.Lerp(transform.localRotation, localRotation, Time.deltaTime * smoothing);
         }
     }
 
@@ -99,11 +99,11 @@ public class TpsGun : MonoBehaviourPunCallbacks, IPunObservable {
     /// <param name="info">The network message information.</param>
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info) {
         if (stream.IsWriting) {
-            stream.SendNext(transform.position);
-            stream.SendNext(transform.rotation);
+            stream.SendNext(transform.localPosition);
+            stream.SendNext(transform.localRotation);
         } else {
-            position = (Vector3)stream.ReceiveNext();
-            rotation = (Quaternion)stream.ReceiveNext();
+            localPosition = (Vector3)stream.ReceiveNext();
+            localRotation = (Quaternion)stream.ReceiveNext();
         }
     }
 
