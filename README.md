@@ -4,7 +4,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 [![Template from jarvis](https://img.shields.io/badge/Hi-Jarvis-ff69b4.svg)](https://github.com/Armour/Jarvis)
 
-A multiplayer first-person shooter game based on Unity3D. Different types of input devices are supported to improve game experience, including Kinect, Xbox controllers, Leap motion, and VR Glasses. (Each contained in a different branch)
+A multiplayer first-person shooter game based on Unity3D. Different types of input devices are supported to improve the game experience, including Kinect, Xbox controllers, Leap motion, and VR Glasses. (Each contained in a different branch)
 
 ## Game logic and functionality
 
@@ -16,8 +16,8 @@ A multiplayer first-person shooter game based on Unity3D. Different types of inp
 
 * Game interface
   * **Player's HP** on the top left corner
-  * The **message panal** on the bottom left corner, which shows status of other players (e.g. dead or respawn)
-  * A **gun (AK-47)** will always appear on the bottom right corner in front of every thing you can see
+  * The **message panel** on the bottom left corner, which shows status of other players (e.g. dead or respawn)
+  * A **gun (AK-47)** will always show on the bottom right corner in front of every thing you can see
   * A red **shooting sight** is always in the center of the screen
   <img src="Images/3.jpg" style="width:500px"></img>
 
@@ -33,9 +33,9 @@ A multiplayer first-person shooter game based on Unity3D. Different types of inp
     * **Run** towards four different directions
     * **Jump** without affecting upper part body (**achieved by unity3d body mask**)
     * **Shoot** without affecting lower part body (**achieved by unity3d body mask**)
-    * All the original models and their animations can be found from **[Mixamo](https://www.mixamo.com/)**, which is a pretty good game model website run by Adobe
+    * All the original models and their animations were found from **[Mixamo](https://www.mixamo.com/)**, which is a pretty good game model website run by Adobe
     * **Unity Blend Tree**
-      * This is used to make the player walk or run more naturally. It uses interpolation function to map different combinations of user input to different animations.
+      * This makes the player walk or run more naturally. It uses interpolation function to map different combinations of user input to different animations.
       * ![img](Images/4.jpg)
 
   * **State Machine**
