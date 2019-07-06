@@ -1,9 +1,9 @@
-﻿using UnityEngine;
+using System;
+using UnityEngine;
 
 
-namespace UnitySampleAssets.Utility
+namespace UnityStandardAssets.Utility
 {
-
     public class FollowTarget : MonoBehaviour
     {
         public Transform target;

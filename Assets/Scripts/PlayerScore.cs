@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using System.Collections;
 
 // TODO: finish score system later, this script is not used now.
 public class PlayerScore : MonoBehaviour {

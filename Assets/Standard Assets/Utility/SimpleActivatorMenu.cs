@@ -1,39 +1,38 @@
-﻿using UnityEngine;
+using System;
+using UnityEngine;
 
-namespace UnitySampleAssets.Utility
+namespace UnityStandardAssets.Utility
 {
-
     public class SimpleActivatorMenu : MonoBehaviour
     {
-
         // An incredibly simple menu which, when given references
         // to gameobjects in the scene
-
         public GUIText camSwitchButton;
         public GameObject[] objects;
-        private int currentActiveObject;
+
+
+        private int m_CurrentActiveObject;
+
 
         private void OnEnable()
         {
             // active object starts from first in array
-            currentActiveObject = 0;
-            camSwitchButton.text = objects[currentActiveObject].name;
+            m_CurrentActiveObject = 0;
+            camSwitchButton.text = objects[m_CurrentActiveObject].name;
         }
+
 
         public void NextCamera()
         {
-
-            int nextactiveobject = currentActiveObject + 1 >= objects.Length ? 0 : currentActiveObject + 1;
+            int nextactiveobject = m_CurrentActiveObject + 1 >= objects.Length ? 0 : m_CurrentActiveObject + 1;
 
             for (int i = 0; i < objects.Length; i++)
             {
-
                 objects[i].SetActive(i == nextactiveobject);
             }
 
-            currentActiveObject = nextactiveobject;
-            camSwitchButton.text = objects[currentActiveObject].name;
-
+            m_CurrentActiveObject = nextactiveobject;
+            camSwitchButton.text = objects[m_CurrentActiveObject].name;
         }
     }
 }

@@ -1,7 +1,8 @@
+using System;
 using UnityEngine;
 
 
-namespace UnitySampleAssets.Cameras
+namespace UnityStandardAssets.Cameras
 {
     public abstract class PivotBasedCameraRig : AbstractTargetFollower
     {
@@ -12,15 +13,16 @@ namespace UnitySampleAssets.Cameras
         // 		Pivot
         // 			Camera
 
-        protected Transform cam; // the transform of the camera
-        protected Transform pivot; // the point at which the camera pivots around
-        protected Vector3 lastTargetPosition;
+        protected Transform m_Cam; // the transform of the camera
+        protected Transform m_Pivot; // the point at which the camera pivots around
+        protected Vector3 m_LastTargetPosition;
+
 
         protected virtual void Awake()
         {
             // find the camera in the object hierarchy
-            cam = GetComponentInChildren<Camera>().transform;
-            pivot = cam.parent;
+            m_Cam = GetComponentInChildren<Camera>().transform;
+            m_Pivot = m_Cam.parent;
         }
     }
 }

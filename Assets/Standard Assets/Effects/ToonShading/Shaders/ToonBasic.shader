@@ -1,10 +1,8 @@
-// Upgrade NOTE: replaced 'mul(UNITY_MATRIX_MVP,*)' with 'UnityObjectToClipPos(*)'
-
 Shader "Toon/Basic" {
 	Properties {
 		_Color ("Main Color", Color) = (.5,.5,.5,1)
 		_MainTex ("Base (RGB)", 2D) = "white" {}
-		_ToonShade ("ToonShader Cubemap(RGB)", CUBE) = "" { Texgen CubeNormal }
+		_ToonShade ("ToonShader Cubemap(RGB)", CUBE) = "" { }
 	}
 
 
@@ -17,7 +15,7 @@ Shader "Toon/Basic" {
 			CGPROGRAM
 			#pragma vertex vert
 			#pragma fragment frag
-			#pragma fragmentoption ARB_precision_hint_fastest 
+			#pragma multi_compile_fog
 
 			#include "UnityCG.cginc"
 
@@ -33,44 +31,33 @@ Shader "Toon/Basic" {
 			};
 			
 			struct v2f {
-				float4 pos : POSITION;
+				float4 pos : SV_POSITION;
 				float2 texcoord : TEXCOORD0;
 				float3 cubenormal : TEXCOORD1;
+				UNITY_FOG_COORDS(2)
 			};
 
 			v2f vert (appdata v)
 			{
 				v2f o;
-				o.pos = UnityObjectToClipPos (v.vertex);
+				o.pos = UnityObjectToClipPos(v.vertex);
 				o.texcoord = TRANSFORM_TEX(v.texcoord, _MainTex);
 				o.cubenormal = mul (UNITY_MATRIX_MV, float4(v.normal,0));
+				UNITY_TRANSFER_FOG(o,o.pos);
 				return o;
 			}
 
-			float4 frag (v2f i) : COLOR
+			fixed4 frag (v2f i) : SV_Target
 			{
-				float4 col = _Color * tex2D(_MainTex, i.texcoord);
-				float4 cube = texCUBE(_ToonShade, i.cubenormal);
-				return float4(2.0f * cube.rgb * col.rgb, col.a);
+				fixed4 col = _Color * tex2D(_MainTex, i.texcoord);
+				fixed4 cube = texCUBE(_ToonShade, i.cubenormal);
+				fixed4 c = fixed4(2.0f * cube.rgb * col.rgb, col.a);
+				UNITY_APPLY_FOG(i.fogCoord, c);
+				return c;
 			}
 			ENDCG			
 		}
 	} 
 
-	SubShader {
-		Tags { "RenderType"="Opaque" }
-		Pass {
-			Name "BASE"
-			Cull Off
-			SetTexture [_MainTex] {
-				constantColor [_Color]
-				Combine texture * constant
-			} 
-			SetTexture [_ToonShade] {
-				combine texture * previous DOUBLE, previous
-			}
-		}
-	} 
-	
 	Fallback "VertexLit"
 }

@@ -1,8 +1,7 @@
 ﻿using Photon.Pun;
-using Photon.Realtime;
 using UnityEngine;
-using UnitySampleAssets.CrossPlatformInput;
-using UnitySampleAssets.Characters.FirstPerson;
+using UnityStandardAssets.CrossPlatformInput;
+using UnityStandardAssets.Characters.FirstPerson;
 using System.Collections;
 
 [RequireComponent(typeof(FirstPersonController))]

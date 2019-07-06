@@ -1,15 +1,17 @@
-﻿using UnityEngine;
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine;
 
-namespace UnitySampleAssets.Utility
+namespace UnityStandardAssets.Utility
 {
-
     public class ObjectResetter : MonoBehaviour
     {
         private Vector3 originalPosition;
         private Quaternion originalRotation;
         private List<Transform> originalStructure;
+
+        private Rigidbody Rigidbody;
 
         // Use this for initialization
         private void Start()
@@ -17,12 +19,16 @@ namespace UnitySampleAssets.Utility
             originalStructure = new List<Transform>(GetComponentsInChildren<Transform>());
             originalPosition = transform.position;
             originalRotation = transform.rotation;
+
+            Rigidbody = GetComponent<Rigidbody>();
         }
+
 
         public void DelayedReset(float delay)
         {
             StartCoroutine(ResetCoroutine(delay));
         }
+
 
         public IEnumerator ResetCoroutine(float delay)
         {
@@ -39,14 +45,13 @@ namespace UnitySampleAssets.Utility
 
             transform.position = originalPosition;
             transform.rotation = originalRotation;
-            if (GetComponent<Rigidbody>())
+            if (Rigidbody)
             {
-                GetComponent<Rigidbody>().velocity = Vector3.zero;
-                GetComponent<Rigidbody>().angularVelocity = Vector3.zero;
+                Rigidbody.velocity = Vector3.zero;
+                Rigidbody.angularVelocity = Vector3.zero;
             }
 
             SendMessage("Reset");
-
         }
     }
 }

@@ -1,56 +1,52 @@
 using System;
-using UnityEngine;
 using System.Collections;
+using UnityEngine;
 
-namespace UnitySampleAssets.Cameras
+namespace UnityStandardAssets.Cameras
 {
     public class ProtectCameraFromWallClip : MonoBehaviour
     {
+        public float clipMoveTime = 0.05f;              // time taken to move when avoiding cliping (low value = fast, which it should be)
+        public float returnTime = 0.4f;                 // time taken to move back towards desired position, when not clipping (typically should be a higher value than clipMoveTime)
+        public float sphereCastRadius = 0.1f;           // the radius of the sphere used to test for object between camera and target
+        public bool visualiseInEditor;                  // toggle for visualising the algorithm through lines for the raycast in the editor
+        public float closestDistance = 0.5f;            // the closest distance the camera can be from the target
+        public bool protecting { get; private set; }    // used for determining if there is an object between the target and the camera
+        public string dontClipTag = "Player";           // don't clip against objects with this tag (useful for not clipping against the targeted object)
 
-        public float clipMoveTime = 0.05f;// time taken to move when avoiding cliping (low value = fast, which it should be)
-        public float returnTime = 0.4f;// time taken to move back towards desired position, when not clipping (typically should be a higher value than clipMoveTime)
-        public float sphereCastRadius = 0.1f;// the radius of the sphere used to test for object between camera and target
-        public bool visualiseInEditor;// toggle for visualising the algorithm through lines for the raycast in the editor
-        public float closestDistance = 0.5f; // the closest distance the camera can be from the target
-        public bool protecting { get; private set; }
-        // used for determining if there is an object between the target and the camera
-        public string dontClipTag = "Player";// don't clip against objects with this tag (useful for not clipping against the targeted object)
-
-        private Transform cam; // the transform of the camera
-        private Transform pivot; // the point at which the camera pivots around
-        private float originalDist; // the original distance to the camera before any modification are made
-        private float moveVelocity; // the velocity at which the camera moved
-        private float currentDist; // the current distance from the camera to the target
-        private Ray ray; // the ray used in the lateupdate for casting between the camera and the target
-        private RaycastHit[] hits; // the hits between the camera and the target
-        private RayHitComparer rayHitComparer; // variable to compare raycast hit distances
+        private Transform m_Cam;                  // the transform of the camera
+        private Transform m_Pivot;                // the point at which the camera pivots around
+        private float m_OriginalDist;             // the original distance to the camera before any modification are made
+        private float m_MoveVelocity;             // the velocity at which the camera moved
+        private float m_CurrentDist;              // the current distance from the camera to the target
+        private Ray m_Ray = new Ray();                        // the ray used in the lateupdate for casting between the camera and the target
+        private RaycastHit[] m_Hits;              // the hits between the camera and the target
+        private RayHitComparer m_RayHitComparer;  // variable to compare raycast hit distances
 
 
         private void Start()
         {
-
             // find the camera in the object hierarchy
-            cam = GetComponentInChildren<Camera>().transform;
-            pivot = cam.parent;
-            originalDist = cam.localPosition.magnitude;
-            currentDist = originalDist;
+            m_Cam = GetComponentInChildren<Camera>().transform;
+            m_Pivot = m_Cam.parent;
+            m_OriginalDist = m_Cam.localPosition.magnitude;
+            m_CurrentDist = m_OriginalDist;
 
             // create a new RayHitComparer
-            rayHitComparer = new RayHitComparer();
+            m_RayHitComparer = new RayHitComparer();
         }
 
 
         private void LateUpdate()
         {
-
             // initially set the target distance
-            float targetDist = originalDist;
+            float targetDist = m_OriginalDist;
 
-            ray.origin = pivot.position + pivot.forward*sphereCastRadius;
-            ray.direction = -pivot.forward;
+            m_Ray.origin = m_Pivot.position + m_Pivot.forward*sphereCastRadius;
+            m_Ray.direction = -m_Pivot.forward;
 
             // initial check to see if start of spherecast intersects anything
-            Collider[] cols = Physics.OverlapSphere(ray.origin, sphereCastRadius);
+            var cols = Physics.OverlapSphere(m_Ray.origin, sphereCastRadius);
 
             bool initialIntersect = false;
             bool hitSomething = false;
@@ -66,40 +62,37 @@ namespace UnitySampleAssets.Cameras
                 }
             }
 
-            // if there is a collision 
+            // if there is a collision
             if (initialIntersect)
             {
-                ray.origin += pivot.forward*sphereCastRadius;
+                m_Ray.origin += m_Pivot.forward*sphereCastRadius;
 
                 // do a raycast and gather all the intersections
-                hits = Physics.RaycastAll(ray, originalDist - sphereCastRadius);
+                m_Hits = Physics.RaycastAll(m_Ray, m_OriginalDist - sphereCastRadius);
             }
             else
             {
-
                 // if there was no collision do a sphere cast to see if there were any other collisions
-                hits = Physics.SphereCastAll(ray, sphereCastRadius, originalDist + sphereCastRadius);
+                m_Hits = Physics.SphereCastAll(m_Ray, sphereCastRadius, m_OriginalDist + sphereCastRadius);
             }
 
             // sort the collisions by distance
-            Array.Sort(hits, rayHitComparer);
+            Array.Sort(m_Hits, m_RayHitComparer);
 
             // set the variable used for storing the closest to be as far as possible
             float nearest = Mathf.Infinity;
 
             // loop through all the collisions
-            for (int i = 0; i < hits.Length; i++)
+            for (int i = 0; i < m_Hits.Length; i++)
             {
-
                 // only deal with the collision if it was closer than the previous one, not a trigger, and not attached to a rigidbody tagged with the dontClipTag
-                if (hits[i].distance < nearest && (!hits[i].collider.isTrigger) &&
-                    !(hits[i].collider.attachedRigidbody != null &&
-                      hits[i].collider.attachedRigidbody.CompareTag(dontClipTag)))
+                if (m_Hits[i].distance < nearest && (!m_Hits[i].collider.isTrigger) &&
+                    !(m_Hits[i].collider.attachedRigidbody != null &&
+                      m_Hits[i].collider.attachedRigidbody.CompareTag(dontClipTag)))
                 {
-
                     // change the nearest collision to latest
-                    nearest = hits[i].distance;
-                    targetDist = -pivot.InverseTransformPoint(hits[i].point).z;
+                    nearest = m_Hits[i].distance;
+                    targetDist = -m_Pivot.InverseTransformPoint(m_Hits[i].point).z;
                     hitSomething = true;
                 }
             }
@@ -107,16 +100,15 @@ namespace UnitySampleAssets.Cameras
             // visualise the cam clip effect in the editor
             if (hitSomething)
             {
-                Debug.DrawRay(ray.origin, -pivot.forward*(targetDist + sphereCastRadius), Color.red);
+                Debug.DrawRay(m_Ray.origin, -m_Pivot.forward*(targetDist + sphereCastRadius), Color.red);
             }
 
             // hit something so move the camera to a better position
             protecting = hitSomething;
-            currentDist = Mathf.SmoothDamp(currentDist, targetDist, ref moveVelocity,
-                                           currentDist > targetDist ? clipMoveTime : returnTime);
-            currentDist = Mathf.Clamp(currentDist, closestDistance, originalDist);
-            cam.localPosition = -Vector3.forward*currentDist;
-
+            m_CurrentDist = Mathf.SmoothDamp(m_CurrentDist, targetDist, ref m_MoveVelocity,
+                                           m_CurrentDist > targetDist ? clipMoveTime : returnTime);
+            m_CurrentDist = Mathf.Clamp(m_CurrentDist, closestDistance, m_OriginalDist);
+            m_Cam.localPosition = -Vector3.forward*m_CurrentDist;
         }
 
 

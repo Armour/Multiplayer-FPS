@@ -1,16 +1,15 @@
-﻿using UnityEngine;
+using System;
 using System.Collections;
+using UnityEngine;
 #if UNITY_EDITOR
 using UnityEditor;
+
 #endif
 
-
-namespace UnitySampleAssets.Utility
+namespace UnityStandardAssets.Utility
 {
-
     public class WaypointCircuit : MonoBehaviour
     {
-
         public WaypointList waypointList = new WaypointList();
         [SerializeField] private bool smoothRoute = true;
         private int numPoints;
@@ -47,6 +46,7 @@ namespace UnitySampleAssets.Utility
             numPoints = Waypoints.Length;
         }
 
+
         public RoutePoint GetRoutePoint(float dist)
         {
             // position and direction
@@ -55,6 +55,7 @@ namespace UnitySampleAssets.Utility
             Vector3 delta = p2 - p1;
             return new RoutePoint(p1, delta.normalized);
         }
+
 
         public Vector3 GetRoutePosition(float dist)
         {
@@ -86,7 +87,6 @@ namespace UnitySampleAssets.Utility
                 // smooth catmull-rom calculation between the two relevant points
 
 
-
                 // get indices for the surrounding 2 points, because
                 // four points are required by the catmull-rom function
                 p0n = ((point - 2) + numPoints)%numPoints;
@@ -103,30 +103,26 @@ namespace UnitySampleAssets.Utility
                 P3 = points[p3n];
 
                 return CatmullRom(P0, P1, P2, P3, i);
-
             }
             else
             {
-
                 // simple linear lerp between the two points:
 
                 p1n = ((point - 1) + numPoints)%numPoints;
                 p2n = point;
 
                 return Vector3.Lerp(points[p1n], points[p2n], i);
-
             }
-
         }
 
 
-        private Vector3 CatmullRom(Vector3 _P0, Vector3 _P1, Vector3 _P2, Vector3 _P3, float _i)
+        private Vector3 CatmullRom(Vector3 p0, Vector3 p1, Vector3 p2, Vector3 p3, float i)
         {
             // comments are no use here... it's the catmull-rom equation.
             // Un-magic this, lord vector!
             return 0.5f*
-                   ((2*_P1) + (-_P0 + _P2)*_i + (2*_P0 - 5*_P1 + 4*_P2 - _P3)*_i*_i +
-                    (-_P0 + 3*_P1 - 3*_P2 + _P3)*_i*_i*_i);
+                   ((2*p1) + (-p0 + p2)*i + (2*p0 - 5*p1 + 4*p2 - p3)*i*i +
+                    (-p0 + 3*p1 - 3*p2 + p3)*i*i*i);
         }
 
 
@@ -159,10 +155,12 @@ namespace UnitySampleAssets.Utility
             DrawGizmos(false);
         }
 
+
         private void OnDrawGizmosSelected()
         {
             DrawGizmos(true);
         }
+
 
         private void DrawGizmos(bool selected)
         {
@@ -188,7 +186,6 @@ namespace UnitySampleAssets.Utility
                 }
                 else
                 {
-
                     for (int n = 0; n < Waypoints.Length; ++n)
                     {
                         Vector3 next = Waypoints[(n + 1)%Waypoints.Length].position;
@@ -199,7 +196,8 @@ namespace UnitySampleAssets.Utility
             }
         }
 
-        [System.Serializable]
+
+        [Serializable]
         public class WaypointList
         {
             public WaypointCircuit circuit;
@@ -211,19 +209,17 @@ namespace UnitySampleAssets.Utility
             public Vector3 position;
             public Vector3 direction;
 
+
             public RoutePoint(Vector3 position, Vector3 direction)
             {
                 this.position = position;
                 this.direction = direction;
             }
-
         }
-
-
     }
 }
 
-namespace UnitySampleAssets.Utility.Inspector
+namespace UnityStandardAssets.Utility.Inspector
 {
 #if UNITY_EDITOR
     [CustomPropertyDrawer(typeof (WaypointCircuit.WaypointList))]
@@ -231,6 +227,7 @@ namespace UnitySampleAssets.Utility.Inspector
     {
         private float lineHeight = 18;
         private float spacing = 4;
+
 
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
         {
@@ -248,17 +245,15 @@ namespace UnitySampleAssets.Utility.Inspector
             EditorGUI.indentLevel = 0;
 
             var items = property.FindPropertyRelative("items");
-            string[] titles = new string[] {"Transform", "", "", ""};
-            string[] props = new string[] {"transform", "^", "v", "-"};
-            float[] widths = new float[] {.7f, .1f, .1f, .1f};
+            var titles = new string[] {"Transform", "", "", ""};
+            var props = new string[] {"transform", "^", "v", "-"};
+            var widths = new float[] {.7f, .1f, .1f, .1f};
             float lineHeight = 18;
             bool changedLength = false;
             if (items.arraySize > 0)
             {
-
                 for (int i = -1; i < items.arraySize; ++i)
                 {
-
                     var item = items.GetArrayElementAtIndex(i);
 
                     float rowX = x;
@@ -292,13 +287,18 @@ namespace UnitySampleAssets.Utility.Inspector
                                             changedLength = true;
                                             break;
                                         case "v":
-                                            if (i > 0) items.MoveArrayElement(i, i + 1);
+                                            if (i > 0)
+                                            {
+                                                items.MoveArrayElement(i, i + 1);
+                                            }
                                             break;
                                         case "^":
-                                            if (i < items.arraySize - 1) items.MoveArrayElement(i, i - 1);
+                                            if (i < items.arraySize - 1)
+                                            {
+                                                items.MoveArrayElement(i, i - 1);
+                                            }
                                             break;
                                     }
-
                                 }
                             }
                         }
@@ -310,11 +310,9 @@ namespace UnitySampleAssets.Utility.Inspector
                         break;
                     }
                 }
-
             }
             else
             {
-
                 // add button
                 var addButtonRect = new Rect((x + position.width) - widths[widths.Length - 1]*inspectorWidth, y,
                                              widths[widths.Length - 1]*inspectorWidth, lineHeight);
@@ -333,15 +331,16 @@ namespace UnitySampleAssets.Utility.Inspector
                 var circuit = property.FindPropertyRelative("circuit").objectReferenceValue as WaypointCircuit;
                 var children = new Transform[circuit.transform.childCount];
                 int n = 0;
-                foreach (Transform child in circuit.transform) children[n++] = child;
-                System.Array.Sort(children, new TransformNameComparer());
+                foreach (Transform child in circuit.transform)
+                {
+                    children[n++] = child;
+                }
+                Array.Sort(children, new TransformNameComparer());
                 circuit.waypointList.items = new Transform[children.Length];
                 for (n = 0; n < children.Length; ++n)
                 {
                     circuit.waypointList.items[n] = children[n];
                 }
-
-
             }
             y += lineHeight + spacing;
 
@@ -352,8 +351,9 @@ namespace UnitySampleAssets.Utility.Inspector
                 var circuit = property.FindPropertyRelative("circuit").objectReferenceValue as WaypointCircuit;
                 int n = 0;
                 foreach (Transform child in circuit.waypointList.items)
+                {
                     child.name = "Waypoint " + (n++).ToString("000");
-
+                }
             }
             y += lineHeight + spacing;
 
@@ -362,12 +362,14 @@ namespace UnitySampleAssets.Utility.Inspector
             EditorGUI.EndProperty();
         }
 
+
         public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
         {
             SerializedProperty items = property.FindPropertyRelative("items");
             float lineAndSpace = lineHeight + spacing;
             return 40 + (items.arraySize*lineAndSpace) + lineAndSpace;
         }
+
 
         // comparer for check distances in ray cast hits
         public class TransformNameComparer : IComparer
@@ -377,7 +379,6 @@ namespace UnitySampleAssets.Utility.Inspector
                 return ((Transform) x).name.CompareTo(((Transform) y).name);
             }
         }
-
     }
 #endif
 }

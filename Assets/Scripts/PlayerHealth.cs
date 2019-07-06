@@ -1,9 +1,7 @@
 using Photon.Pun;
-using Photon.Realtime;
 using UnityEngine;
 using UnityEngine.UI;
-using UnityEngine.SceneManagement;
-using UnitySampleAssets.Characters.FirstPerson;
+using UnityStandardAssets.Characters.FirstPerson;
 using System.Collections;
 
 [RequireComponent(typeof(FirstPersonController))]
@@ -59,6 +57,7 @@ public class PlayerHealth : MonoBehaviourPunCallbacks, IPunObservable {
         healthSlider = GameObject.FindGameObjectWithTag("Screen").GetComponentInChildren<Slider>();
         currentHealth = startingHealth;
         if (photonView.IsMine) {
+            gameObject.layer = LayerMask.NameToLayer("FPSPlayer");
             healthSlider.value = currentHealth;
         }
         damaged = false;

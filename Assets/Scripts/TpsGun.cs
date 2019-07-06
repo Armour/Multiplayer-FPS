@@ -1,8 +1,5 @@
 using Photon.Pun;
-using Photon.Realtime;
 using UnityEngine;
-using UnitySampleAssets.CrossPlatformInput;
-using System.Collections;
 
 public class TpsGun : MonoBehaviourPunCallbacks, IPunObservable {
 
@@ -108,4 +105,3 @@ public class TpsGun : MonoBehaviourPunCallbacks, IPunObservable {
     }
 
 }
-

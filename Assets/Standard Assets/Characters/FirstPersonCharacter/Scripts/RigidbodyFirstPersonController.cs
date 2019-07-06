@@ -1,89 +1,128 @@
-﻿using UnityEngine;
-using UnitySampleAssets.CrossPlatformInput;
+using System;
+using UnityEngine;
+using UnityStandardAssets.CrossPlatformInput;
 
-namespace UnitySampleAssets.Characters.FirstPerson
+namespace UnityStandardAssets.Characters.FirstPerson
 {
     [RequireComponent(typeof (Rigidbody))]
     [RequireComponent(typeof (CapsuleCollider))]
     public class RigidbodyFirstPersonController : MonoBehaviour
     {
-        [System.Serializable]
+        [Serializable]
         public class MovementSettings
         {
-            public float ForwardSpeed = 8.0f; // Speed when walking forward
-            public float BackwardSpeed = 4.0f; // Speed when walking backwards
-            public float StrafeSpeed = 4.0f; // Speed when walking sideways
-            public float SprintSpeed = 10.0f; // Speed when sprinting
+            public float ForwardSpeed = 8.0f;   // Speed when walking forward
+            public float BackwardSpeed = 4.0f;  // Speed when walking backwards
+            public float StrafeSpeed = 4.0f;    // Speed when walking sideways
+            public float RunMultiplier = 2.0f;   // Speed when sprinting
+	        public KeyCode RunKey = KeyCode.LeftShift;
             public float JumpForce = 30f;
             public AnimationCurve SlopeCurveModifier = new AnimationCurve(new Keyframe(-90.0f, 1.0f), new Keyframe(0.0f, 1.0f), new Keyframe(90.0f, 0.0f));
             [HideInInspector] public float CurrentTargetSpeed = 8f;
-            private bool running;
 
+#if !MOBILE_INPUT
+            private bool m_Running;
+#endif
 
-            public void UpdateDesiredTargetSpeed()
+            public void UpdateDesiredTargetSpeed(Vector2 input)
             {
-                if (CrossPlatformInputManager.GetButton("Fire1"))
-                {
-                    CurrentTargetSpeed = SprintSpeed;
-                    running = true;
-                    return;
-                }
-                CurrentTargetSpeed = ForwardSpeed;
-                running = false;
+	            if (input == Vector2.zero) return;
+				if (input.x > 0 || input.x < 0)
+				{
+					//strafe
+					CurrentTargetSpeed = StrafeSpeed;
+				}
+				if (input.y < 0)
+				{
+					//backwards
+					CurrentTargetSpeed = BackwardSpeed;
+				}
+				if (input.y > 0)
+				{
+					//forwards
+					//handled last as if strafing and moving forward at the same time forwards speed should take precedence
+					CurrentTargetSpeed = ForwardSpeed;
+				}
+#if !MOBILE_INPUT
+	            if (Input.GetKey(RunKey))
+	            {
+		            CurrentTargetSpeed *= RunMultiplier;
+		            m_Running = true;
+	            }
+	            else
+	            {
+		            m_Running = false;
+	            }
+#endif
             }
 
-
+#if !MOBILE_INPUT
             public bool Running
             {
-                get { return running; }
+                get { return m_Running; }
             }
+#endif
         }
 
-        [System.Serializable]
+
+        [Serializable]
         public class AdvancedSettings
         {
             public float groundCheckDistance = 0.01f; // distance for checking if the controller is grounded ( 0.01f seems to work best for this )
-            public float stickToGroundHelperDistance = 0.5f; // stops the character 
+            public float stickToGroundHelperDistance = 0.5f; // stops the character
             public float slowDownRate = 20f; // rate at which the controller comes to a stop when there is no input
             public bool airControl; // can the user control the direction that is being moved in the air
+            [Tooltip("set it to 0.1 or more if you get stuck in wall")]
+            public float shellOffset; //reduce the radius by that ratio to avoid getting stuck in wall (a value of 0.1f is nice)
         }
 
-        public Camera _camera;
+
+        public Camera cam;
         public MovementSettings movementSettings = new MovementSettings();
         public MouseLook mouseLook = new MouseLook();
         public AdvancedSettings advancedSettings = new AdvancedSettings();
 
-        private Rigidbody RigidBody;
-        private CapsuleCollider Capsule;
-        private float yRotation;
-        private Vector3 groundContactNormal;
-        private bool jump, previouslyGrounded, jumping, isGrounded;
+
+        private Rigidbody m_RigidBody;
+        private CapsuleCollider m_Capsule;
+        private float m_YRotation;
+        private Vector3 m_GroundContactNormal;
+        private bool m_Jump, m_PreviouslyGrounded, m_Jumping, m_IsGrounded;
+
 
         public Vector3 Velocity
         {
-            get { return RigidBody.velocity; }
+            get { return m_RigidBody.velocity; }
         }
 
         public bool Grounded
         {
-            get { return isGrounded; }
+            get { return m_IsGrounded; }
         }
 
         public bool Jumping
         {
-            get { return jumping; }
+            get { return m_Jumping; }
         }
 
         public bool Running
         {
-            get { return movementSettings.Running; }
+            get
+            {
+ #if !MOBILE_INPUT
+				return movementSettings.Running;
+#else
+	            return false;
+#endif
+            }
         }
 
 
         private void Start()
         {
-            RigidBody = GetComponent<Rigidbody>();
-            Capsule = GetComponent<CapsuleCollider>();
+            m_RigidBody = GetComponent<Rigidbody>();
+            m_Capsule = GetComponent<CapsuleCollider>();
+            mouseLook.Init (transform, cam.transform);
         }
 
 
@@ -91,9 +130,9 @@ namespace UnitySampleAssets.Characters.FirstPerson
         {
             RotateView();
 
-            if (CrossPlatformInputManager.GetButtonDown("Jump") && !jump)
+            if (CrossPlatformInputManager.GetButtonDown("Jump") && !m_Jump)
             {
-                jump = true;
+                m_Jump = true;
             }
         }
 
@@ -103,54 +142,54 @@ namespace UnitySampleAssets.Characters.FirstPerson
             GroundCheck();
             Vector2 input = GetInput();
 
-            if ((input.x != 0 || input.y != 0) && (advancedSettings.airControl || isGrounded))
+            if ((Mathf.Abs(input.x) > float.Epsilon || Mathf.Abs(input.y) > float.Epsilon) && (advancedSettings.airControl || m_IsGrounded))
             {
                 // always move along the camera forward as it is the direction that it being aimed at
-                Vector3 desiredMove = _camera.transform.forward*input.y + _camera.transform.right*input.x;
-                desiredMove = (desiredMove - Vector3.Project(desiredMove, groundContactNormal)).normalized;
+                Vector3 desiredMove = cam.transform.forward*input.y + cam.transform.right*input.x;
+                desiredMove = Vector3.ProjectOnPlane(desiredMove, m_GroundContactNormal).normalized;
 
                 desiredMove.x = desiredMove.x*movementSettings.CurrentTargetSpeed;
                 desiredMove.z = desiredMove.z*movementSettings.CurrentTargetSpeed;
                 desiredMove.y = desiredMove.y*movementSettings.CurrentTargetSpeed;
-                if (RigidBody.velocity.sqrMagnitude <
+                if (m_RigidBody.velocity.sqrMagnitude <
                     (movementSettings.CurrentTargetSpeed*movementSettings.CurrentTargetSpeed))
                 {
-                    RigidBody.AddForce(desiredMove*SlopeMultiplier(), ForceMode.Impulse);
+                    m_RigidBody.AddForce(desiredMove*SlopeMultiplier(), ForceMode.Impulse);
                 }
             }
 
-            if (isGrounded)
+            if (m_IsGrounded)
             {
-                RigidBody.drag = 5f;
+                m_RigidBody.drag = 5f;
 
-                if (jump)
+                if (m_Jump)
                 {
-                    RigidBody.drag = 0f;
-                    RigidBody.velocity = new Vector3(RigidBody.velocity.x, 0f, RigidBody.velocity.z);
-                    RigidBody.AddForce(new Vector3(0f, movementSettings.JumpForce, 0f), ForceMode.Impulse);
-                    jumping = true;
+                    m_RigidBody.drag = 0f;
+                    m_RigidBody.velocity = new Vector3(m_RigidBody.velocity.x, 0f, m_RigidBody.velocity.z);
+                    m_RigidBody.AddForce(new Vector3(0f, movementSettings.JumpForce, 0f), ForceMode.Impulse);
+                    m_Jumping = true;
                 }
 
-                if (!jumping && input.x == 0f && input.y == 0f && RigidBody.velocity.magnitude < 1f)
+                if (!m_Jumping && Mathf.Abs(input.x) < float.Epsilon && Mathf.Abs(input.y) < float.Epsilon && m_RigidBody.velocity.magnitude < 1f)
                 {
-                    RigidBody.Sleep();
+                    m_RigidBody.Sleep();
                 }
             }
             else
             {
-                RigidBody.drag = 0f;
-                if (previouslyGrounded && !jumping)
+                m_RigidBody.drag = 0f;
+                if (m_PreviouslyGrounded && !m_Jumping)
                 {
                     StickToGroundHelper();
                 }
             }
-            jump = false;
+            m_Jump = false;
         }
 
 
         private float SlopeMultiplier()
         {
-            float angle = Vector3.Angle(groundContactNormal, Vector3.up);
+            float angle = Vector3.Angle(m_GroundContactNormal, Vector3.up);
             return movementSettings.SlopeCurveModifier.Evaluate(angle);
         }
 
@@ -158,13 +197,13 @@ namespace UnitySampleAssets.Characters.FirstPerson
         private void StickToGroundHelper()
         {
             RaycastHit hitInfo;
-            if (Physics.SphereCast(transform.position, Capsule.radius, Vector3.down, out hitInfo,
-                                   ((Capsule.height/2f) - Capsule.radius) +
-                                   advancedSettings.stickToGroundHelperDistance))
+            if (Physics.SphereCast(transform.position, m_Capsule.radius * (1.0f - advancedSettings.shellOffset), Vector3.down, out hitInfo,
+                                   ((m_Capsule.height/2f) - m_Capsule.radius) +
+                                   advancedSettings.stickToGroundHelperDistance, Physics.AllLayers, QueryTriggerInteraction.Ignore))
             {
                 if (Mathf.Abs(Vector3.Angle(hitInfo.normal, Vector3.up)) < 85f)
                 {
-                    RigidBody.velocity = RigidBody.velocity - Vector3.Project(RigidBody.velocity, hitInfo.normal);
+                    m_RigidBody.velocity = Vector3.ProjectOnPlane(m_RigidBody.velocity, hitInfo.normal);
                 }
             }
         }
@@ -172,55 +211,54 @@ namespace UnitySampleAssets.Characters.FirstPerson
 
         private Vector2 GetInput()
         {
-            movementSettings.UpdateDesiredTargetSpeed();
+            
             Vector2 input = new Vector2
                 {
                     x = CrossPlatformInputManager.GetAxis("Horizontal"),
                     y = CrossPlatformInputManager.GetAxis("Vertical")
                 };
+			movementSettings.UpdateDesiredTargetSpeed(input);
             return input;
         }
 
 
         private void RotateView()
         {
+            //avoids the mouse looking if the game is effectively paused
+            if (Mathf.Abs(Time.timeScale) < float.Epsilon) return;
+
             // get the rotation before it's changed
             float oldYRotation = transform.eulerAngles.y;
-            Vector2 mouseInput = mouseLook.Clamped(yRotation, transform.localEulerAngles.y);
 
-            // handle the rotation round the x axis on the camera
-            _camera.transform.localEulerAngles = new Vector3(-mouseInput.y, _camera.transform.localEulerAngles.y, _camera.transform.localEulerAngles.z);
-            yRotation = mouseInput.y;
-            transform.localEulerAngles = new Vector3(0, mouseInput.x, 0);
+            mouseLook.LookRotation (transform, cam.transform);
 
-            if (isGrounded || advancedSettings.airControl)
+            if (m_IsGrounded || advancedSettings.airControl)
             {
-                // Rotate the rigidbody velocity to match the new direction that the character is looking 
+                // Rotate the rigidbody velocity to match the new direction that the character is looking
                 Quaternion velRotation = Quaternion.AngleAxis(transform.eulerAngles.y - oldYRotation, Vector3.up);
-                RigidBody.velocity = velRotation*RigidBody.velocity;
+                m_RigidBody.velocity = velRotation*m_RigidBody.velocity;
             }
         }
-
 
         /// sphere cast down just beyond the bottom of the capsule to see if the capsule is colliding round the bottom
         private void GroundCheck()
         {
-            previouslyGrounded = isGrounded;
+            m_PreviouslyGrounded = m_IsGrounded;
             RaycastHit hitInfo;
-            if (Physics.SphereCast(transform.position, Capsule.radius, Vector3.down, out hitInfo,
-                                   ((Capsule.height/2f) - Capsule.radius) + advancedSettings.groundCheckDistance))
+            if (Physics.SphereCast(transform.position, m_Capsule.radius * (1.0f - advancedSettings.shellOffset), Vector3.down, out hitInfo,
+                                   ((m_Capsule.height/2f) - m_Capsule.radius) + advancedSettings.groundCheckDistance, Physics.AllLayers, QueryTriggerInteraction.Ignore))
             {
-                isGrounded = true;
-                groundContactNormal = hitInfo.normal;
+                m_IsGrounded = true;
+                m_GroundContactNormal = hitInfo.normal;
             }
             else
             {
-                isGrounded = false;
-                groundContactNormal = Vector3.up;
+                m_IsGrounded = false;
+                m_GroundContactNormal = Vector3.up;
             }
-            if (!previouslyGrounded && isGrounded && jumping)
+            if (!m_PreviouslyGrounded && m_IsGrounded && m_Jumping)
             {
-                jumping = false;
+                m_Jumping = false;
             }
         }
     }

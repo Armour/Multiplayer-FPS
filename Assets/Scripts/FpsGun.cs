@@ -1,7 +1,6 @@
 ﻿using Photon.Pun;
-using Photon.Realtime;
 using UnityEngine;
-using UnitySampleAssets.CrossPlatformInput;
+using UnityStandardAssets.CrossPlatformInput;
 using System.Collections;
 
 public class FpsGun : MonoBehaviour {
@@ -63,10 +62,8 @@ public class FpsGun : MonoBehaviour {
             string hitTag = shootHit.transform.gameObject.tag;
             switch (hitTag) {
                 case "Player":
-                    if (shootHit.collider.gameObject != gameObject) {
-                        shootHit.collider.GetComponent<PhotonView>().RPC("TakeDamage", RpcTarget.All, damagePerShot, PhotonNetwork.LocalPlayer.NickName);
-                        PhotonNetwork.Instantiate("impactFlesh", shootHit.point, Quaternion.Euler(shootHit.normal.x - 90, shootHit.normal.y, shootHit.normal.z), 0);
-                    }
+                    shootHit.collider.GetComponent<PhotonView>().RPC("TakeDamage", RpcTarget.All, damagePerShot, PhotonNetwork.LocalPlayer.NickName);
+                    PhotonNetwork.Instantiate("impactFlesh", shootHit.point, Quaternion.Euler(shootHit.normal.x - 90, shootHit.normal.y, shootHit.normal.z), 0);
                     break;
                 default:
                     PhotonNetwork.Instantiate("impact" + hitTag, shootHit.point, Quaternion.Euler(shootHit.normal.x - 90, shootHit.normal.y, shootHit.normal.z), 0);
@@ -86,4 +83,3 @@ public class FpsGun : MonoBehaviour {
     }
 
 }
-
