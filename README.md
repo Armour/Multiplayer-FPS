@@ -4,7 +4,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 [![Template from jarvis](https://img.shields.io/badge/Hi-Jarvis-ff69b4.svg)](https://github.com/Armour/Jarvis)
 
-A multiplayer first-person shooter game based on Unity3D. Different types of input devices are supported to improve the game experience, including Kinect, Xbox controllers, Leap motion, and VR Glasses. (Each contained in a different branch)
+A multiplayer first-person shooter game based on Unity3D. Different types of input devices are supported, including Kinect, Xbox controllers, Leap motion, and VR Glasses. (Each contained in a different branch)
 
 ## Game logic and functionality
 
