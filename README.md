@@ -17,7 +17,7 @@ A multiplayer first-person shooter game based on Unity3D. Different types of inp
 * Game interface
   * **Player's HP** on the top left corner
   * The **message panel** on the bottom left corner, which shows status of other players (e.g. dead or respawn)
-  * A **gun (AK-47)** will always show on the bottom right corner in front of every thing you can see
+  * A **gun (AK-47)** is always shown on the bottom right corner in front of every thing you can see
   * A red **shooting sight** is always in the center of the screen
   <img src="Images/3.jpg" style="width:500px"></img>
 
