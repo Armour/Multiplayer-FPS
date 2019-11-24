@@ -17,7 +17,7 @@ A multiplayer first-person shooter game based on Unity3D. Different types of inp
 * Game interface
   * **Player's HP** on the top left corner
   * The **message panel** on the bottom left corner, which shows status of other players (e.g. dead or respawn)
-  * A **gun (AK-47)** will always show on the bottom right corner in front of every thing you can see
+  * A **gun (AK-47)** is always shown on the bottom right corner in front of every thing you can see
   * A red **shooting sight** is always in the center of the screen
   <img src="Images/3.jpg" style="width:500px"></img>
 
@@ -139,7 +139,7 @@ A multiplayer first-person shooter game based on Unity3D. Different types of inp
   * Use Kinect for Windows SKD (BodySourceManager) to get the positions of the player's skeleton. Determine the actions of moving, jumping, shooting based on these positions and regard rotation as an input of the game.
 
 * **Shooting**：
-  * Users lifting their right arm will trigger shooting in the game. The game calculates the distance between the user's right hand and right shoulder based on skeleton nodes. Shooting will be triggered if the calculated distance reaches a threshold.
+  * Users can trigger shooting by lifting their right arms. The game calculates the distance between the user's right hand and right shoulder based on skeleton nodes. Shooting will be triggered if the calculated distance reaches a threshold.
 
 * **Moving**:
   * Move in the game by stepping forward, backward, leftward, and rightward. The game recognizes moving actions by the offset of right foot’s skeleton node on x-z plane. A movement will be triggered if the offset reaches a threshold.
