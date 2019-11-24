@@ -22,6 +22,7 @@ A multiplayer first-person shooter game based on Unity3D. Different types of inp
   <img src="Images/3.jpg" style="width:500px"></img>
 
 * Player models
+  * All the original models and their animations were found from **[Mixamo](https://www.mixamo.com/)**, which is a pretty good game model website run by Adobe
   * There are three types of player **models**:
     * **Policeman**: a policeman-like model with yellow skin
     * **RobotX**: a robot-like model with dark pink skin
@@ -29,11 +30,10 @@ A multiplayer first-person shooter game based on Unity3D. Different types of inp
     * <img src="Images/9.jpg" height="200px"></img> <img src="Images/11.jpg" height="200px"></img> <img src="Images/10.jpg" height="200px"></img>
 
   * **Animations**:
-    * **Walking** towards four different directions
-    * **Running** towards four different directions
-    * **Jumping** without affecting upper part body (**achieved by unity3d body mask**)
-    * **Shooting** without affecting lower part body (**achieved by unity3d body mask**)
-    * All the original models and their animations were found from **[Mixamo](https://www.mixamo.com/)**, which is a pretty good game model website run by Adobe
+    * **Walk** towards four different directions
+    * **Run** towards four different directions
+    * **Jump** without affecting upper part body (**achieved by unity3d body mask**)
+    * **Shoot** without affecting lower part body (**achieved by unity3d body mask**)
     * **Unity Blend Tree**
       * This makes the player walk or run more naturally. It uses interpolation function to map different combinations of user input to different animations.
       * ![img](Images/4.jpg)
