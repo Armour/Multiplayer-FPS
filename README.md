@@ -29,10 +29,10 @@ A multiplayer first-person shooter game based on Unity3D. Different types of inp
     * <img src="Images/9.jpg" height="200px"></img> <img src="Images/11.jpg" height="200px"></img> <img src="Images/10.jpg" height="200px"></img>
 
   * **Animations**:
-    * **Walk** towards four different directions
-    * **Run** towards four different directions
-    * **Jump** without affecting upper part body (**achieved by unity3d body mask**)
-    * **Shoot** without affecting lower part body (**achieved by unity3d body mask**)
+    * **Walking** towards four different directions
+    * **Running** towards four different directions
+    * **Jumping** without affecting upper part body (**achieved by unity3d body mask**)
+    * **Shooting** without affecting lower part body (**achieved by unity3d body mask**)
     * All the original models and their animations were found from **[Mixamo](https://www.mixamo.com/)**, which is a pretty good game model website run by Adobe
     * **Unity Blend Tree**
       * This makes the player walk or run more naturally. It uses interpolation function to map different combinations of user input to different animations.
@@ -139,7 +139,7 @@ A multiplayer first-person shooter game based on Unity3D. Different types of inp
   * Use Kinect for Windows SKD (BodySourceManager) to get the positions of the player's skeleton. Determine the actions of moving, jumping, shooting based on these positions and regard rotation as an input of the game.
 
 * **Shooting**：
-  * Users lifting their right arm will trigger shooting in the game. The game calculates the distance between the user's right hand and right shoulder based on skeleton nodes. Shooting will be triggered if the calculated distance reaches a threshold.
+  * Users can trigger shooting by lifting their right arms. The game calculates the distance between the user's right hand and right shoulder based on skeleton nodes. Shooting will be triggered if the calculated distance reaches a threshold.
 
 * **Moving**:
   * Move in the game by stepping forward, backward, leftward, and rightward. The game recognizes moving actions by the offset of right foot’s skeleton node on x-z plane. A movement will be triggered if the offset reaches a threshold.
