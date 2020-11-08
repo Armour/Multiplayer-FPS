@@ -24,10 +24,8 @@ namespace Photon.Pun
     /// When Using Trigger Parameters, make sure the component that sets the trigger is higher in the stack of Components on the GameObject than 'PhotonAnimatorView'
     /// Triggers are raised true during one frame only.
     /// </remarks>
-    [RequireComponent(typeof(Animator))]
-    [RequireComponent(typeof(PhotonView))]
     [AddComponentMenu("Photon Networking/Photon Animator View")]
-    public class PhotonAnimatorView : MonoBehaviour, IPunObservable
+    public class PhotonAnimatorView : MonoBehaviourPun, IPunObservable
     {
         #region Enums
 
@@ -78,9 +76,11 @@ namespace Photon.Pun
 
         #region Members
 
+        private bool TriggerUsageWarningDone;
+        
         private Animator m_Animator;
 
-        private PhotonStreamQueue m_StreamQueue;
+        private PhotonStreamQueue m_StreamQueue = new PhotonStreamQueue(120);
 
         //These fields are only used in the CustomEditor for this script and would trigger a
         //"this variable is never used" warning, which I am suppressing here
@@ -107,7 +107,6 @@ namespace Photon.Pun
         private Vector3 m_ReceiverPosition;
         private float m_LastDeserializeTime;
         private bool m_WasSynchronizeTypeChanged = true;
-        private PhotonView m_PhotonView;
 
         /// <summary>
         /// Cached raised triggers that are set to be synchronized in discrete mode. since a Trigger only stay up for less than a frame,
@@ -122,15 +121,12 @@ namespace Photon.Pun
 
         private void Awake()
         {
-            this.m_PhotonView = GetComponent<PhotonView>();
-            this.m_StreamQueue = new PhotonStreamQueue(120);
-
             this.m_Animator = GetComponent<Animator>();
         }
 
         private void Update()
         {
-            if (this.m_Animator.applyRootMotion && this.m_PhotonView.IsMine == false && PhotonNetwork.IsConnected == true)
+            if (this.m_Animator.applyRootMotion && this.photonView.IsMine == false && PhotonNetwork.IsConnected == true)
             {
                 this.m_Animator.applyRootMotion = false;
             }
@@ -141,7 +137,7 @@ namespace Photon.Pun
                 return;
             }
 
-            if (this.m_PhotonView.IsMine == true)
+            if (this.photonView.IsMine == true)
             {
                 this.SerializeDataContinuously();
 
@@ -337,6 +333,14 @@ namespace Photon.Pun
                             this.m_StreamQueue.SendNext(this.m_Animator.GetInteger(parameter.Name));
                             break;
                         case ParameterType.Trigger:
+                            if (!TriggerUsageWarningDone)
+                            {
+                                TriggerUsageWarningDone = true;
+                                Debug.Log("PhotonAnimatorView: When using triggers, make sure this component is last in the stack.\n" +
+                                          "If you still experience issues, implement triggers as a regular RPC \n" +
+                                          "or in custom IPunObservable component instead",this);
+                            
+                            }
                             this.m_StreamQueue.SendNext(this.m_Animator.GetBool(parameter.Name));
                             break;
                     }
@@ -397,8 +401,9 @@ namespace Photon.Pun
 
             for (int i = 0; i < this.m_SynchronizeParameters.Count; ++i)
             {
+               
                 SynchronizedParameter parameter = this.m_SynchronizeParameters[i];
-
+       
                 if (parameter.SynchronizeType == SynchronizeType.Discrete)
                 {
                     switch (parameter.Type)
@@ -413,6 +418,14 @@ namespace Photon.Pun
                             stream.SendNext(this.m_Animator.GetInteger(parameter.Name));
                             break;
                         case ParameterType.Trigger:
+                            if (!TriggerUsageWarningDone)
+                            {
+                                TriggerUsageWarningDone = true;
+                                Debug.Log("PhotonAnimatorView: When using triggers, make sure this component is last in the stack.\n" +
+                                          "If you still experience issues, implement triggers as a regular RPC \n" +
+                                          "or in custom IPunObservable component instead",this);
+                            
+                            }
                             // here we can't rely on the current real state of the trigger, we might have missed its raise
                             stream.SendNext(this.m_raisedDiscreteTriggersCache.Contains(parameter.Name));
                             break;

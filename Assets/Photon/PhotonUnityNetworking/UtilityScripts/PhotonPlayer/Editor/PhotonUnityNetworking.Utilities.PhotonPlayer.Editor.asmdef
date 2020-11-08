@@ -3,7 +3,8 @@
     "references": [
         "PhotonRealtime",
         "PhotonUnityNetworking",
-        "PhotonUnityNetworking.Utilities"
+        "PhotonUnityNetworking.Utilities",
+		 "PhotonUnityNetworking.Editor"
     ],
     "optionalUnityReferences": [],
     "includePlatforms": [

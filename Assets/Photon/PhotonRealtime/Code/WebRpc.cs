@@ -36,16 +36,27 @@ namespace Photon.Realtime
         /// <summary>Name of the WebRpc that was called.</summary>
         public string Name { get; private set; }
 
-        /// <summary>ReturnCode of the WebService that answered the WebRpc.</summary>
+        /// <summary>ResultCode of the WebService that answered the WebRpc.</summary>
         /// <remarks>
-        ///  1 is: "OK" for WebRPCs.<br/>
-        /// -1 is: No ReturnCode by WebRpc service (check OperationResponse.ReturnCode).<br/>
-        /// Other ReturnCodes are defined by the individual WebRpc and service.
+        ///  0 is: "OK" for WebRPCs.<br/>
+        /// -1 is: No ResultCode by WebRpc service (check <see cref="OperationResponse.ReturnCode"/>).<br/>
+        /// Other ResultCode are defined by the individual WebRpc and service.
         /// </remarks>
-        public int ReturnCode { get; private set; }
+        public int ResultCode { get; private set; }
+        [System.Obsolete("Use ResultCode instead")]
+        public int ReturnCode
+        {
+            get { return ResultCode; }
+        }
 
         /// <summary>Might be empty or null.</summary>
-        public string DebugMessage { get; private set; }
+        public string Message { get; private set; }
+        [System.Obsolete("Use Message instead")]
+        public string DebugMessage
+        {
+            get { return Message; }
+        }
+
 
         /// <summary>Other key/values returned by the webservice that answered the WebRpc.</summary>
         public Dictionary<string, object> Parameters { get; private set; }
@@ -54,24 +65,33 @@ namespace Photon.Realtime
         public WebRpcResponse(OperationResponse response)
         {
             object value;
-            response.Parameters.TryGetValue(ParameterCode.UriPath, out value);
-            this.Name = value as string;
+            if (response.Parameters.TryGetValue(ParameterCode.UriPath, out value))
+            {
+                this.Name = value as string;
+            }
 
-            response.Parameters.TryGetValue(ParameterCode.WebRpcReturnCode, out value);
-            this.ReturnCode = (value != null) ? (byte)value : -1;
+            this.ResultCode = -1;
+            if (response.Parameters.TryGetValue(ParameterCode.WebRpcReturnCode, out value))
+            {
+                this.ResultCode = (byte)value;
+            }
 
-            response.Parameters.TryGetValue(ParameterCode.WebRpcParameters, out value);
-            this.Parameters = value as Dictionary<string, object>;
+            if (response.Parameters.TryGetValue(ParameterCode.WebRpcParameters, out value))
+            {
+                this.Parameters = value as Dictionary<string, object>;
+            }
 
-            response.Parameters.TryGetValue(ParameterCode.WebRpcReturnMessage, out value);
-            this.DebugMessage = value as string;
+            if (response.Parameters.TryGetValue(ParameterCode.WebRpcReturnMessage, out value))
+            {
+                this.Message = value as string;
+            }
         }
 
         /// <summary>Turns the response into an easier to read string.</summary>
         /// <returns>String resembling the result.</returns>
         public string ToStringFull()
         {
-            return string.Format("{0}={2}: {1} \"{3}\"", this.Name, SupportClass.DictionaryToString(this.Parameters), this.ReturnCode, this.DebugMessage);
+            return string.Format("{0}={2}: {1} \"{3}\"", this.Name, SupportClass.DictionaryToString(this.Parameters), this.ResultCode, this.Message);
         }
     }
 

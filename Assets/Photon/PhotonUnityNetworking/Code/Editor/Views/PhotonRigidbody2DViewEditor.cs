@@ -16,10 +16,12 @@ namespace Photon.Pun
 
 
     [CustomEditor(typeof (PhotonRigidbody2DView))]
-    public class PhotonRigidbody2DViewEditor : Editor
+    public class PhotonRigidbody2DViewEditor : MonoBehaviourPunEditor
     {
         public override void OnInspectorGUI()
         {
+            base.OnInspectorGUI();
+
             if (Application.isPlaying)
             {
                 EditorGUILayout.HelpBox("Editing is disabled in play mode.", MessageType.Info);

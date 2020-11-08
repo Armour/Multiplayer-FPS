@@ -204,7 +204,7 @@ namespace Photon.Realtime
         /// </summary>
         /// <remarks>
         /// The corresponding feature in Photon is called "Slot Reservation" and can be found in the doc pages.
-        /// Define expected players in the PhotonNetwork methods: CreateRoom, JoinRoom and JoinOrCreateRoom.
+        /// Define expected players in the methods: <see cref="LoadBalancingClient.OpCreateRoom"/>, <see cref="LoadBalancingClient.OpJoinRoom"/> and <see cref="LoadBalancingClient.OpJoinRandomRoom"/>.
         /// </remarks>
         public string[] ExpectedUsers
         {
@@ -284,6 +284,8 @@ namespace Photon.Realtime
             }
         }
 
+        public bool BroadcastPropertiesChangeToAll { get; private set; }
+        public bool SuppressRoomEvents { get; private set; }
 
         /// <summary>Creates a Room (representation) with given name and properties and the "listing options" as provided by parameters.</summary>
         /// <param name="roomName">Name of the room (can be null until it's actually created on server).</param>
@@ -304,6 +306,15 @@ namespace Photon.Realtime
             this.isOffline = isOffline;
         }
 
+
+        /// <summary>Read (received) room option flags into related bool parameters.</summary>
+        /// <remarks>This is for internal use. The operation response for join and create room operations is read this way.</remarks>
+        /// <param name="roomFlags"></param>
+        internal void InternalCacheRoomFlags(int roomFlags)
+        {
+            this.BroadcastPropertiesChangeToAll = (roomFlags & (int)RoomOptionBit.BroadcastPropsChangeToAll) != 0;
+            this.SuppressRoomEvents = (roomFlags & (int)RoomOptionBit.SuppressRoomEvents) != 0;
+        }
 
         protected internal override void InternalCacheProperties(Hashtable propertiesToCache)
         {
@@ -358,27 +369,40 @@ namespace Photon.Realtime
         /// <param name="propertiesToSet">Hashtable of Custom Properties that changes.</param>
         /// <param name="expectedProperties">Provide some keys/values to use as condition for setting the new values. Client must be in room.</param>
         /// <param name="webFlags">Defines if this SetCustomProperties-operation gets forwarded to your WebHooks. Client must be in room.</param>
-        public virtual void SetCustomProperties(Hashtable propertiesToSet, Hashtable expectedProperties = null, WebFlags webFlags = null)
+        /// <returns>
+        /// False if propertiesToSet is null or empty or have zero string keys.
+        /// True in offline mode even if expectedProperties or webFlags are used.
+        /// Otherwise, returns if this operation could be sent to the server.
+        /// </returns>
+        public virtual bool SetCustomProperties(Hashtable propertiesToSet, Hashtable expectedProperties = null, WebFlags webFlags = null)
         {
-            Hashtable customProps = propertiesToSet.StripToStringKeys() as Hashtable;
-
-            // merge (and delete null-values), unless we use CAS (expected props)
-            if (expectedProperties == null || expectedProperties.Count == 0)
+            if (propertiesToSet == null || propertiesToSet.Count == 0)
             {
-                this.CustomProperties.Merge(customProps);
-                this.CustomProperties.StripKeysWithNullValues();
+                return false;
             }
+            Hashtable customProps = propertiesToSet.StripToStringKeys() as Hashtable;
 
             if (this.isOffline)
             {
+                if (customProps.Count == 0)
+                {
+                    return false;
+                }
+                // Merge and delete values.
+                this.CustomProperties.Merge(customProps);
+                this.CustomProperties.StripKeysWithNullValues();
+
                 // invoking callbacks
                 this.LoadBalancingClient.InRoomCallbackTargets.OnRoomPropertiesUpdate(propertiesToSet);
+               
             }
             else
             {
                 // send (sync) these new values if in online room
-                this.LoadBalancingClient.LoadBalancingPeer.OpSetPropertiesOfRoom(customProps, expectedProperties, webFlags);
+                return this.LoadBalancingClient.OpSetPropertiesOfRoom(customProps, expectedProperties, webFlags);
             }
+
+            return true;
         }
 
         /// <summary>
@@ -387,18 +411,17 @@ namespace Photon.Realtime
         /// <remarks>
         /// Limit the amount of properties sent to users in the lobby to improve speed and stability.
         /// </remarks>
-        /// <param name="propertiesListedInLobby">An array of custom room property names to forward to the lobby.</param>
-        public void SetPropertiesListedInLobby(string[] propertiesListedInLobby)
+        /// <param name="lobbyProps">An array of custom room property names to forward to the lobby.</param>
+        /// <returns>If the operation could be sent to the server.</returns>
+        public bool SetPropertiesListedInLobby(string[] lobbyProps)
         {
-            Hashtable customProps = new Hashtable();
-            customProps[GamePropertyKey.PropsListedInLobby] = propertiesListedInLobby;
-
-            bool sent = this.LoadBalancingClient.OpSetPropertiesOfRoom(customProps);
-
-            if (sent)
+            if (this.isOffline)
             {
-                this.propertiesListedInLobby = propertiesListedInLobby;
+                return false;
             }
+            Hashtable customProps = new Hashtable();
+            customProps[GamePropertyKey.PropsListedInLobby] = lobbyProps;
+            return this.LoadBalancingClient.OpSetPropertiesOfRoom(customProps);
         }
 
 
@@ -441,6 +464,10 @@ namespace Photon.Realtime
         /// <returns>False when this operation couldn't be done currently. Requires a v4 Photon Server.</returns>
         public bool SetMasterClient(Player masterClientPlayer)
         {
+            if (this.isOffline)
+            {
+                return false;
+            }
             Hashtable newProps = new Hashtable() { { GamePropertyKey.MasterClientId, masterClientPlayer.ActorNumber } };
             Hashtable prevProps = new Hashtable() { { GamePropertyKey.MasterClientId, this.MasterClientId } };
             return this.LoadBalancingClient.OpSetPropertiesOfRoom(newProps, prevProps);
@@ -505,13 +532,18 @@ namespace Photon.Realtime
         ///
         /// Internals: This methods wraps up setting the ExpectedUsers property of a room.
         /// </remarks>
-        public void ClearExpectedUsers()
+        /// <returns>If the operation could be sent to the server.</returns>
+        public bool ClearExpectedUsers()
         {
+            if (this.isOffline)
+            {
+                return false;
+            }
             Hashtable props = new Hashtable();
             props[GamePropertyKey.ExpectedUsers] = new string[0];
             Hashtable expected = new Hashtable();
             expected[GamePropertyKey.ExpectedUsers] = this.ExpectedUsers;
-            this.LoadBalancingClient.OpSetPropertiesOfRoom(props, expected);
+            return this.LoadBalancingClient.OpSetPropertiesOfRoom(props, expected);
         }
 
 

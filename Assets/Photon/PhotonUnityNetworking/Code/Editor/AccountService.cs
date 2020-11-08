@@ -9,236 +9,245 @@
 // <author>developer@exitgames.com</author>
 // ----------------------------------------------------------------------------
 
+
 #if UNITY_EDITOR
-
-using System.Net.Security;
-using System.Security.Cryptography.X509Certificates;
 using System;
+using UnityEngine;
 using System.Collections.Generic;
-using System.IO;
-using System.Net;
-
-using ExitGames.Client.Photon;
-
-using Newtonsoft.Json;
+using System.Text.RegularExpressions;
 
 namespace Photon.Pun
 {
+    /// <summary>
+    /// Creates a instance of the Account Service to register Photon Cloud accounts.
+    /// </summary>
     public class AccountService
     {
-        private const string ServiceUrl = "https://service.exitgames.com/AccountExt/AccountServiceExt.aspx";
+        private const string ServiceUrl = "https://partner.photonengine.com/api/{0}/User/RegisterEx";
 
-        private Action<AccountService> registrationCallback; // optional (when using async reg)
-
-        public string Message { get; private set; } // msg from server (in case of success, this is the appid)
-
-        protected internal Exception Exception { get; set; } // exceptions in account-server communication
-
-        public string AppId { get; private set; }
-
-        public string AppId2 { get; private set; }
-
-        public int ReturnCode { get; private set; } // 0 = OK. anything else is a error with Message
-
-        public enum Origin : byte
+        private readonly Dictionary<string, string> RequestHeaders = new Dictionary<string, string>
         {
-            ServerWeb = 1,
-            CloudWeb = 2,
-            Pun = 3,
-            Playmaker = 4
+            { "Content-Type", "application/json" },
+            { "x-functions-key", "" }
         };
 
-        /// <summary>
-        /// Creates a instance of the Account Service to register Photon Cloud accounts.
-        /// </summary>
-        public AccountService()
-        {
-            WebRequest.DefaultWebProxy = null;
-            ServicePointManager.ServerCertificateValidationCallback = Validator;
-        }
+        private const string DefaultContext = "Unity";
 
-        public static bool Validator(object sender, X509Certificate certificate, X509Chain chain, SslPolicyErrors policyErrors)
-        {
-            return true; // any certificate is ok in this case
-        }
+        private const string DefaultToken = "VQ920wVUieLHT9c3v1ZCbytaLXpXbktUztKb3iYLCdiRKjUagcl6eg==";
 
         /// <summary>
-        /// Attempts to create a Photon Cloud Account.
-        /// Check ReturnCode, Message and AppId to get the result of this attempt.
+        /// third parties custom context, if null, defaults to DefaultContext property value
         /// </summary>
-        /// <param name="email">Email of the account.</param>
-        /// <param name="origin">Marks which channel created the new account (if it's new).</param>
-        /// <param name="serviceType">Defines which type of Photon-service is being requested.</param>
-        public void RegisterByEmail(string email, Origin origin, string serviceType = null)
-        {
-            this.registrationCallback = null;
-            this.AppId = string.Empty;
-            this.AppId2 = string.Empty;
-            this.Message = string.Empty;
-            this.ReturnCode = -1;
-
-            string result;
-            try
-            {
-                WebRequest req = HttpWebRequest.Create(this.RegistrationUri(email, (byte) origin, serviceType));
-                HttpWebResponse resp = req.GetResponse() as HttpWebResponse;
-
-                // now read result
-                StreamReader reader = new StreamReader(resp.GetResponseStream());
-                result = reader.ReadToEnd();
-            }
-            catch (Exception ex)
-            {
-                this.Message = "Failed to connect to Cloud Account Service. Please register via account website.";
-                this.Exception = ex;
-                return;
-            }
-
-            this.ParseResult(result);
-        }
-
+        public string CustomContext = null;
+        
+        /// <summary>
+        /// third parties custom token. If null, defaults to DefaultToken property value
+        /// </summary>
+        public string CustomToken = null;
+        
+        
         /// <summary>
         /// Attempts to create a Photon Cloud Account asynchronously.
         /// Once your callback is called, check ReturnCode, Message and AppId to get the result of this attempt.
         /// </summary>
         /// <param name="email">Email of the account.</param>
-        /// <param name="origin">Marks which channel created the new account (if it's new).</param>
-        /// <param name="serviceType">Defines which type of Photon-service is being requested.</param>
+        /// <param name="serviceTypes">Defines which type of Photon-service is being requested.</param>
         /// <param name="callback">Called when the result is available.</param>
-        public void RegisterByEmailAsync(string email, Origin origin, string serviceType, Action<AccountService> callback = null)
+        public bool RegisterByEmail(string email, string serviceTypes, Action<AccountServiceResponse> callback = null, Action<string> errorCallback = null)
         {
-            this.registrationCallback = callback;
-            this.AppId = string.Empty;
-            this.AppId2 = string.Empty;
-            this.Message = string.Empty;
-            this.ReturnCode = -1;
-
-            try
+            if (!IsValidEmail(email))
             {
-                HttpWebRequest req = (HttpWebRequest) HttpWebRequest.Create(this.RegistrationUri(email, (byte) origin, serviceType));
-                req.Timeout = 5000;
-                req.BeginGetResponse(this.OnRegisterByEmailCompleted, req);
+                Debug.LogErrorFormat("Email \"{0}\" is not valid", email);
+                return false;
             }
-            catch (Exception ex)
+            if (string.IsNullOrEmpty(serviceTypes))
             {
-                this.Message = "Failed to connect to Cloud Account Service. Please register via account website.";
-                this.Exception = ex;
-                if (this.registrationCallback != null)
-                {
-                    this.registrationCallback(this);
-                }
+                Debug.LogError("serviceTypes string is null or empty");
+                return false;
             }
+            AccountServiceRequest req = new AccountServiceRequest();
+            req.Email = email;
+            req.ServiceTypes = serviceTypes;
+            //Debug.LogWarningFormat("Service types sent {0}", serviceTypes);
+            return this.RegisterByEmail(req, callback, errorCallback);
         }
 
-        /// <summary>
-        /// Internal callback with result of async HttpWebRequest (in RegisterByEmailAsync).
-        /// </summary>
-        /// <param name="ar"></param>
-        private void OnRegisterByEmailCompleted(IAsyncResult ar)
+        public bool RegisterByEmail(string email, List<ServiceTypes> serviceTypes, Action<AccountServiceResponse> callback = null, Action<string> errorCallback = null)
         {
-            try
+            if (serviceTypes == null || serviceTypes.Count == 0)
             {
-                HttpWebRequest request = (HttpWebRequest) ar.AsyncState;
-                HttpWebResponse response = request.EndGetResponse(ar) as HttpWebResponse;
-
-                if (response != null && response.StatusCode == HttpStatusCode.OK)
-                {
-                    // no error. use the result
-                    StreamReader reader = new StreamReader(response.GetResponseStream());
-                    string result = reader.ReadToEnd();
-
-                    this.ParseResult(result);
-                }
-                else
-                {
-                    // a response but some error on server. show message
-                    this.Message = "Failed to connect to Cloud Account Service. Please register via account website.";
-                }
+                Debug.LogError("serviceTypes list is null or empty");
+                return false;
             }
-            catch (Exception ex)
-            {
-                // not even a response. show message
-                this.Message = "Failed to connect to Cloud Account Service. Please register via account website.";
-                this.Exception = ex;
-            }
-
-            if (this.registrationCallback != null)
-            {
-                this.registrationCallback(this);
-            }
+            return this.RegisterByEmail(email, GetServiceTypesFromList(serviceTypes), callback, errorCallback);
         }
 
-        /// <summary>
-        /// Creates the service-call Uri, escaping the email for security reasons.
-        /// </summary>
-        /// <param name="email">Email of the account.</param>
-        /// <param name="origin">1 = server-web, 2 = cloud-web, 3 = PUN, 4 = playmaker</param>
-        /// <param name="serviceType">Defines which type of Photon-service is being requested. Options: "", "voice", "chat"</param>
-        /// <returns>Uri to call.</returns>
-        private Uri RegistrationUri(string email, byte origin, string serviceType)
+        public bool RegisterByEmail(AccountServiceRequest request, Action<AccountServiceResponse> callback = null, Action<string> errorCallback = null)
         {
-            if (serviceType == null)
+            if (request == null)
             {
-                serviceType = string.Empty;
+                Debug.LogError("Registration request is null");
+                return false;
             }
+            string fullUrl = GetUrlWithQueryStringEscaped(request);
 
-            string emailEncoded = Uri.EscapeDataString(email);
-            string uriString = string.Format("{0}?email={1}&origin={2}&serviceType={3}", ServiceUrl, emailEncoded, origin, serviceType);
+            RequestHeaders["x-functions-key"] = string.IsNullOrEmpty(CustomToken) ? DefaultToken : CustomToken;
+            
+            //Debug.LogWarningFormat("Full URL {0}", fullUrl);
+            PhotonEditorUtils.StartCoroutine(
+                PhotonEditorUtils.HttpPost(fullUrl,
+                    RequestHeaders,
+                    null,
+                    s =>
+                    {
+                        //Debug.LogWarningFormat("received response {0}", s);
+                        if (string.IsNullOrEmpty(s))
+                        {
+                            if (errorCallback != null)
+                            {
+                                errorCallback("Server's response was empty. Please register through account website during this service interruption.");
+                            }
+                        }
+                        else
+                        {
+                            AccountServiceResponse ase = this.ParseResult(s);
+                            if (ase == null)
+                            {
+                                if (errorCallback != null)
+                                {
+                                    errorCallback("Error parsing registration response. Please try registering from account website");
+                                }
+                            }
+                            else if (callback != null)
+                            {
+                                callback(ase);
+                            }
+                        }
+                    },
+                    e =>
+                    {
+                        if (errorCallback != null)
+                        {
+                            errorCallback(e);
+                        }
+                    })
+            );
+            return true;
+        }
 
-            return new Uri(uriString);
+        private string GetUrlWithQueryStringEscaped(AccountServiceRequest request)
+        {
+            string email = UnityEngine.Networking.UnityWebRequest.EscapeURL(request.Email);
+            string st = UnityEngine.Networking.UnityWebRequest.EscapeURL(request.ServiceTypes);
+            string serviceUrl = string.Format(ServiceUrl, string.IsNullOrEmpty(CustomContext) ? DefaultContext : CustomContext );
+            return string.Format("{0}?email={1}&st={2}", serviceUrl, email, st);
         }
 
         /// <summary>
         /// Reads the Json response and applies it to local properties.
         /// </summary>
         /// <param name="result"></param>
-        private void ParseResult(string result)
+        private AccountServiceResponse ParseResult(string result)
         {
-            if (string.IsNullOrEmpty(result))
+            try
             {
-                this.Message = "Server's response was empty. Please register through account website during this service interruption.";
-                return;
-            }
-
-            Dictionary<string, string> values = JsonConvert.DeserializeObject<Dictionary<string, string>>(result);
-            if (values == null)
-            {
-                this.Message = "Service temporarily unavailable. Please register through account website.";
-                return;
-            }
-
-            int returnCodeInt = -1;
-            string returnCodeString = string.Empty;
-            string message;
-            string messageDetailed;
-
-            values.TryGetValue("ReturnCode", out returnCodeString);
-            values.TryGetValue("Message", out message);
-            values.TryGetValue("MessageDetailed", out messageDetailed);
-
-            int.TryParse(returnCodeString, out returnCodeInt);
-
-            this.ReturnCode = returnCodeInt;
-            if (returnCodeInt == 0)
-            {
-                // returnCode == 0 means: all ok. message is new AppId
-                this.AppId = message;
-                if (PhotonEditorUtils.HasVoice)
+                AccountServiceResponse res = JsonUtility.FromJson<AccountServiceResponse>(result);
+                // Unity's JsonUtility does not support deserializing Dictionary, we manually parse it, dirty & ugly af, better then using a 3rd party lib
+                if (res.ReturnCode == AccountServiceReturnCodes.Success)
                 {
-                    this.AppId2 = messageDetailed;
+                    string[] parts = result.Split(new[] { "\"ApplicationIds\":{" }, StringSplitOptions.RemoveEmptyEntries);
+                    parts = parts[1].Split('}');
+                    string applicationIds = parts[0];
+                    if (!string.IsNullOrEmpty(applicationIds))
+                    {
+                        parts = applicationIds.Split(new[] { ',', '"', ':' }, StringSplitOptions.RemoveEmptyEntries);
+                        res.ApplicationIds = new Dictionary<string, string>(parts.Length / 2);
+                        for (int i = 0; i < parts.Length; i = i + 2)
+                        {
+                            res.ApplicationIds.Add(parts[i], parts[i + 1]);
+                        }
+                    }
+                    else
+                    {
+                        Debug.LogError("The server did not return any AppId, ApplicationIds was empty in the response.");
+                        return null;
+                    }
                 }
+                return res;
             }
-            else
+            catch (Exception ex) // probably JSON parsing exception, check if returned string is valid JSON
             {
-                // any error gives returnCode != 0
-                this.AppId = string.Empty;
-                if (PhotonEditorUtils.HasVoice)
-                {
-                    this.AppId2 = string.Empty;
-                }
-                this.Message = message;
+                Debug.LogException(ex);
+                return null;
             }
         }
+
+        private static string GetServiceTypesFromList(List<ServiceTypes> appTypes)
+        {
+            if (appTypes != null)
+            {
+                string serviceTypes = string.Empty;
+                if (appTypes.Count > 0)
+                {
+                    serviceTypes = ((int)appTypes[0]).ToString();
+                    for (int i = 1; i < appTypes.Count; i++)
+                    {
+                        int appType = (int)appTypes[i];
+                        serviceTypes = string.Format("{0},{1}", serviceTypes, appType);
+                    }
+                }
+                return serviceTypes;
+            }
+            return null;
+        }
+
+        // RFC2822 compliant matching 99.9% of all email addresses in actual use today
+        // according to http://www.regular-expressions.info/email.html [22.02.2012]
+        private static Regex reg = new Regex("^((?>[a-zA-Z\\d!#$%&'*+\\-/=?^_{|}~]+\\x20*|\"((?=[\\x01-\\x7f])[^\"\\]|\\[\\x01-\\x7f])*\"\\x20*)*(?<angle><))?((?!\\.)(?>\\.?[a-zA-Z\\d!#$%&'*+\\-/=?^_{|}~]+)+|\"((?=[\\x01-\\x7f])[^\"\\]|\\[\\x01-\\x7f])*\")@(((?!-)[a-zA-Z\\d\\-]+(?<!-)\\.)+[a-zA-Z]{2,}|\\[(((?(?<!\\[)\\.)(25[0-5]|2[0-4]\\d|[01]?\\d?\\d)){4}|[a-zA-Z\\d\\-]*[a-zA-Z\\d]:((?=[\\x01-\\x7f])[^\\\\[\\]]|\\[\\x01-\\x7f])+)\\])(?(angle)>)$",
+            RegexOptions.Compiled | RegexOptions.CultureInvariant | RegexOptions.IgnoreCase);
+        public static bool IsValidEmail(string mailAddress)
+        {
+            if (string.IsNullOrEmpty(mailAddress))
+            {
+                return false;
+            }
+            var result = reg.Match(mailAddress);
+            return result.Success;
+        }
+    }
+
+    [Serializable]
+    public class AccountServiceResponse
+    {
+        public int ReturnCode;
+        public string Message;
+        public Dictionary<string, string> ApplicationIds; // Unity's JsonUtility does not support deserializing Dictionary
+    }
+    
+    [Serializable]
+    public class AccountServiceRequest
+    {
+        public string Email;
+        public string ServiceTypes;
+    }
+
+    public class AccountServiceReturnCodes
+    {
+        public static int Success = 0;
+        public static int EmailAlreadyRegistered = 8;
+        public static int InvalidParameters = 12;
+    }
+
+    public enum ServiceTypes
+    {
+        Realtime = 0,
+        Turnbased = 1,
+        Chat = 2,
+        Voice = 3,
+        TrueSync = 4,
+        Pun = 5,
+        Thunder = 6,
+        Bolt = 20
     }
 }
 

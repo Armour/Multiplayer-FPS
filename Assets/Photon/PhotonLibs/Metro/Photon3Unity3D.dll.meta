@@ -1,96 +1,41 @@
 fileFormatVersion: 2
 guid: 3b5a0a7dce46a13459199d174ad3db3f
 PluginImporter:
-  externalObjects: {}
-  serializedVersion: 2
+  serializedVersion: 1
   iconMap: {}
   executionOrder: {}
-  defineConstraints: []
   isPreloaded: 0
-  isOverridable: 0
-  isExplicitlyReferenced: 0
-  validateReferences: 1
   platformData:
-  - first:
-      '': Linux
-    second:
-      enabled: 0
-      settings:
-        CPU: x86
-  - first:
-      '': OSXIntel
-    second:
+    Android:
       enabled: 0
       settings:
         CPU: AnyCPU
-  - first:
-      '': OSXIntel64
-    second:
-      enabled: 0
-      settings:
-        CPU: AnyCPU
-  - first:
-      '': WP8
-    second:
-      enabled: 1
-      settings:
-        CPU: AnyCPU
-        DontProcess: False
-        PlaceholderPath: Assets/Photon/PhotonLibs/Photon3Unity3D.dll
-        SDK: AnySDK
-        ScriptingBackend: DotNet
-  - first:
-      Android: Android
-    second:
-      enabled: 0
-      settings:
-        CPU: AnyCPU
-  - first:
-      Any: 
-    second:
+    Any:
       enabled: 0
       settings: {}
-  - first:
-      Editor: Editor
-    second:
+    Editor:
       enabled: 0
       settings:
         CPU: AnyCPU
         DefaultValueInitialized: true
         OS: AnyOS
-  - first:
-      Facebook: Win
-    second:
+    Linux:
+      enabled: 0
+      settings:
+        CPU: x86
+    Linux64:
+      enabled: 0
+      settings:
+        CPU: x86_64
+    OSXIntel:
       enabled: 0
       settings:
         CPU: AnyCPU
-  - first:
-      Facebook: Win64
-    second:
+    OSXIntel64:
       enabled: 0
       settings:
         CPU: AnyCPU
-  - first:
-      Standalone: Linux64
-    second:
-      enabled: 0
-      settings:
-        CPU: AnyCPU
-  - first:
-      Standalone: Win
-    second:
-      enabled: 0
-      settings:
-        CPU: AnyCPU
-  - first:
-      Standalone: Win64
-    second:
-      enabled: 0
-      settings:
-        CPU: AnyCPU
-  - first:
-      Windows Store Apps: WindowsStoreApps
-    second:
+    WP8:
       enabled: 1
       settings:
         CPU: AnyCPU
@@ -98,9 +43,23 @@ PluginImporter:
         PlaceholderPath: Assets/Photon/PhotonLibs/Photon3Unity3D.dll
         SDK: AnySDK
         ScriptingBackend: DotNet
-  - first:
-      iPhone: iOS
-    second:
+    Win:
+      enabled: 0
+      settings:
+        CPU: AnyCPU
+    Win64:
+      enabled: 0
+      settings:
+        CPU: AnyCPU
+    WindowsStoreApps:
+      enabled: 1
+      settings:
+        CPU: AnyCPU
+        DontProcess: False
+        PlaceholderPath: Assets/Photon/PhotonLibs/Photon3Unity3D.dll
+        SDK: AnySDK
+        ScriptingBackend: DotNet
+    iOS:
       enabled: 0
       settings:
         CompileFlags: 

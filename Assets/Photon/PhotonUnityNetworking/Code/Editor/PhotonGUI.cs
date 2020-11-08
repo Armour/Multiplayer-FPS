@@ -154,6 +154,23 @@ namespace Photon.Pun
 
         #endregion
 
+
+        internal static string GetIconPath(string iconFileName)
+        {
+            string _thisIconPath = PhotonNetwork.FindAssetPath ("PhotonGUI");
+
+            if (string.IsNullOrEmpty(_thisIconPath))
+            {
+                _thisIconPath = "Assets/Photon/PhotonUnityNetworking/Code/Editor/"+iconFileName;
+            }
+            else
+            {
+                _thisIconPath = _thisIconPath.Replace("PhotonGUI.cs", iconFileName);
+            }
+
+            return _thisIconPath;
+        }
+        
         static Texture2D m_HelpIcon;
 
         public static Texture2D HelpIcon
@@ -162,10 +179,38 @@ namespace Photon.Pun
             {
                 if (m_HelpIcon == null)
                 {
-                    m_HelpIcon = AssetDatabase.LoadAssetAtPath("Assets/Photon/PhotonUnityNetworking/Code/Editor/help.png", typeof(Texture2D)) as Texture2D;
+                    m_HelpIcon = AssetDatabase.LoadAssetAtPath(GetIconPath("help.png"), typeof(Texture2D)) as Texture2D;
                 }
 
+                
                 return m_HelpIcon;
+            }
+        }
+        
+        
+        static Texture2D m_CopyIcon;
+        static Texture2D m_CopyIconPro;
+        
+        public static Texture2D CopyIcon
+        {
+            get
+            {
+                if (EditorGUIUtility.isProSkin)
+                {
+                    if (m_CopyIconPro == null)
+                    {
+                        m_CopyIconPro = AssetDatabase.LoadAssetAtPath(GetIconPath("CopyIconPro.png"), typeof(Texture2D)) as Texture2D;
+                    }
+
+                    return m_CopyIconPro;
+                }
+                
+                if (m_CopyIcon == null)
+                {
+                    m_CopyIcon = AssetDatabase.LoadAssetAtPath(GetIconPath("CopyIcon.png"), typeof(Texture2D)) as Texture2D;
+                }
+
+                return m_CopyIcon;
             }
         }
 
@@ -181,9 +226,9 @@ namespace Photon.Pun
             return DoContainerHeaderToggle(headline, toggle);
         }
 
-        public static bool ContainerHeaderFoldout(string headline, bool foldout)
+        public static bool ContainerHeaderFoldout(string headline, bool foldout, System.Action buttonAction = null, string buttonName = null)
         {
-            return DoContainerHeaderFoldout(headline, foldout);
+            return DoContainerHeaderFoldout(headline, foldout, buttonAction, buttonName);
         }
 
         public static Rect ContainerBody(float height)
@@ -274,12 +319,25 @@ namespace Photon.Pun
         }
 
 
-        static bool DoContainerHeaderFoldout(string headline, bool foldout)
+        static bool DoContainerHeaderFoldout(string headline, bool foldout, System.Action buttonAction = null, string buttonLabel = null, float buttonWidth = 48)
         {
-            Rect rect = DoContainerHeader("", 27, 0f);
-            Rect foldoutRect = new Rect(rect.xMin + 15, rect.yMin + 5, rect.width, rect.height);
+            bool showButton = buttonAction != null;
 
-            return EditorGUI.Foldout(foldoutRect, foldout, headline, FoldoutBold);
+            Rect rect = DoContainerHeader("", 27, 0f);
+
+            // Shorten foldout label if button is present, so it doesn't interfere with clicking.
+            float foldoutWidth = rect.width - (showButton ? 15 + buttonWidth: 15);
+            Rect foldoutRect = new Rect(rect.xMin + 15, rect.yMin + 5, foldoutWidth, 16);
+
+            bool expanded = EditorGUI.Foldout(foldoutRect, foldout, headline, FoldoutBold);
+
+            // If a button is defined show it, and invoke action on click.
+            if (showButton && GUI.Button(new Rect(foldoutRect) { x = foldoutRect.xMax, height = 17, width = buttonWidth - 4 }, buttonLabel == null ? "" : buttonLabel))
+            {
+                buttonAction.Invoke();
+            }
+
+            return expanded;
         }
 
         static Rect DoContainerHeader(string headline, float height, float contentOffset)

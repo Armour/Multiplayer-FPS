@@ -43,7 +43,7 @@ namespace Photon.Realtime
 
         /// <summary>Defines for how long the Fallback Thread should keep the connection, before it may time out as usual.</summary>
         /// <remarks>We want to the Client to keep it's connection when an app is in the background (and doesn't call Update / Service Clients should not keep their connection indefinitely in the background, so after some milliseconds, the Fallback Thread should stop keeping it up.</remarks>
-        public int KeepAliveInBackground = 30000;
+        public int KeepAliveInBackground = 60000;
 
         /// <summary>Counts how often the Fallback Thread called SendAcksOnly, which is purely of interest to monitor if the game logic called SendOutgoingCommands as intended.</summary>
         public int CountSendAcksOnly { get; private set; }
@@ -55,7 +55,33 @@ namespace Photon.Realtime
 
 
         #if SUPPORTED_UNITY
+
+        #if UNITY_2019_4_OR_NEWER
+
+        /// <summary>
+        /// Resets statics for Domain Reload
+        /// </summary>
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
+        static void StaticReset()
+        {
+            AppQuits = false;
+        }
+
+        #endif
+
+        /// <summary>Keeps the ConnectionHandler, even if a new scene gets loaded.</summary>
         public bool ApplyDontDestroyOnLoad = true;
+
+        /// <summary>Indicates that the app is closing. Set in OnApplicationQuit().</summary>
+        [NonSerialized]
+        public static bool AppQuits;
+
+        /// <summary>Called by Unity when the application gets closed. The UnityEngine will also call OnDisable, which disconnects.</summary>
+        protected void OnApplicationQuit()
+        {
+            AppQuits = true;
+        }
+
 
         /// <summary></summary>
         protected virtual void Awake()
@@ -66,25 +92,23 @@ namespace Photon.Realtime
             }
         }
 
-        /// <summary>Called by Unity when the play mode ends. Used to cleanup.</summary>
-        protected virtual void OnDestroy()
+        /// <summary>Called by Unity when the application gets closed. Disconnects if OnApplicationQuit() was called before.</summary>
+        protected virtual void OnDisable()
         {
-            //Debug.Log("OnDestroy on ConnectionHandler.");
             this.StopFallbackSendAckThread();
+
+            if (AppQuits)
+            {
+                if (this.Client != null && this.Client.IsConnected)
+                {
+                    this.Client.Disconnect();
+                    this.Client.LoadBalancingPeer.StopThread();
+                }
+
+                SupportClass.StopAllBackgroundCalls();
+            }
         }
 
-        /// <summary>Called by Unity when the application is closed. Disconnects.</summary>
-        protected virtual void OnApplicationQuit()
-        {
-            //Debug.Log("OnApplicationQuit");
-            this.StopFallbackSendAckThread();
-            if (this.Client != null)
-            {
-                this.Client.Disconnect();
-                this.Client.LoadBalancingPeer.StopThread();
-            }
-            SupportClass.StopAllBackgroundCalls();
-        }
         #endif
 
 
@@ -96,7 +120,11 @@ namespace Photon.Realtime
                 return;
             }
 
+            #if UNITY_SWITCH
+            this.fallbackThreadId = SupportClass.StartBackgroundCalls(this.RealtimeFallbackThread, 50);  // as workaround, we don't name the Thread.
+            #else
             this.fallbackThreadId = SupportClass.StartBackgroundCalls(this.RealtimeFallbackThread, 50, "RealtimeFallbackThread");
+            #endif
             #endif
         }
 
@@ -114,7 +142,7 @@ namespace Photon.Realtime
         }
 
 
-        /// <summary>A thread which runs independent from the Update() calls. Keeps connections online while loading or in background. See PhotonNetwork.BackgroundTimeout.</summary>
+        /// <summary>A thread which runs independent from the Update() calls. Keeps connections online while loading or in background. See <see cref="KeepAliveInBackground"/>.</summary>
         public bool RealtimeFallbackThread()
         {
             if (this.Client != null)

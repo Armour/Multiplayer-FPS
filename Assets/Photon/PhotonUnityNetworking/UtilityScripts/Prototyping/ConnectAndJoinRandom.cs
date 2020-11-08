@@ -11,13 +11,13 @@
 // <author>developer@exitgames.com</author>
 // --------------------------------------------------------------------------------------------------------------------
 
-#if UNITY_EDITOR
-using UnityEditor;
-#endif
+//#if UNITY_EDITOR
+//using UnityEditor;
+//#endif
 
 using UnityEngine;
 
-using Photon.Pun;
+//using Photon.Pun;
 using Photon.Realtime;
 
 namespace Photon.Pun.UtilityScripts
@@ -32,6 +32,11 @@ namespace Photon.Pun.UtilityScripts
         /// <summary>Used as PhotonNetwork.GameVersion.</summary>
         public byte Version = 1;
 
+		/// <summary>Max number of players allowed in room. Once full, a new room will be created by the next connection attemping to join.</summary>
+		[Tooltip("The max number of players allowed in room. Once full, a new room will be created by the next connection attemping to join.")]
+		public byte MaxPlayers = 4;
+
+        public int playerTTL = -1;
 
         public void Start()
         {
@@ -44,8 +49,11 @@ namespace Photon.Pun.UtilityScripts
         public void ConnectNow()
         {
             Debug.Log("ConnectAndJoinRandom.ConnectNow() will now call: PhotonNetwork.ConnectUsingSettings().");
+
+            
             PhotonNetwork.ConnectUsingSettings();
             PhotonNetwork.GameVersion = this.Version + "." + SceneManagerHelper.ActiveSceneBuildIndex;
+           
         }
 
 
@@ -55,65 +63,74 @@ namespace Photon.Pun.UtilityScripts
 
         public override void OnConnectedToMaster()
         {
-            Debug.Log("OnConnectedToMaster() was called by PUN. Now this client is connected and could join a room. Calling: PhotonNetwork.JoinRandomRoom();");
+            Debug.Log("OnConnectedToMaster() was called by PUN. This client is now connected to Master Server in region [" + PhotonNetwork.CloudRegion +
+                "] and can join a room. Calling: PhotonNetwork.JoinRandomRoom();");
             PhotonNetwork.JoinRandomRoom();
         }
 
         public override void OnJoinedLobby()
         {
-            Debug.Log("OnJoinedLobby(). This client is connected and does get a room-list, which gets stored as PhotonNetwork.GetRoomList(). This script now calls: PhotonNetwork.JoinRandomRoom();");
+            Debug.Log("OnJoinedLobby(). This client is now connected to Relay in region [" + PhotonNetwork.CloudRegion + "]. This script now calls: PhotonNetwork.JoinRandomRoom();");
             PhotonNetwork.JoinRandomRoom();
         }
 
         public override void OnJoinRandomFailed(short returnCode, string message)
         {
-            Debug.Log("OnJoinRandomFailed() was called by PUN. No random room available, so we create one. Calling: PhotonNetwork.CreateRoom(null, new RoomOptions() {maxPlayers = 4}, null);");
-            PhotonNetwork.CreateRoom(null, new RoomOptions() { MaxPlayers = 4 }, null);
+            Debug.Log("OnJoinRandomFailed() was called by PUN. No random room available in region [" + PhotonNetwork.CloudRegion + "], so we create one. Calling: PhotonNetwork.CreateRoom(null, new RoomOptions() {maxPlayers = 4}, null);");
+
+            RoomOptions roomOptions = new RoomOptions() { MaxPlayers = this.MaxPlayers };
+            if (playerTTL >= 0)
+                roomOptions.PlayerTtl = playerTTL;
+
+            PhotonNetwork.CreateRoom(null, roomOptions, null);
         }
 
         // the following methods are implemented to give you some context. re-implement them as needed.
         public override void OnDisconnected(DisconnectCause cause)
         {
-			Debug.Log("OnDisconnected("+cause+")");
+            Debug.Log("OnDisconnected(" + cause + ")");
         }
 
         public override void OnJoinedRoom()
         {
-            Debug.Log("OnJoinedRoom() called by PUN. Now this client is in a room. From here on, your game would be running.");
+            Debug.Log("OnJoinedRoom() called by PUN. Now this client is in a room in region [" + PhotonNetwork.CloudRegion + "]. Game is now running.");
         }
     }
 
 
-#if UNITY_EDITOR
-[CanEditMultipleObjects]
-[CustomEditor(typeof(ConnectAndJoinRandom), true)]
-public class ConnectAndJoinRandomInspector : Editor
-{
-	void OnEnable() { EditorApplication.update += Update; }
-	void OnDisable() { EditorApplication.update -= Update; }
+    //#if UNITY_EDITOR
+    //[CanEditMultipleObjects]
+    //[CustomEditor(typeof(ConnectAndJoinRandom), true)]
+    //public class ConnectAndJoinRandomInspector : Editor
+    //{
+    //    void OnEnable() { EditorApplication.update += Update; }
+    //    void OnDisable() { EditorApplication.update -= Update; }
 
-	bool IsConnectedCache = false;
+    //    bool isConnectedCache = false;
 
-	void Update()
-	{
-		if (IsConnectedCache != PhotonNetwork.IsConnected)
-		{
-			Repaint ();
-		}
-	}
+    //    void Update()
+    //    {
+    //        if (this.isConnectedCache != PhotonNetwork.IsConnected)
+    //        {
+    //            this.Repaint();
+    //        }
+    //    }
 
-    public override void OnInspectorGUI()
-    {
-        this.DrawDefaultInspector(); // Draw the normal inspector
+    //    public override void OnInspectorGUI()
+    //    {
+    //        this.isConnectedCache = !PhotonNetwork.IsConnected;
 
-        if (Application.isPlaying && !PhotonNetwork.IsConnected)
-        {
-            if (GUILayout.Button("Connect"))
-            {
-				((ConnectAndJoinRandom)this.target).ConnectNow ();
-            }
-        }
-    }
-}
-#endif
+
+    //        this.DrawDefaultInspector(); // Draw the normal inspector
+
+    //        if (Application.isPlaying && !PhotonNetwork.IsConnected)
+    //        {
+    //            if (GUILayout.Button("Connect"))
+    //            {
+    //                ((ConnectAndJoinRandom)this.target).ConnectNow();
+    //            }
+    //        }
+    //    }
+    //}
+    //#endif
 }

@@ -1,25 +1,45 @@
-﻿using System;
-using System.Collections;
-using System.Threading;
-
-#if NETFX_CORE
-using System.Diagnostics;
-using Windows.Foundation;
-using Windows.Networking;
-using Windows.Networking.Sockets;
-using Windows.Storage.Streams;
-#endif
-
-#if !NO_SOCKET && !NETFX_CORE
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Net.Sockets;
-#endif
+﻿// ----------------------------------------------------------------------------
+// <copyright file="PhotonPing.cs" company="Exit Games GmbH">
+//   PhotonNetwork Framework for Unity - Copyright (C) 2018 Exit Games GmbH
+// </copyright>
+// <summary>
+// This file includes various PhotonPing implementations for different APIs,
+// platforms and protocols.
+// The RegionPinger class is the instance which selects the Ping implementation
+// to use.
+// </summary>
+// <author>developer@exitgames.com</author>
+// ----------------------------------------------------------------------------
 
 
 namespace Photon.Realtime
 {
+    using System;
+    using System.Collections;
+    using System.Threading;
 
+    #if NETFX_CORE
+    using System.Diagnostics;
+    using Windows.Foundation;
+    using Windows.Networking;
+    using Windows.Networking.Sockets;
+    using Windows.Storage.Streams;
+    #endif
+
+    #if !NO_SOCKET && !NETFX_CORE
+    using System.Collections.Generic;
+    using System.Diagnostics;
+    using System.Net.Sockets;
+    #endif
+
+    #if UNITY_WEBGL
+    // import WWW class
+    using UnityEngine;
+    #endif
+
+    /// <summary>
+    /// Abstract implementation of PhotonPing, ase for pinging servers to find the "Best Region".
+    /// </summary>
     public abstract class PhotonPing : IDisposable
     {
         public string DebugString = "";
@@ -32,6 +52,8 @@ namespace Photon.Realtime
         protected internal byte[] PingBytes = new byte[] { 0x7d, 0x7d, 0x7d, 0x7d, 0x7d, 0x7d, 0x7d, 0x7d, 0x7d, 0x7d, 0x7d, 0x7d, 0x00 };
 
         protected internal byte PingId;
+
+        private static readonly System.Random RandomIdProvider = new System.Random();
 
         public virtual bool StartPing(string ip)
         {
@@ -52,7 +74,7 @@ namespace Photon.Realtime
         {
             this.GotResult = false;
             this.Successful = false;
-            PingId = (byte) (Environment.TickCount%255);
+            this.PingId = (byte)(RandomIdProvider.Next(255));
         }
     }
 
@@ -67,33 +89,37 @@ namespace Photon.Realtime
         /// <summary>
         /// Sends a "Photon Ping" to a server.
         /// </summary>
-        /// <param name="ip">Address in IPv4 or IPv6 format. An address containing a '.' will be interpretet as IPv4.</param>
+        /// <param name="ip">Address in IPv4 or IPv6 format. An address containing a '.' will be interpreted as IPv4.</param>
         /// <returns>True if the Photon Ping could be sent.</returns>
         public override bool StartPing(string ip)
         {
-            base.Init();
+            this.Init();
 
             try
             {
-                if (ip.Contains("."))
+                if (this.sock == null)
                 {
-                    this.sock = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
-                }
-                else
-                {
-                    this.sock = new Socket(AddressFamily.InterNetworkV6, SocketType.Dgram, ProtocolType.Udp);
+                    if (ip.Contains("."))
+                    {
+                        this.sock = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
+                    }
+                    else
+                    {
+                        this.sock = new Socket(AddressFamily.InterNetworkV6, SocketType.Dgram, ProtocolType.Udp);
+                    }
+
+                    this.sock.ReceiveTimeout = 5000;
+                    this.sock.Connect(ip, 5055);
                 }
 
-                sock.ReceiveTimeout = 5000;
-                sock.Connect(ip, 5055);
 
-                PingBytes[PingBytes.Length - 1] = PingId;
-                sock.Send(PingBytes);
-                PingBytes[PingBytes.Length - 1] = (byte)(PingId - 1);
+                this.PingBytes[this.PingBytes.Length - 1] = this.PingId;
+                this.sock.Send(this.PingBytes);
+                this.PingBytes[this.PingBytes.Length - 1] = (byte)(this.PingId+1);  // this buffer is re-used for the result/receive. invalidate the result now.
             }
             catch (Exception e)
             {
-                sock = null;
+                this.sock = null;
                 Console.WriteLine(e);
             }
 
@@ -102,23 +128,40 @@ namespace Photon.Realtime
 
         public override bool Done()
         {
-            if (this.GotResult || sock == null)
+            if (this.GotResult || this.sock == null)
             {
-                return true;
+                return true;    // this just indicates the ping is no longer waiting. this.Successful value defines if the roundtrip completed
             }
 
-            if (sock.Available <= 0)
+            int read = 0;
+            try
             {
-                return false;
+                if (!this.sock.Poll(0, SelectMode.SelectRead))
+                {
+                    return false;
+                }
+
+                read = this.sock.Receive(this.PingBytes, SocketFlags.None);
+            }
+            catch (Exception ex)
+            {
+                if (this.sock != null)
+                {
+                    this.sock.Close();
+                    this.sock = null;
+                }
+                this.DebugString += " Exception of socket! " + ex.GetType() + " ";
+                return true;    // this just indicates the ping is no longer waiting. this.Successful value defines if the roundtrip completed
             }
 
-            int read = sock.Receive(PingBytes, SocketFlags.None);
+            bool replyMatch = this.PingBytes[this.PingBytes.Length - 1] == this.PingId && read == this.PingLength;
+            if (!replyMatch)
+            {
+                this.DebugString += " ReplyMatch is false! ";
+            }
 
-            bool replyMatch = PingBytes[PingBytes.Length - 1] == PingId && read == PingLength;
-            if (!replyMatch) this.DebugString += " ReplyMatch is false! ";
 
-
-            this.Successful = read == PingBytes.Length && PingBytes[PingBytes.Length - 1] == PingId;
+            this.Successful = replyMatch;
             this.GotResult = true;
             return true;
         }
@@ -127,12 +170,13 @@ namespace Photon.Realtime
         {
             try
             {
-                sock.Close();
+                this.sock.Close();
             }
             catch
             {
             }
-            sock = null;
+
+            this.sock = null;
         }
 
     }
@@ -140,7 +184,7 @@ namespace Photon.Realtime
 
 
     #if NETFX_CORE
-    /// <summary>Windows store API implementation of PhotonPing</summary>
+    /// <summary>Windows store API implementation of PhotonPing, based on DatagramSocket for UDP.</summary>
     public class PingWindowsStore : PhotonPing
     {
         private DatagramSocket sock;
@@ -148,54 +192,66 @@ namespace Photon.Realtime
 
         public override bool StartPing(string host)
         {
-            base.Init();
+            lock (this.syncer)
+            {
+                this.Init();
 
-            EndpointPair endPoint = new EndpointPair(null, string.Empty, new HostName(host), "5055");
-            this.sock = new DatagramSocket();
-            this.sock.MessageReceived += OnMessageReceived;
+                EndpointPair endPoint = new EndpointPair(null, string.Empty, new HostName(host), "5055");
+                this.sock = new DatagramSocket();
+                this.sock.MessageReceived += this.OnMessageReceived;
 
-            var result = this.sock.ConnectAsync(endPoint);
-            result.Completed = this.OnConnected;
-            this.DebugString += " End StartPing";
-            return true;
+                IAsyncAction result = this.sock.ConnectAsync(endPoint);
+                result.Completed = this.OnConnected;
+                this.DebugString += " End StartPing";
+                return true;
+            }
         }
 
         public override bool Done()
         {
-            return this.GotResult;
+            lock (this.syncer)
+            {
+                return this.GotResult || this.sock == null; // this just indicates the ping is no longer waiting. this.Successful value defines if the roundtrip completed
+            }
         }
 
         public override void Dispose()
         {
-            this.sock = null;
+            lock (this.syncer)
+            {
+                this.sock = null;
+            }
         }
 
         private void OnConnected(IAsyncAction asyncinfo, AsyncStatus asyncstatus)
         {
-            if (asyncinfo.AsTask().IsCompleted)
+            lock (this.syncer)
             {
-                PingBytes[PingBytes.Length - 1] = PingId;
+                if (asyncinfo.AsTask().IsCompleted && !asyncinfo.AsTask().IsFaulted && this.sock != null && this.sock.Information.RemoteAddress != null)
+                {
+                    this.PingBytes[this.PingBytes.Length - 1] = this.PingId;
 
-                DataWriter writer;
-                writer = new DataWriter(sock.OutputStream);
-                writer.WriteBytes(PingBytes);
-                var res = writer.StoreAsync();
-                res.AsTask().Wait(100);
+                    DataWriter writer;
+                    writer = new DataWriter(this.sock.OutputStream);
+                    writer.WriteBytes(this.PingBytes);
+                    DataWriterStoreOperation res = writer.StoreAsync();
+                    res.AsTask().Wait(100);
 
-                writer.DetachStream();
-                writer.Dispose();
+                    this.PingBytes[this.PingBytes.Length - 1] = (byte)(this.PingId + 1); // this buffer is re-used for the result/receive. invalidate the result now.
 
-                PingBytes[PingBytes.Length - 1] = (byte)(PingId - 1);
-            }
-            else
-            {
-                // TODO: handle error
+                    writer.DetachStream();
+                    writer.Dispose();
+                }
+                else
+                {
+                    this.sock = null; // will cause Done() to return true but this.Successful defines if the roundtrip completed
+                }
             }
         }
 
         private void OnMessageReceived(DatagramSocket sender, DatagramSocketMessageReceivedEventArgs args)
         {
-            lock (syncer)
+            lock (this.syncer)
             {
                 DataReader reader = null;
                 try
@@ -204,15 +260,14 @@ namespace Photon.Realtime
                     uint receivedByteCount = reader.UnconsumedBufferLength;
                     if (receivedByteCount > 0)
                     {
-                        var resultBytes = new byte[receivedByteCount];
+                        byte[] resultBytes = new byte[receivedByteCount];
                         reader.ReadBytes(resultBytes);
 
                         //TODO: check result bytes!
 
 
-                        this.Successful = receivedByteCount == PingLength && resultBytes[resultBytes.Length - 1] == PingId;
+                        this.Successful = receivedByteCount == this.PingLength && resultBytes[resultBytes.Length - 1] == this.PingId;
                         this.GotResult = true;
-
                     }
                 }
                 catch
@@ -385,5 +440,38 @@ namespace Photon.Realtime
         }
     }
     #endif
+    #endif
+
+
+    #if UNITY_WEBGL
+    public class PingHttp : PhotonPing
+    {
+        private WWW webRequest;
+
+        public override bool StartPing(string address)
+        {
+            base.Init();
+
+            address = "https://" + address + "/photon/m/?ping&r=" + UnityEngine.Random.Range(0, 10000);
+            this.webRequest = new WWW(address);
+            return true;
+        }
+
+        public override bool Done()
+        {
+            if (this.webRequest.isDone)
+            {
+                Successful = true;
+                return true;
+            }
+
+            return false;
+        }
+
+        public override void Dispose()
+        {
+            this.webRequest.Dispose();
+        }
+    }
     #endif
 }

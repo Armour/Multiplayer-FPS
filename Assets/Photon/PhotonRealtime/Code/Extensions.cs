@@ -149,26 +149,42 @@ namespace Photon.Realtime
             return target;
         }
 
-        /// <summary>
-        /// This removes all key-value pairs that have a null-reference as value.
-        /// Photon properties are removed by setting their value to null.
-        /// Changes the original passed IDictionary!
-        /// </summary>
-        /// <param name="original">The IDictionary to strip of keys with null-values.</param>
+
+        /// <summary>Used by StripKeysWithNullValues.</summary>
+        /// <remarks>
+        /// By making keysWithNullValue a static variable to clear before using, allocations only happen during the warm-up phase
+        /// as the list needs to grow. Once it hit the high water mark for keys you need to remove.
+        /// </remarks>
+        private static readonly List<object> keysWithNullValue = new List<object>();
+
+        /// <summary>Removes all keys with null values.</summary>
+        /// <remarks>
+        /// Photon properties are removed by setting their value to null. Changes the original IDictionary!
+        /// Uses lock(keysWithNullValue), which should be no problem in expected use cases.
+        /// </remarks>
+        /// <param name="original">The IDictionary to strip of keys with null value.</param>
         public static void StripKeysWithNullValues(this IDictionary original)
         {
-            object[] keys = new object[original.Count];
-            original.Keys.CopyTo(keys, 0);
-
-            for (int index = 0; index < keys.Length; index++)
+            lock (keysWithNullValue)
             {
-                var key = keys[index];
-                if (original[key] == null)
+                keysWithNullValue.Clear();
+
+                foreach (DictionaryEntry entry in original)
                 {
+                    if (entry.Value == null)
+                    {
+                        keysWithNullValue.Add(entry.Key);
+                    }
+                }
+
+                for (int i = 0; i < keysWithNullValue.Count; i++)
+                {
+                    var key = keysWithNullValue[i];
                     original.Remove(key);
                 }
             }
         }
+
 
         /// <summary>
         /// Checks if a particular integer value is in an int-array.

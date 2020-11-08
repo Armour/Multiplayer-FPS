@@ -31,7 +31,7 @@ namespace Photon.Pun.UtilityScripts
         public GameObject Prefab;
 
         [SerializeField]
-        private InstantiateOption InstantiateType;
+		private InstantiateOption InstantiateType = InstantiateOption.Mine;
 
 
         void IPointerClickHandler.OnPointerClick(PointerEventData eventData)
@@ -48,7 +48,7 @@ namespace Photon.Pun.UtilityScripts
                     PhotonNetwork.Instantiate(this.Prefab.name, eventData.pointerCurrentRaycast.worldPosition + new Vector3(0, 0.5f, 0), Quaternion.identity, 0);
                     break;
                 case InstantiateOption.Scene:
-                    PhotonNetwork.InstantiateSceneObject(this.Prefab.name, eventData.pointerCurrentRaycast.worldPosition + new Vector3(0, 0.5f, 0), Quaternion.identity, 0, null);
+                    PhotonNetwork.InstantiateRoomObject(this.Prefab.name, eventData.pointerCurrentRaycast.worldPosition + new Vector3(0, 0.5f, 0), Quaternion.identity, 0, null);
                     break;
             }
         }

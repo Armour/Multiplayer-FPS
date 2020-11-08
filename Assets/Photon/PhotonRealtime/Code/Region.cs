@@ -32,7 +32,7 @@ namespace Photon.Realtime
 
         public string HostAndPort { get; protected internal set; }
 
-        public int Ping { get; protected internal set; }
+        public int Ping { get; set; }
 
         public bool WasPinged { get { return this.Ping != int.MaxValue; } }
 
@@ -43,6 +43,11 @@ namespace Photon.Realtime
             this.Ping = int.MaxValue;
         }
 
+        public Region(string code, int ping)
+        {
+            this.SetCodeAndCluster(code);
+            this.Ping = ping;
+        }
 
         private void SetCodeAndCluster(string codeAsString)
         {
@@ -56,21 +61,30 @@ namespace Photon.Realtime
             codeAsString = codeAsString.ToLower();
             int slash = codeAsString.IndexOf('/');
             this.Code = slash <= 0 ? codeAsString : codeAsString.Substring(0, slash);
-            this.Cluster = slash <= 0 ? "" : codeAsString.Substring(1, slash);
+            this.Cluster = slash <= 0 ? "" : codeAsString.Substring(slash+1, codeAsString.Length-slash-1);
         }
 
         public override string ToString()
+        {
+            return this.ToString(false);
+        }
+
+        public string ToString(bool compact = false)
         {
             string regionCluster = this.Code;
             if (!string.IsNullOrEmpty(this.Cluster))
             {
                 regionCluster += "/" + this.Cluster;
             }
-            if (!this.WasPinged)
+
+            if (compact)
             {
-                return string.Format("'{0}' \tavailable but was not pinged.", regionCluster);
+                return string.Format("{0}:{1}", regionCluster, this.Ping);
             }
-            return string.Format("'{0}' \t{1}ms \t{2}", regionCluster, this.Ping, this.HostAndPort);
+            else
+            {
+                return string.Format("{0}[{2}]: {1}ms ", regionCluster, this.Ping, this.HostAndPort);
+            }
         }
     }
 }

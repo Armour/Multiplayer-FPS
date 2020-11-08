@@ -14,32 +14,32 @@ namespace Photon.Pun
     using UnityEngine;
 
 
-    [RequireComponent(typeof(PhotonView))]
     [RequireComponent(typeof(Rigidbody))]
     [AddComponentMenu("Photon Networking/Photon Rigidbody View")]
-    public class PhotonRigidbodyView : MonoBehaviour, IPunObservable
+    public class PhotonRigidbodyView : MonoBehaviourPun, IPunObservable
     {
         private float m_Distance;
         private float m_Angle;
 
         private Rigidbody m_Body;
 
-        private PhotonView m_PhotonView;
-
         private Vector3 m_NetworkPosition;
 
         private Quaternion m_NetworkRotation;
 
+        [HideInInspector]
         public bool m_SynchronizeVelocity = true;
+        [HideInInspector]
         public bool m_SynchronizeAngularVelocity = false;
 
+        [HideInInspector]
         public bool m_TeleportEnabled = false;
+        [HideInInspector]
         public float m_TeleportIfDistanceGreaterThan = 3.0f;
 
         public void Awake()
         {
             this.m_Body = GetComponent<Rigidbody>();
-            this.m_PhotonView = GetComponent<PhotonView>();
 
             this.m_NetworkPosition = new Vector3();
             this.m_NetworkRotation = new Quaternion();
@@ -47,7 +47,7 @@ namespace Photon.Pun
 
         public void FixedUpdate()
         {
-            if (!this.m_PhotonView.IsMine)
+            if (!this.photonView.IsMine)
             {
                 this.m_Body.position = Vector3.MoveTowards(this.m_Body.position, this.m_NetworkPosition, this.m_Distance * (1.0f / PhotonNetwork.SerializationRate));
                 this.m_Body.rotation = Quaternion.RotateTowards(this.m_Body.rotation, this.m_NetworkRotation, this.m_Angle * (1.0f / PhotonNetwork.SerializationRate));
@@ -86,7 +86,7 @@ namespace Photon.Pun
                 
                 if (this.m_SynchronizeVelocity || this.m_SynchronizeAngularVelocity)
                 {
-                    float lag = Mathf.Abs((float)(PhotonNetwork.Time - info.timestamp));
+                    float lag = Mathf.Abs((float)(PhotonNetwork.Time - info.SentServerTime));
 
                     if (this.m_SynchronizeVelocity)
                     {

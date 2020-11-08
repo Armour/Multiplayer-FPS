@@ -26,6 +26,7 @@ namespace Photon.Pun.UtilityScripts
         public bool UserId;
         public bool Room;
         public bool RoomProps;
+        public bool EventsIn;
         public bool LocalPlayer;
         public bool PlayerProps;
         public bool Others;
@@ -47,6 +48,11 @@ namespace Photon.Pun.UtilityScripts
                 Instance = this;
                 DontDestroyOnLoad(this.gameObject);
             }
+
+            if (EventsIn)
+            {
+                PhotonNetwork.NetworkingClient.LoadBalancingPeer.TrafficStatsEnabled = true;
+            }
         }
 
         void OnDisable()
@@ -58,8 +64,20 @@ namespace Photon.Pun.UtilityScripts
 
         }
 
+        float native_width = 800;
+        float native_height = 480;
         void OnGUI()
         {
+            if (PhotonNetwork.NetworkingClient == null || PhotonNetwork.NetworkingClient.LoadBalancingPeer == null || PhotonNetwork.NetworkingClient.LoadBalancingPeer.TrafficStatsIncoming == null)
+            {
+                return;
+            }
+
+            //set up scaling
+            float rx = Screen.width / native_width;
+            float ry = Screen.height / native_height;
+            GUI.matrix = Matrix4x4.TRS (new Vector3(0, 0, 0), Quaternion.identity, new Vector3 (rx, ry, 1));
+
             Rect GuiOffsetRuntime = new Rect(this.GuiOffset);
 
             if (GuiOffsetRuntime.x < 0)
@@ -112,6 +130,11 @@ namespace Photon.Pun.UtilityScripts
                 }
             }
 
+            if (EventsIn)
+            {
+                int fragments = PhotonNetwork.NetworkingClient.LoadBalancingPeer.TrafficStatsIncoming.FragmentCommandCount;
+                GUILayout.Label("Events Received: "+PhotonNetwork.NetworkingClient.LoadBalancingPeer.TrafficStatsGameLevel.EventCount + " Fragments: "+fragments);
+            }
 
 
             if (this.LocalPlayer)

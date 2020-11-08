@@ -27,6 +27,12 @@ namespace Photon.Pun.UtilityScripts
     /// </summary>
 	public class PunTurnManager : MonoBehaviourPunCallbacks, IOnEventCallback
     {
+        
+        /// <summary>
+        /// External definition for better garbage collection management, used in ProcessEvent.
+        /// </summary>
+        Player sender;
+        
         /// <summary>
         /// Wraps accessing the "turn" custom properties of a room.
         /// </summary>
@@ -203,8 +209,14 @@ namespace Photon.Pun.UtilityScripts
 		// called internally
 		void ProcessOnEvent(byte eventCode, object content, int senderId)
 		{
-			Player sender = PhotonNetwork.CurrentRoom.GetPlayer(senderId);
-			switch (eventCode)
+            if (senderId == -1)
+            {
+                return;
+            }
+            
+            sender = PhotonNetwork.CurrentRoom.GetPlayer(senderId);
+            
+            switch (eventCode)
 			{
 			case EvMove:
 				{
@@ -244,7 +256,7 @@ namespace Photon.Pun.UtilityScripts
 		/// <param name="photonEvent">Photon event.</param>
 		public void OnEvent(EventData photonEvent)
         {
-			ProcessOnEvent(photonEvent.Code, photonEvent.CustomData, photonEvent.Sender);
+			this.ProcessOnEvent(photonEvent.Code, photonEvent.CustomData, photonEvent.Sender);
         }
 
         /// <summary>

@@ -52,12 +52,37 @@ namespace Photon.Realtime
         /// <remarks>if this IsNullOrEmpty() AND UseNameServer == true, use BestRegion. else, use a server</remarks>
         public string FixedRegion;
 
+        /// <summary>Set to a previous BestRegionSummary value before connecting.</summary>
+        /// <remarks>
+        /// This is a value used when the client connects to the "Best Region".</br>
+        /// If this is null or empty, all regions gets pinged. Providing a previous summary on connect,
+        /// speeds up best region selection and makes the previously selected region "sticky".</br>
+        ///
+        /// Unity clients should store the BestRegionSummary in the PlayerPrefs.
+        /// You can store the new result by implementing <see cref="IConnectionCallbacks.OnConnectedToMaster"/>.
+        /// If <see cref="LoadBalancingClient.SummaryToCache"/> is not null, store this string.
+        /// To avoid storing the value multiple times, you could set SummaryToCache to null.
+        /// </remarks>
+        #if SUPPORTED_UNITY
+        [NonSerialized]
+        #endif
+        public string BestRegionSummaryFromStorage;
+
         /// <summary>The address (hostname or IP) of the server to connect to.</summary>
         public string Server;
         /// <summary>If not null, this sets the port of the first Photon server to connect to (that will "forward" the client as needed).</summary>
         public int Port;
+        /// <summary>The address (hostname or IP and port) of the proxy server.</summary>
+        public string ProxyServer;
         /// <summary>The network level protocol to use.</summary>
         public ConnectionProtocol Protocol = ConnectionProtocol.Udp;
+
+        /// <summary>Enables a fallback to another protocol in case a connect to the Name Server fails.</summary>
+        /// <remarks>See: LoadBalancingClient.EnableProtocolFallback.</remarks>
+        public bool EnableProtocolFallback = true;
+
+        /// <summary>Defines how authentication is done. On each system, once or once via a WSS connection (safe).</summary>
+        public AuthModeOption AuthMode = AuthModeOption.Auth;
 
         /// <summary>If true, the client will request the list of currently available lobbies.</summary>
         public bool EnableLobbyStatistics;
@@ -77,7 +102,53 @@ namespace Photon.Realtime
         /// <summary>ToString but with more details.</summary>
         public string ToStringFull()
         {
-            return string.Format("IsBestRegion: {0} IsDefaultNameServer: {1} IsDefaultPort: {2}", this.IsBestRegion, this.IsDefaultNameServer, this.IsDefaultPort);
+            return string.Format(
+                "appId {0}{1}{2}{3}" +
+                "use ns: {4}, reg: {5}, {9}, " +
+                "{6}{7}{8}" +
+                "auth: {10}",
+                String.IsNullOrEmpty(this.AppIdRealtime) ? string.Empty : "rt: " + this.HideAppId(this.AppIdRealtime) + ", ",
+                String.IsNullOrEmpty(this.AppIdChat) ? string.Empty : "chat: " + this.HideAppId(this.AppIdChat) + ", ",
+                String.IsNullOrEmpty(this.AppIdVoice) ? string.Empty : "voice: " + this.HideAppId(this.AppIdVoice) + ", ",
+                String.IsNullOrEmpty(this.AppVersion) ? string.Empty : "appV: " + this.AppVersion + ", ",
+                this.UseNameServer,
+                this.IsBestRegion ? "/best/" : this.FixedRegion,
+                //this.BestRegionSummaryFromStorage,
+                String.IsNullOrEmpty(this.Server) ? string.Empty : "server: " + this.Server + ", ",
+                this.IsDefaultPort ? string.Empty : "port: " + this.Port + ", ",
+                String.IsNullOrEmpty(ProxyServer) ? string.Empty : "proxy: " + this.ProxyServer + ", ",
+                this.Protocol,
+                this.AuthMode
+                //this.EnableLobbyStatistics,
+                //this.NetworkLogging,
+            );
+        }
+
+        private string HideAppId(string appId)
+        {
+            return string.IsNullOrEmpty(appId) || appId.Length < 8
+                ? appId
+                : string.Concat(appId.Substring(0, 8), "***");
+        }
+
+        public AppSettings CopyTo(AppSettings d)
+        {
+            d.AppIdRealtime = this.AppIdRealtime;
+            d.AppIdChat = this.AppIdChat;
+            d.AppIdVoice = this.AppIdVoice;
+            d.AppVersion = this.AppVersion;
+            d.UseNameServer = this.UseNameServer;
+            d.FixedRegion = this.FixedRegion;
+            d.BestRegionSummaryFromStorage = this.BestRegionSummaryFromStorage;
+            d.Server = this.Server;
+            d.Port = this.Port;
+            d.ProxyServer = this.ProxyServer;
+            d.Protocol = this.Protocol;
+            d.AuthMode = this.AuthMode;
+            d.EnableLobbyStatistics = this.EnableLobbyStatistics;
+            d.NetworkLogging = this.NetworkLogging;
+            d.EnableProtocolFallback = this.EnableProtocolFallback;
+            return d;
         }
     }
 }

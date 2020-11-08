@@ -16,12 +16,14 @@ using UnityEditor;
 using UnityEngine;
 
 using System.IO;
+using System.Text;
+using UnityEngine.Networking;
 
 
 namespace Photon.Pun
 {
     [InitializeOnLoad]
-    public class PhotonEditorUtils
+    public static class PhotonEditorUtils
     {
         /// <summary>True if the ChatClient of the Photon Chat API is available. If so, the editor may (e.g.) show additional options in settings.</summary>
         public static bool HasChat;
@@ -54,6 +56,10 @@ namespace Photon.Pun
 
                 #if !PUN_2_OR_NEWER
                 AddScriptingDefineSymbolToAllBuildTargetGroups("PUN_2_OR_NEWER");
+                #endif
+
+                #if !PUN_2_19_OR_NEWER
+                AddScriptingDefineSymbolToAllBuildTargetGroups("PUN_2_19_OR_NEWER");
                 #endif
             }
         }
@@ -170,12 +176,115 @@ namespace Photon.Pun
 		/// <param name="go">The GameObject to check</param>
 		public static bool IsPrefab(GameObject go)
 		{
-			#if UNITY_2018_3_OR_NEWER
-				return UnityEditor.Experimental.SceneManagement.PrefabStageUtility.GetPrefabStage(go) != null;
-			#else
-				return EditorUtility.IsPersistent(go);
+            #if UNITY_2018_3_OR_NEWER
+            return UnityEditor.Experimental.SceneManagement.PrefabStageUtility.GetPrefabStage(go) != null || EditorUtility.IsPersistent(go);
+            #else
+            return EditorUtility.IsPersistent(go);
 			#endif
 		}
+
+        //https://forum.unity.com/threads/using-unitywebrequest-in-editor-tools.397466/#post-4485181
+        public static void StartCoroutine(System.Collections.IEnumerator update)
+        {
+            EditorApplication.CallbackFunction closureCallback = null;
+
+            closureCallback = () =>
+            {
+                try
+                {
+                    if (update.MoveNext() == false)
+                    {
+                        EditorApplication.update -= closureCallback;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Debug.LogException(ex);
+                    EditorApplication.update -= closureCallback;
+                }
+            };
+
+            EditorApplication.update += closureCallback;
+        }
+        
+        public static System.Collections.IEnumerator HttpPost(string url, Dictionary<string, string> headers, byte[] payload, Action<string> successCallback, Action<string> errorCallback)
+        {
+            using (UnityWebRequest w = new UnityWebRequest(url, "POST"))
+            {
+                if (payload != null)
+                {
+                    w.uploadHandler = new UploadHandlerRaw(payload);
+                }
+                w.downloadHandler = new DownloadHandlerBuffer();
+                if (headers != null)
+                {
+                    foreach (var header in headers)
+                    {
+                        w.SetRequestHeader(header.Key, header.Value);
+                    }
+                }
+
+                #if UNITY_2017_2_OR_NEWER
+                yield return w.SendWebRequest();
+                #else
+                yield return w.Send();
+                #endif
+
+                while (w.isDone == false)
+                    yield return null;
+
+                #if UNITY_2017_1_OR_NEWER
+                if (w.isNetworkError || w.isHttpError)
+                #else
+                if (w.isError)
+                #endif
+                {
+                    if (errorCallback != null)
+                    {
+                        errorCallback(w.error);
+                    }
+                }
+                else
+                {
+                    if (successCallback != null)
+                    {
+                        successCallback(w.downloadHandler.text);
+                    }
+                }
+            }
+        }
+        /// <summary>
+        /// Creates a Foldout using a toggle with (GUIStyle)"Foldout") and a separate label. This is a workaround for 2019.3 foldout arrows not working.
+        /// </summary>
+        /// <param name="isExpanded"></param>
+        /// <param name="label"></param>
+        /// <returns>Returns the new isExpanded value.</returns>
+        public static bool Foldout(this SerializedProperty isExpanded, GUIContent label)
+        {
+            var rect = EditorGUILayout.GetControlRect();
+            bool newvalue = EditorGUI.Toggle(new Rect(rect) { xMin = rect.xMin + 2 }, GUIContent.none, isExpanded.boolValue, (GUIStyle)"Foldout");
+            EditorGUI.LabelField(new Rect(rect) { xMin = rect.xMin + 15 }, label);
+            if (newvalue != isExpanded.boolValue)
+            {
+                isExpanded.boolValue = newvalue;
+                isExpanded.serializedObject.ApplyModifiedProperties();
+            }
+            return newvalue;
+        }
+
+        /// <summary>
+        /// Creates a Foldout using a toggle with (GUIStyle)"Foldout") and a separate label. This is a workaround for 2019.3 foldout arrows not working.
+        /// </summary>
+        /// <param name="isExpanded"></param>
+        /// <param name="label"></param>
+        /// <returns>Returns the new isExpanded value.</returns>
+        public static bool Foldout(this bool isExpanded, GUIContent label)
+        {
+            var rect = EditorGUILayout.GetControlRect();
+            bool newvalue = EditorGUI.Toggle(new Rect(rect) { xMin = rect.xMin + 2 }, GUIContent.none, isExpanded, (GUIStyle)"Foldout");
+            EditorGUI.LabelField(new Rect(rect) { xMin = rect.xMin + 15 }, label);
+            return newvalue;
+        }
     }
 
 

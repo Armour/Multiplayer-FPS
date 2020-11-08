@@ -14,39 +14,39 @@ namespace Photon.Pun
     using UnityEngine;
 
 
-    [RequireComponent(typeof(PhotonView))]
     [RequireComponent(typeof(Rigidbody2D))]
     [AddComponentMenu("Photon Networking/Photon Rigidbody 2D View")]
-    public class PhotonRigidbody2DView : MonoBehaviour, IPunObservable
+    public class PhotonRigidbody2DView : MonoBehaviourPun, IPunObservable
     {
         private float m_Distance;
         private float m_Angle;
 
         private Rigidbody2D m_Body;
 
-        private PhotonView m_PhotonView;
-
         private Vector2 m_NetworkPosition;
 
         private float m_NetworkRotation;
 
+        [HideInInspector]
         public bool m_SynchronizeVelocity = true;
+        [HideInInspector]
         public bool m_SynchronizeAngularVelocity = false;
 
+        [HideInInspector]
         public bool m_TeleportEnabled = false;
+        [HideInInspector]
         public float m_TeleportIfDistanceGreaterThan = 3.0f;
 
         public void Awake()
         {
             this.m_Body = GetComponent<Rigidbody2D>();
-            this.m_PhotonView = GetComponent<PhotonView>();
 
             this.m_NetworkPosition = new Vector2();
         }
 
         public void FixedUpdate()
         {
-            if (!this.m_PhotonView.IsMine)
+            if (!this.photonView.IsMine)
             {
                 this.m_Body.position = Vector2.MoveTowards(this.m_Body.position, this.m_NetworkPosition, this.m_Distance * (1.0f / PhotonNetwork.SerializationRate));
                 this.m_Body.rotation = Mathf.MoveTowards(this.m_Body.rotation, this.m_NetworkRotation, this.m_Angle * (1.0f / PhotonNetwork.SerializationRate));
@@ -85,7 +85,7 @@ namespace Photon.Pun
 
                 if (this.m_SynchronizeVelocity || this.m_SynchronizeAngularVelocity)
                 {
-                    float lag = Mathf.Abs((float)(PhotonNetwork.Time - info.timestamp));
+                    float lag = Mathf.Abs((float)(PhotonNetwork.Time - info.SentServerTime));
 
                     if (m_SynchronizeVelocity)
                     {
