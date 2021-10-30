@@ -206,7 +206,7 @@ namespace Photon.Pun
 
             EditorApplication.update += closureCallback;
         }
-        
+
         public static System.Collections.IEnumerator HttpPost(string url, Dictionary<string, string> headers, byte[] payload, Action<string> successCallback, Action<string> errorCallback)
         {
             using (UnityWebRequest w = new UnityWebRequest(url, "POST"))
@@ -234,7 +234,7 @@ namespace Photon.Pun
                     yield return null;
 
                 #if UNITY_2017_1_OR_NEWER
-                if (w.isNetworkError || w.isHttpError)
+                if (w.result == UnityWebRequest.Result.ConnectionError || w.result == UnityWebRequest.Result.ProtocolError)
                 #else
                 if (w.isError)
                 #endif
