@@ -7,7 +7,8 @@ using System.Collections;
 [RequireComponent(typeof(FirstPersonController))]
 [RequireComponent(typeof(Rigidbody))]
 
-public class PlayerHealth : MonoBehaviourPunCallbacks, IPunObservable {
+public class PlayerHealth : MonoBehaviourPunCallbacks, IPunObservable
+{
 
     public delegate void Respawn(float time);
     public delegate void AddMessage(string Message);
@@ -50,13 +51,15 @@ public class PlayerHealth : MonoBehaviourPunCallbacks, IPunObservable {
     /// Start is called on the frame when a script is enabled just before
     /// any of the Update methods is called the first time.
     /// </summary>
-    void Start() {
+    void Start()
+    {
         fpController = GetComponent<FirstPersonController>();
         ikControl = GetComponentInChildren<IKControl>();
-        damageImage = GameObject.FindGameObjectWithTag("Screen").transform.Find("DamageImage").GetComponent<Image>();
+        damageImage = GameObject.FindGameObjectWithTag("Screen2D").transform.Find("DamageImage").GetComponent<Image>();
         healthSlider = GameObject.FindGameObjectWithTag("Screen").GetComponentInChildren<Slider>();
         currentHealth = startingHealth;
-        if (photonView.IsMine) {
+        if (photonView.IsMine)
+        {
             gameObject.layer = LayerMask.NameToLayer("FPSPlayer");
             healthSlider.value = currentHealth;
         }
@@ -68,14 +71,19 @@ public class PlayerHealth : MonoBehaviourPunCallbacks, IPunObservable {
     /// <summary>
     /// Update is called every frame, if the MonoBehaviour is enabled.
     /// </summary>
-    void Update() {
-        if (damaged) {
+    void Update()
+    {
+        if (damaged)
+        {
             damaged = false;
             damageImage.color = flashColour;
-        } else {
+        }
+        else
+        {
             damageImage.color = Color.Lerp(damageImage.color, Color.clear, flashSpeed * Time.deltaTime);
         }
-        if (isSinking) {
+        if (isSinking)
+        {
             transform.Translate(Vector3.down * sinkSpeed * Time.deltaTime);
         }
     }
@@ -86,12 +94,15 @@ public class PlayerHealth : MonoBehaviourPunCallbacks, IPunObservable {
     /// <param name="amount">Amount of damage dealt.</param>
     /// <param name="enemyName">Enemy's name who cause this player's death.</param>
     [PunRPC]
-    public void TakeDamage(int amount, string enemyName) {
+    public void TakeDamage(int amount, string enemyName)
+    {
         if (isDead) return;
-        if (photonView.IsMine) {
+        if (photonView.IsMine)
+        {
             damaged = true;
             currentHealth -= amount;
-            if (currentHealth <= 0) {
+            if (currentHealth <= 0)
+            {
                 photonView.RPC("Death", RpcTarget.All, enemyName);
             }
             healthSlider.value = currentHealth;
@@ -106,11 +117,13 @@ public class PlayerHealth : MonoBehaviourPunCallbacks, IPunObservable {
     /// </summary>
     /// <param name="enemyName">Enemy's name who cause this player's death.</param>
     [PunRPC]
-    void Death(string enemyName) {
+    void Death(string enemyName)
+    {
         isDead = true;
         ikControl.enabled = false;
         nameTag.gameObject.SetActive(false);
-        if (photonView.IsMine) {
+        if (photonView.IsMine)
+        {
             fpController.enabled = false;
             animator.SetTrigger("IsDead");
             AddMessageEvent(PhotonNetwork.LocalPlayer.NickName + " was killed by " + enemyName + "!");
@@ -126,7 +139,8 @@ public class PlayerHealth : MonoBehaviourPunCallbacks, IPunObservable {
     /// Coroutine function to destory player game object.
     /// </summary>
     /// <param name="delayTime">Delay time before destory.</param>
-    IEnumerator DestoryPlayer(float delayTime) {
+    IEnumerator DestoryPlayer(float delayTime)
+    {
         yield return new WaitForSeconds(delayTime);
         PhotonNetwork.Destroy(gameObject);
     }
@@ -135,7 +149,8 @@ public class PlayerHealth : MonoBehaviourPunCallbacks, IPunObservable {
     /// RPC function to start sinking the player game object.
     /// </summary>
     /// <param name="delayTime">Delay time before start sinking.</param>
-    IEnumerator StartSinking(float delayTime) {
+    IEnumerator StartSinking(float delayTime)
+    {
         yield return new WaitForSeconds(delayTime);
         Rigidbody rigidbody = GetComponent<Rigidbody>();
         rigidbody.useGravity = false;
@@ -148,10 +163,14 @@ public class PlayerHealth : MonoBehaviourPunCallbacks, IPunObservable {
     /// </summary>
     /// <param name="stream">The network bit stream.</param>
     /// <param name="info">The network message information.</param>
-    public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info) {
-        if (stream.IsWriting) {
+    public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
+    {
+        if (stream.IsWriting)
+        {
             stream.SendNext(currentHealth);
-        } else {
+        }
+        else
+        {
             currentHealth = (int)stream.ReceiveNext();
         }
     }
