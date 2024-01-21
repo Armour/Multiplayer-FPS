@@ -8,7 +8,7 @@ A multiplayer first-person shooter game based on Unity3D. Different types of inp
 
 ## Requirement
 
-[Unity 2020.3.4f1 (LTS)](https://unity.cn/release-notes/lts/2020/2020.3.4f1)
+[Unity 2022.3.17f1 (LTS)](https://unity.cn/release-notes/lts/2022/2022.3.17f1)
 
 ## Game logic and functionality
 
